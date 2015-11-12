@@ -27,12 +27,15 @@ class Actions(object):
     def __init__(self, conf, dry_run):
         self._conf = conf
         self._dry_run = dry_run
-        self._archive = Archive(self.get_archive_name())
+        self._archive = Archive()
         self._client = Client()
 
     def get_conf_data(self):
-        return yaml.load(
-            open(self._conf, 'r').read()).get('configuration')
+        if os.path.exists(self._conf):
+            return data = yaml.load(
+                open(self._conf, 'r').read()).get('configuration')
+        else:
+            return os.path.basename(os.getcwd())
 
     def get_function_name(self):
         return self.get_conf_data().get('name')

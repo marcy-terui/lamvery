@@ -11,6 +11,7 @@ setup_options = dict(
     description='Yet another deploy tool for AWS Lambda in the virtualenv environment.',
     long_description=open('README.rst').read(),
     author='Masashi Terui',
+    author_email='marcy9114+pypi@gmail.com',
     url='https://github.com/marcy-terui/lamvery',
     packages=find_packages(exclude=['tests*']),
     install_requires=open('requirements.txt').read().splitlines(),
