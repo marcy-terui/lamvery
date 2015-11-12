@@ -60,10 +60,10 @@ Options
 -------
 
 ``-f`` or ``--file``
-~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 | Specify the configuration file.
-| default: ``lamvery``
+| default: ``lamvery.yml``
 
 Configuration
 -------------
