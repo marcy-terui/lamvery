@@ -42,15 +42,13 @@ And put your ``lamvery.yml`` like this.
 Usage
 -----
 
-Archive your code and libraries to ``<your-function-name>.zip``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- Archive your code and libraries to ``<your-function-name>.zip``
 
 .. code:: sh
 
     lamvery archive
 
-Archive and deploy your code and libraries
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- Archive and deploy your code and libraries
 
 .. code:: sh
 
@@ -59,8 +57,7 @@ Archive and deploy your code and libraries
 Options
 -------
 
-``-f`` or ``--file``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- ``-f`` or ``--file``
 
 | Specify the configuration file.
 | default: ``lamvery.yml``
