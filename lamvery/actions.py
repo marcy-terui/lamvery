@@ -32,7 +32,7 @@ class Actions(object):
 
     def get_conf_data(self):
         if os.path.exists(self._conf):
-            return data = yaml.load(
+            return yaml.load(
                 open(self._conf, 'r').read()).get('configuration')
         else:
             return os.path.basename(os.getcwd())
