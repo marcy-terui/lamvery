@@ -1,0 +1,9 @@
+boto3==1.2.1
+botocore==1.3.5
+docutils==0.12
+futures==2.2.0
+jmespath==0.9.0
+python-dateutil==2.4.2
+PyYAML==3.11
+six==1.10.0
+termcolor==1.1.0
