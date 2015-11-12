@@ -45,7 +45,7 @@ class Actions(object):
 
     def init(self):
         init_config = OrderedDict()
-        init_config['name']        = 'sample_lambda_function'
+        init_config['name']        = self.get_function_name()
         init_config['runtime']     = 'python2.7'
         init_config['role']        = 'arn:aws:iam::<your-account-number>:role/<role>'
         init_config['handler']     = 'lambda_function.lambda_handler'
