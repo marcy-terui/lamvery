@@ -1,3 +1,4 @@
+=======
 Lamvery
 =======
 
@@ -13,7 +14,7 @@ Requirements
 Installation
 ------------
 
-.. code:: sh
+.. code::
 
     pip install lamvery
 
@@ -22,13 +23,13 @@ Setup
 
 At first,
 
-.. code:: sh
+.. code::
 
     lamvery init
 
 And put your ``lamvery.yml`` like this.
 
-.. code:: yml
+.. code::
 
     configuration:
       name: sample_lambda_function
@@ -45,13 +46,13 @@ Usage
 
 - Archive your code and libraries to ``<your-function-name>.zip``
 
-.. code:: sh
+.. code::
 
     lamvery archive
 
 - Archive and deploy your code and libraries
 
-.. code:: sh
+.. code::
 
     lamvery deploy
 
@@ -76,11 +77,6 @@ runtime
 
 | The runtime environment for the Lambda function you are uploading.
 | Currently, ``lamvery`` supports only ``python2.7``.
-
-name
-~~~~
-
-The name of your function.
 
 role
 ~~~~
