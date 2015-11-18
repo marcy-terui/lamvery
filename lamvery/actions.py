@@ -27,7 +27,6 @@ class Actions(object):
     def __init__(self, conf, dry_run):
         self._conf = conf
         self._dry_run = dry_run
-        self._client = Client(region=self.get_region())
 
     def get_conf_data(self):
         return yaml.load(
