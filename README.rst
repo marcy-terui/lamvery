@@ -32,6 +32,7 @@ And put your ``lamvery.yml`` like this.
 .. code::
 
     configuration:
+      region: us-east-1
       name: sample_lambda_function
       runtime: python2.7
       role: arn:aws:iam::000000000000:role/lambda_basic_execution
@@ -66,6 +67,12 @@ Options
 
 Configuration
 -------------
+
+region
+~~~~
+
+| The region name in AWS.
+| The behaviour depends on ``boto3`` if you doesn't set this option.
 
 name
 ~~~~
