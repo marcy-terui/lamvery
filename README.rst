@@ -2,6 +2,19 @@
 Lamvery
 =======
 
+.. image:: https://img.shields.io/travis/marcy-terui/lamvery/master.svg
+    :target: https://travis-ci.org/marcy-terui/lamvery
+
+.. image:: https://img.shields.io/coveralls/marcy-terui/lamvery.svg
+    :target: https://coveralls.io/github/marcy-terui/lamvery
+
+.. image:: https://img.shields.io/pypi/v/lamvery.svg
+    :target: https://pypi.python.org/pypi/lamvery
+
+.. image:: https://img.shields.io/pypi/dm/lamvery.svg
+    :target: https://pypi.python.org/pypi/lamvery/
+
+
 Yet another deploy tool for AWS Lambda in the virtualenv.
 
 Requirements
