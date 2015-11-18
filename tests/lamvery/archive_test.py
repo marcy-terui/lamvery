@@ -62,12 +62,3 @@ class ArchiveTestCase(TestCase):
         archive = Archive('test.zip')
         paths = archive._get_paths()
         ok_(os.path.join(self.pj_root, 'lamvery') in paths)
-        test_path = os.path.join(
-            os.environ['VIRTUAL_ENV'],
-            'local',
-            'lib',
-            'python{}.{}'.format(sys.version_info.major, sys.version_info.minor),
-            'site-packages',
-            'boto3'
-        )
-        ok_(test_path in paths)

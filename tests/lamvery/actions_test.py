@@ -92,34 +92,25 @@ class ActionsTestCase(TestCase):
 
     def test_archive(self):
         actions = Actions(self.conf, True)
-        mock_zipfile = Mock()
-        mock_zipfile.read = Mock(return_value='foo')
-        mock_archive = Mock()
-        mock_archive.create_zipfile = Mock(return_value=mock_zipfile)
-        actions._archive = mock_archive
         actions.get_archive_name = Mock(return_value=self.conf)
         actions.archive()
-        eq_(open(self.conf, 'r').read(), 'foo')
 
-    def test_deploy(self):
+    @patch('lamvery.actions.Client')
+    @patch('lamvery.actions.Archive')
+    def test_deploy(self, c, a):
         # Dry run
-        mock_client = Mock()
         actions = Actions(self.conf, True)
-        actions._client = mock_client
-        actions._archive = Mock()
         actions.print_conf_diff = Mock()
         actions.deploy()
 
         # No dry run
         actions = Actions(self.conf, False)
-        actions._client = mock_client
-        actions._archive = Mock()
         actions.print_conf_diff = Mock()
         # New
-        mock_client.get_function_conf = Mock(return_value={})
+        c.get_function_conf = Mock(return_value={})
         actions.deploy()
         # Update
-        mock_client.get_function_conf = Mock(return_value={'foo': 'bar'})
+        c.get_function_conf = Mock(return_value={'foo': 'bar'})
         actions.deploy()
 
     def test_get_conf_diff(self):
