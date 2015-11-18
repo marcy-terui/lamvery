@@ -27,8 +27,6 @@ class Actions(object):
     def __init__(self, conf, dry_run):
         self._conf = conf
         self._dry_run = dry_run
-        self._archive = Archive(self.get_archive_name())
-        self._client = Client()
 
     def get_conf_data(self):
         return yaml.load(
@@ -43,6 +41,12 @@ class Actions(object):
     def get_archive_name(self):
         return '{}.zip'.format(self.get_function_name())
 
+    def get_region(self):
+        if os.path.exists(self._conf):
+            return self.get_conf_data().get('region')
+        else:
+            return None
+
     def init(self):
         if self._needs_write_conf():
             yaml.dump(
@@ -54,6 +58,7 @@ class Actions(object):
 
     def _get_default_conf(self):
         init_config = OrderedDict()
+        init_config['region']      = 'us-east-1'
         init_config['name']        = self.get_function_name()
         init_config['runtime']     = 'python2.7'
         init_config['role']        = 'arn:aws:iam::<your-account-number>:role/<role>'
@@ -76,25 +81,29 @@ class Actions(object):
         return ret
 
     def archive(self):
-        zipfile = self._archive.create_zipfile()
+        archive = Archive(self.get_archive_name())
+        zipfile = archive.create_zipfile()
         with open(self.get_archive_name(), 'w') as f:
             f.write(zipfile.read())
         zipfile.close()
         print('Output package zip file to {}'.format(self.get_archive_name()))
 
     def deploy(self):
-        func_name = self.get_function_name()
-        remote_conf = self._client.get_function_conf(func_name)
-        local_conf = self.get_conf_data()
-        zipfile = self._archive.create_zipfile()
+        archive     = Archive(self.get_archive_name())
+        client      = Client(region=self.get_region())
+        func_name   = self.get_function_name()
+        remote_conf = client.get_function_conf(func_name)
+        local_conf  = self.get_conf_data()
+        zipfile     = archive.create_zipfile()
+
         self.print_conf_diff(remote=remote_conf, local=local_conf)
         if self._dry_run:
             return
         if len(remote_conf) > 0:
-            self._client.update_function_code(zipfile, local_conf)
-            self._client.update_function_conf(local_conf)
+            client.update_function_code(zipfile, local_conf)
+            client.update_function_conf(local_conf)
         else:
-            self._client.create_function(zipfile, local_conf)
+            client.create_function(zipfile, local_conf)
         zipfile.close()
         print('Deploy finished!')
 

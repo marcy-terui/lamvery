@@ -16,7 +16,8 @@ EXCLUDE_FILE = [
 ]
 
 EXCLUDE_DIR = [
-    '.git'
+    '.git',
+    '__pycache__'
 ]
 
 PYFILE_PATTERN = re.compile('.+\.py.?$')

@@ -23,7 +23,7 @@ TEST_CONF = {
 class ClientTestCase(TestCase):
 
     def setUp(self):
-        self.client = Client()
+        self.client = Client(region='us-east-1')
         self.client._client = Mock()
 
     def test_get_function_conf(self):
