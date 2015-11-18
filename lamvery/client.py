@@ -13,7 +13,7 @@ class Client:
             res = self._client.get_function(
                 FunctionName=name)
             return res['Configuration']
-        except botocore.exceptions.ClientError as e:
+        except botocore.exceptions.ClientError:
             return {}
 
     def create_function(self, zipfile, conf):

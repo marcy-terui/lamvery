@@ -38,7 +38,7 @@ class ActionsTestCase(TestCase):
         self.conf = tmp[1]
 
     def tearDown(self):
-        pass
+        os.remove(self.conf)
 
     def test_get_conf_data(self):
         actions = Actions(self.conf, True)

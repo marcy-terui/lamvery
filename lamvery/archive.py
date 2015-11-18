@@ -27,15 +27,12 @@ class Archive:
         self._filename = filename
         self._tmpdir = tempfile.mkdtemp(suffix='lamvery')
         self._zippath = os.path.join(self._tmpdir, self._filename)
-        self._zipfile = PyZipFile(
-            self._zippath,
-            'w', compression=ZIP_DEFLATED)
 
     def __del__(self):
         shutil.rmtree(self._tmpdir)
 
     def create_zipfile(self):
-        with PyZipFile(self._zippath,'w', compression=ZIP_DEFLATED) as zipfile:
+        with PyZipFile(self._zippath, 'w', compression=ZIP_DEFLATED) as zipfile:
             for p in self._get_paths():
                 if os.path.isdir(p):
                     self._archive_dir(zipfile, p)
