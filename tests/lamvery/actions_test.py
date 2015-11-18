@@ -13,6 +13,7 @@ import lamvery.actions
 
 DEFAULT_CONF = """
 configuration:
+  region: us-east-1
   runtime: python2.7
   name: test_lambda_function
   role: arn:aws:iam::000000000000:role/lambda_basic_execution
@@ -53,6 +54,12 @@ class ActionsTestCase(TestCase):
     def test_get_archive_name(self):
         actions = Actions(self.conf, True)
         eq_(actions.get_archive_name(), 'test_lambda_function.zip')
+
+    def test_get_region(self):
+        actions = Actions(self.conf, True)
+        eq_(actions.get_region(), 'us-east-1')
+        actions = Actions('/foo/bar', True)
+        eq_(actions.get_region(), None)
 
     def test_init(self):
         actions = Actions(self.conf, True)

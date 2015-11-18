@@ -28,7 +28,7 @@ class Actions(object):
         self._conf = conf
         self._dry_run = dry_run
         self._archive = Archive(self.get_archive_name())
-        self._client = Client()
+        self._client = Client(region=self.get_region())
 
     def get_conf_data(self):
         return yaml.load(
@@ -43,6 +43,12 @@ class Actions(object):
     def get_archive_name(self):
         return '{}.zip'.format(self.get_function_name())
 
+    def get_region(self):
+        if os.path.exists(self._conf):
+            return self.get_conf_data().get('region')
+        else:
+            return None
+
     def init(self):
         if self._needs_write_conf():
             yaml.dump(
@@ -54,6 +60,7 @@ class Actions(object):
 
     def _get_default_conf(self):
         init_config = OrderedDict()
+        init_config['region']      = 'us-east-1'
         init_config['name']        = self.get_function_name()
         init_config['runtime']     = 'python2.7'
         init_config['role']        = 'arn:aws:iam::<your-account-number>:role/<role>'
