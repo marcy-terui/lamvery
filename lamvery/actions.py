@@ -44,6 +44,15 @@ class Actions(object):
         return '{}.zip'.format(self.get_function_name())
 
     def init(self):
+        if self._needs_write_conf():
+            yaml.dump(
+                self._get_default_conf(),
+                open(self._conf, 'w'),
+                default_flow_style=False,
+                allow_unicode=True)
+            print('Output initial configuration file to {}.'.format(self._conf))
+
+    def _get_default_conf(self):
         init_config = OrderedDict()
         init_config['name']        = self.get_function_name()
         init_config['runtime']     = 'python2.7'
@@ -55,20 +64,16 @@ class Actions(object):
         init_config['publish']     = True
         init_yaml = OrderedDict()
         init_yaml['configuration'] = init_config
+        return init_yaml
 
-        write = True
+    def _needs_write_conf(self):
+        ret = True
         if os.path.exists(self._conf):
             y_n = raw_input(
                 colored('Overwrite {}? [y/n]: '.format(self._conf), 'yellow'))
             if y_n != 'y':
-                write = False
-        if write:
-            yaml.dump(
-                init_yaml,
-                open(self._conf, 'w'),
-                default_flow_style=False,
-                allow_unicode=True)
-            print('Output initial configuration file to {}.'.format(self._conf))
+                ret = False
+        return ret
 
     def archive(self):
         zipfile = self._archive.create_zipfile()
@@ -106,7 +111,7 @@ class Actions(object):
 
     def print_conf_diff(self, remote, local):
         diff = self._get_conf_diff(remote, local)
-        for k,v in diff.iteritems():
+        for k,v in diff.items():
             if v is None:
                 cprint('{k}: No change'.format(k=k), 'green')
             else:
