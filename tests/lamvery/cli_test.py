@@ -22,6 +22,8 @@ class CliTestCase(TestCase):
             action(args)
             args.command = 'deploy'
             action(args)
+            args.command = 'set-alias'
+            action(args)
 
     @raises(Exception)
     def test_action_command_not_exists(self):
@@ -36,11 +38,9 @@ class CliTestCase(TestCase):
     @patch('sys.exit')
     @patch('lamvery.cli.action')
     def test_main(self, argp, ex, act):
-        argp.parse_args = Mock(side_effect=Exception)
         main()
 
     @patch('argparse.ArgumentParser')
     @patch('sys.exit')
-    @patch('lamvery.cli.action')
-    def test_main_error(self, argp, ex, act):
+    def test_main_error(self, argp, ex):
         main()
