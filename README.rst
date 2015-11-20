@@ -78,19 +78,19 @@ Options
 | This option needed by all commands.
 | Specify the configuration file.
 | default: ``lamvery.yml``
-
+|
 
 - ``-d`` or ``--dry-run``
 
 | This option needed by ``deploy`` and ``alias`` commands.
 | Output the difference of configuration and the alias without updating.
-
+|
 
 - ``-a`` or ``--alias``
 
 | This option needed by ``deploy`` and ``alias`` commands.
 | Alias ​​for the version of your function.
-
+|
 
 - ``-v`` or ``--alias-version``
 
