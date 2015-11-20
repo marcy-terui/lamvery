@@ -42,3 +42,17 @@ class ClientTestCase(TestCase):
 
     def test_update_function_conf(self):
         self.client.update_function_conf(TEST_CONF)
+
+    def test_get_alias(self):
+        self.client._client.get_alias = Mock(
+            return_value='foo')
+        eq_(self.client.get_alias('function', 'alias'), 'foo')
+        self.client._client.get_alias = Mock(
+            side_effect=botocore.exceptions.ClientError({'Error': {}}, 'bar'))
+        eq_(self.client.get_alias('function', 'alias'), {})
+
+    def test_create_alias(self):
+        self.client.create_alias('function', 'alias', 'version')
+
+    def test_update_alias(self):
+        self.client.update_alias('function', 'alias', 'version')

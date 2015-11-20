@@ -78,6 +78,7 @@ Options
 | Specify the configuration file.
 | default: ``lamvery.yml``
 
+
 - ``-d`` or ``--dry-run``
 
 | This option uses only ``deploy`` command.

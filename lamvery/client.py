@@ -50,3 +50,23 @@ class Client:
             Timeout=conf['timeout'],
             MemorySize=conf['memory_size'],
         )
+
+    def get_alias(self, function, alias):
+        try:
+            return self._client.get_alias(
+                FunctionName=function,
+                Name=alias)
+        except botocore.exceptions.ClientError:
+            return {}
+
+    def create_alias(self, function, alias, version):
+        self._client.create_alias(
+                FunctionName=function,
+                Name=alias,
+                FunctionVersion=version)
+
+    def update_alias(self, function, alias, version):
+        self._client.update_alias(
+                FunctionName=function,
+                Name=alias,
+                FunctionVersion=version)
