@@ -75,14 +75,27 @@ Options
 
 - ``-f`` or ``--file``
 
+| This option needed by all commands.
 | Specify the configuration file.
 | default: ``lamvery.yml``
 
 
 - ``-d`` or ``--dry-run``
 
-| This option uses only ``deploy`` command.
-| Output the difference of configuration without updating.
+| This option needed by ``deploy`` and ``alias`` commands.
+| Output the difference of configuration and the alias without updating.
+
+
+- ``-a`` or ``--alias``
+
+| This option needed by ``deploy`` and ``alias`` commands.
+| Alias ​​for the version of your function.
+
+
+- ``-v`` or ``--alias-version``
+
+| This option only needed by ``alias`` command.
+| Version of your function to set the alias.
 
 Configuration
 -------------
@@ -136,6 +149,11 @@ publish
 This boolean parameter can be used to request AWS Lambda to
 create/update the Lambda function and publish a version as an atomic
 operation.
+
+alias
+~~~~~~~
+
+The default alias when not given ``-a`` or ``--alias`` argument.
 
 Development
 -----------
