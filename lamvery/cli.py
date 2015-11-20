@@ -40,7 +40,7 @@ def main():
         help='init or archive or deploy')
     parser.add_argument(
         '-a', '--alias',
-        help='Alias name for the current code of function',
+        help='Alias for a version of the function',
         default=None)
     parser.add_argument(
         '-c', '--conf-file',
@@ -51,7 +51,7 @@ def main():
         help='Dry run (for deploy)', action='store_true', default=False)
     parser.add_argument(
         '-v', '--alias-version',
-        help='The version of function to set the alias', default=None)
+        help='Version of the function to set the alias', default=None)
     try:
         action(parser.parse_args())
         sys.exit(0)

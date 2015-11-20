@@ -55,8 +55,11 @@ And put your ``lamvery.yml`` like this.
       memory_size: 128
       publish: true
 
-Usage
+Commands
 -----
+
+archive
+~~~~~~~
 
 - Archive your code and libraries to ``<your-function-name>.zip``
 
@@ -64,11 +67,25 @@ Usage
 
     lamvery archive
 
+deploy
+~~~~~~
+
 - Archive and deploy your code and libraries
+- Update configuration of the function
+- Set alias to a version of the function
 
 .. code::
 
     lamvery deploy
+
+set-alias
+~~~~~~~~~
+
+- Set alias
+
+.. code::
+
+    lamvery set-alias
 
 Options
 -------
@@ -89,19 +106,19 @@ Options
 - ``-a`` or ``--alias``
 
 | This option needed by ``deploy`` and ``alias`` commands.
-| Alias ​​for the version of your function.
+| Alias for a version of the function.
 |
 
 - ``-v`` or ``--alias-version``
 
 | This option only needed by ``alias`` command.
-| Version of your function to set the alias.
+| Version of the function to set the alias.
 
 Configuration
 -------------
 
 region
-~~~~
+~~~~~~
 
 | The region name in AWS.
 | The behaviour depends on ``boto3`` if you doesn't set this option.
