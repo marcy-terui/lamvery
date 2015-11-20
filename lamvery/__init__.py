@@ -3,4 +3,4 @@ lamvery
 ----
 Yet another deploy tool for AWS Lambda in the virtualenv environment.
 """
-__version__ = '0.0.4'
+__version__ = '0.0.5'
