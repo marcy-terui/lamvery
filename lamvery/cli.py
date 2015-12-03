@@ -48,10 +48,10 @@ def main():
         default='lamvery.yml')
     parser.add_argument(
         '-d', '--dry-run',
-        help='Dry run (for deploy)', action='store_true', default=False)
+        help='Dry run', action='store_true', default=False)
     parser.add_argument(
         '-p', '--publish',
-        help=' Publish the version as an atomic operation.', action='store_true', default=False)
+        help='Publish the version as an atomic operation', action='store_true', default=False)
     parser.add_argument(
         '-v', '--alias-version',
         help='Version of the function to set the alias', default=None)
