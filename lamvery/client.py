@@ -19,7 +19,7 @@ class Client:
         except botocore.exceptions.ClientError:
             return {}
 
-    def create_function(self, zipfile, conf):
+    def create_function(self, zipfile, conf, publish):
         self._client.create_function(
             FunctionName=conf['name'],
             Runtime=conf['runtime'],
@@ -31,14 +31,14 @@ class Client:
             Description=conf['description'],
             Timeout=conf['timeout'],
             MemorySize=conf['memory_size'],
-            Publish=conf['publish'],
+            Publish=publish,
         )
 
-    def update_function_code(self, zipfile, conf):
+    def update_function_code(self, zipfile, conf, publish):
         self._client.update_function_code(
             FunctionName=conf['name'],
             ZipFile=zipfile.read(),
-            Publish=conf['publish'],
+            Publish=publish,
         )
 
     def update_function_conf(self, conf):

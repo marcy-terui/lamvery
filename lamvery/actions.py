@@ -29,6 +29,7 @@ class Actions(object):
         self._dry_run = args.dry_run
         self._alias = args.alias
         self._alias_version = args.alias_version
+        self._publish = args.publish
 
     def get_conf_data(self):
         return yaml.load(
@@ -78,8 +79,6 @@ class Actions(object):
         init_config['description'] = 'This is sample lambda function.'
         init_config['timeout']     = 10
         init_config['memory_size'] = 128
-        init_config['publish']     = True
-        init_config['alias']       = None
         init_yaml = OrderedDict()
         init_yaml['configuration'] = init_config
         return init_yaml
@@ -113,10 +112,10 @@ class Actions(object):
 
         if not self._dry_run:
             if len(remote_conf) > 0:
-                client.update_function_code(zipfile, local_conf)
+                client.update_function_code(zipfile, local_conf, self._publish)
                 client.update_function_conf(local_conf)
             else:
-                client.create_function(zipfile, local_conf)
+                client.create_function(zipfile, local_conf, self._publish)
         zipfile.close()
         self.set_alias()
 
@@ -124,7 +123,7 @@ class Actions(object):
         alias_name = self.get_alias_name()
         version    = self.get_alias_version()
         func_name  = self.get_function_name()
-        client     = Client(region=self.get_region())
+        client = Client(region=self.get_region())
 
         if alias_name is not None:
             current_alias = client.get_alias(func_name, alias_name)

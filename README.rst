@@ -53,7 +53,6 @@ And put your ``lamvery.yml`` like this.
       description: This is sample lambda function.
       timeout: 10
       memory_size: 128
-      publish: true
 
 Commands
 -----
@@ -90,11 +89,10 @@ set-alias
 Options
 -------
 
-- ``-f`` or ``--file``
+- ``-a`` or ``--alias``
 
-| This option needed by all commands.
-| Specify the configuration file.
-| default: ``lamvery.yml``
+| This option needed by ``deploy`` and ``alias`` commands.
+| Alias for a version of the function.
 |
 
 - ``-d`` or ``--dry-run``
@@ -103,10 +101,17 @@ Options
 | Output the difference of configuration and the alias without updating.
 |
 
-- ``-a`` or ``--alias``
+- ``-f`` or ``--file``
 
-| This option needed by ``deploy`` and ``alias`` commands.
-| Alias for a version of the function.
+| This option needed by all commands.
+| Specify the configuration file.
+| default: ``lamvery.yml``
+|
+
+- ``-p`` or ``--publish``
+
+| This option only needed by ``deploy`` command.
+| Publish the version as an atomic operation.
 |
 
 - ``-v`` or ``--alias-version``
@@ -159,13 +164,6 @@ memory\_size
 ~~~~~~~~~~~~
 
 The amount of memory for your function environment.
-
-publish
-~~~~~~~
-
-This boolean parameter can be used to request AWS Lambda to
-create/update the Lambda function and publish a version as an atomic
-operation.
 
 alias
 ~~~~~~~
