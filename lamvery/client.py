@@ -5,11 +5,10 @@ import botocore
 
 class Client:
 
-    def __init__(self, region=None):
-        if region is None:
-            self._client = boto3.client('lambda')
-        else:
-            self._client = boto3.client('lambda', region_name=region)
+    def __init__(self, region=None, profile=None):
+        session = boto3.session.Session(
+            profile_name=profile, region_name=region)
+        self._client = session.client('lambda')
 
     def get_function_conf(self, name):
         try:

@@ -31,9 +31,11 @@ class Actions(object):
         self._alias_version = args.alias_version
         self._publish = args.publish
 
+    def load_conf(self):
+        return yaml.load(open(self._conf_file, 'r').read())
+
     def get_conf_data(self):
-        return yaml.load(
-            open(self._conf_file, 'r').read()).get('configuration')
+        return self.load_conf().get('configuration')
 
     def get_function_name(self):
         if os.path.exists(self._conf_file):
@@ -60,6 +62,9 @@ class Actions(object):
             return '$LATEST'
         return self._alias_version
 
+    def get_profile(self):
+        return self.load_conf().get('profile')
+
     def init(self):
         if self._needs_write_conf():
             yaml.dump(
@@ -80,6 +85,7 @@ class Actions(object):
         init_config['timeout']     = 10
         init_config['memory_size'] = 128
         init_yaml = OrderedDict()
+        init_yaml['profile'] = None
         init_yaml['configuration'] = init_config
         return init_yaml
 
@@ -102,11 +108,13 @@ class Actions(object):
 
     def deploy(self):
         archive     = Archive(self.get_archive_name())
-        client      = Client(region=self.get_region())
         func_name   = self.get_function_name()
-        remote_conf = client.get_function_conf(func_name)
         local_conf  = self.get_conf_data()
         zipfile     = archive.create_zipfile()
+        client = Client(
+            region=self.get_region(),
+            profile=self.get_profile())
+        remote_conf = client.get_function_conf(func_name)
 
         self.print_conf_diff(remote=remote_conf, local=local_conf)
 
@@ -123,7 +131,9 @@ class Actions(object):
         alias_name = self.get_alias_name()
         version    = self.get_alias_version()
         func_name  = self.get_function_name()
-        client = Client(region=self.get_region())
+        client = Client(
+            region=self.get_region(),
+            profile=self.get_profile())
 
         if alias_name is not None:
             current_alias = client.get_alias(func_name, alias_name)

@@ -12,6 +12,7 @@ from lamvery.actions import *
 import lamvery.actions
 
 DEFAULT_CONF = """
+profile: default
 configuration:
   region: us-east-1
   runtime: python2.7
@@ -21,8 +22,6 @@ configuration:
   description: This is sample lambda function.
   timeout: 10
   memory_size: 128
-  publish: true
-  alias:
 """
 
 class FunctionsTestCase(TestCase):
@@ -49,6 +48,10 @@ class ActionsTestCase(TestCase):
 
     def tearDown(self):
         os.remove(self.conf_file)
+
+    def test_load_conf(self):
+        actions = Actions(self.get_default_args())
+        eq_(actions.load_conf(), yaml.load(DEFAULT_CONF))
 
     def test_get_conf_data(self):
         actions = Actions(self.get_default_args())
@@ -89,6 +92,10 @@ class ActionsTestCase(TestCase):
         args.alias_version = '1'
         actions = Actions(args)
         eq_(actions.get_alias_version(), '1')
+
+    def test_get_profile(self):
+        actions = Actions(self.get_default_args())
+        eq_(actions.get_profile(), 'default')
 
     def test_init(self):
         actions = Actions(self.get_default_args())
