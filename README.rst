@@ -43,7 +43,7 @@ At first,
 And put your ``lamvery.yml`` like this.
 
 .. code::
-
+    profile: default
     configuration:
       region: us-east-1
       name: sample_lambda_function
@@ -119,56 +119,62 @@ Options
 | This option only needed by ``alias`` command.
 | Version of the function to set the alias.
 
-Configuration
--------------
+Configuration file (lamvery.yml)
+--------------------------------
 
-region
+Profile
 ~~~~~~
+The name of a profile to use. If not given, then the default profile is used.
+
+Configuration
+~~~~~~~~~~~~~
+
+- region
 
 | The region name in AWS.
 | The behaviour depends on ``boto3`` if you doesn't set this option.
+|
 
-name
-~~~~
+- name
 
-The name of your function.
+| The name of your function.
+|
 
-runtime
-~~~~~~~
+- runtime
 
 | The runtime environment for the Lambda function you are uploading.
 | Currently, ``lamvery`` supports only ``python2.7``.
+|
 
-role
-~~~~
+- role
 
-The Amazon Resource Name (ARN) of the IAM role for your function.
+| The Amazon Resource Name (ARN) of the IAM role for your function.
+|
 
-handler
-~~~~~~~
+- handler
 
-The function within your code that Lambda calls to begin execution.
+| The function within your code that Lambda calls to begin execution.
+|
 
-description
-~~~~~~~~~~~
+- description
 
-The description of your function.
+| The description of your function.
+|
 
-timeout
-~~~~~~~
+- timeout
 
-The function execution time(seconds) at which Lambda should terminate
-the function.
+| The function execution time(seconds) at which Lambda should terminate the function.
+|
 
-memory\_size
-~~~~~~~~~~~~
+- memory\_size
 
-The amount of memory for your function environment.
+| The amount of memory for your function environment.
+|
 
-alias
-~~~~~~~
+- alias
 
-The default alias when not given ``-a`` or ``--alias`` argument.
+| The default alias when not given ``-a`` or ``--alias`` argument.
+|
 
 Development
 -----------
