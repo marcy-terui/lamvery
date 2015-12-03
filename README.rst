@@ -89,35 +89,30 @@ set-alias
 Options
 -------
 
-- ``-a`` or ``--alias``
+``-a`` or ``--alias``
+    | This option needed by ``deploy`` and ``alias`` commands.
+    | Alias for a version of the function.
+    |
 
-| This option needed by ``deploy`` and ``alias`` commands.
-| Alias for a version of the function.
-|
+``-c`` or ``--conf-file``
+    | This option needed by all commands.
+    | Specify the configuration file.
+    | default: ``lamvery.yml``
+    |
 
-- ``-c`` or ``--conf-file``
+``-d`` or ``--dry-run``
+    | This option needed by ``deploy`` and ``alias`` commands.
+    | Output the difference of configuration and the alias without updating.
+    |
 
-| This option needed by all commands.
-| Specify the configuration file.
-| default: ``lamvery.yml``
-|
+``-p`` or ``--publish``
+    | This option only needed by ``deploy`` command.
+    | Publish the version as an atomic operation.
+    |
 
-- ``-d`` or ``--dry-run``
-
-| This option needed by ``deploy`` and ``alias`` commands.
-| Output the difference of configuration and the alias without updating.
-|
-
-- ``-p`` or ``--publish``
-
-| This option only needed by ``deploy`` command.
-| Publish the version as an atomic operation.
-|
-
-- ``-v`` or ``--alias-version``
-
-| This option only needed by ``alias`` command.
-| Version of the function to set the alias.
+``-v`` or ``--alias-version``
+    | This option only needed by ``alias`` command.
+    | Version of the function to set the alias.
 
 Configuration file (lamvery.yml)
 --------------------------------
@@ -129,52 +124,43 @@ The name of a profile to use. If not given, then the default profile is used.
 Configuration
 ~~~~~~~~~~~~~
 
-- region
+region
+    | The region name in AWS.
+    | The behaviour depends on ``boto3`` if you doesn't set this option.
+    |
 
-| The region name in AWS.
-| The behaviour depends on ``boto3`` if you doesn't set this option.
-|
+name
+    | The name of your function.
+    |
 
-- name
+runtime
+    | The runtime environment for the Lambda function you are uploading.
+    | Currently, ``lamvery`` supports only ``python2.7``.
+    |
 
-| The name of your function.
-|
+role
+    | The Amazon Resource Name (ARN) of the IAM role for your function.
+    |
 
-- runtime
+handler
+    | The function within your code that Lambda calls to begin execution.
+    |
 
-| The runtime environment for the Lambda function you are uploading.
-| Currently, ``lamvery`` supports only ``python2.7``.
-|
+description
+    | The description of your function.
+    |
 
-- role
+timeout
+    | The function execution time(seconds) at which Lambda should terminate the function.
+    |
 
-| The Amazon Resource Name (ARN) of the IAM role for your function.
-|
+memory\_size
+    | The amount of memory for your function environment.
+    |
 
-- handler
-
-| The function within your code that Lambda calls to begin execution.
-|
-
-- description
-
-| The description of your function.
-|
-
-- timeout
-
-| The function execution time(seconds) at which Lambda should terminate the function.
-|
-
-- memory\_size
-
-| The amount of memory for your function environment.
-|
-
-- alias
-
-| The default alias when not given ``-a`` or ``--alias`` argument.
-|
+alias
+    | The default alias when not given ``-a`` or ``--alias`` argument.
+    |
 
 Development
 -----------
