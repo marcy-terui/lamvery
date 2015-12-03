@@ -35,10 +35,10 @@ class ClientTestCase(TestCase):
         eq_(self.client.get_function_conf('test'), {})
 
     def test_create_function(self):
-        self.client.create_function(Mock(), TEST_CONF)
+        self.client.create_function(Mock(), TEST_CONF, True)
 
     def test_update_function_code(self):
-        self.client.update_function_code(Mock(), TEST_CONF)
+        self.client.update_function_code(Mock(), TEST_CONF, True)
 
     def test_update_function_conf(self):
         self.client.update_function_conf(TEST_CONF)

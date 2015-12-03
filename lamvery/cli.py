@@ -50,6 +50,9 @@ def main():
         '-d', '--dry-run',
         help='Dry run (for deploy)', action='store_true', default=False)
     parser.add_argument(
+        '-p', '--publish',
+        help=' Publish the version as an atomic operation.', action='store_true', default=False)
+    parser.add_argument(
         '-v', '--alias-version',
         help='Version of the function to set the alias', default=None)
     try:
