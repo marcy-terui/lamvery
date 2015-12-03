@@ -94,7 +94,6 @@ class Archive:
             msg = 'VIRTUAL_ENV environment variable can not be found. Are you running in virtualenv?'
             raise Exception(msg)
         paths = []
-        print(sys.path)
         for p in sys.path:
             if p.startswith(venv) and os.path.exists(p):
                 if os.path.isdir(p):
