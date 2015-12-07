@@ -29,6 +29,8 @@ Installation
 
 .. code::
 
+    virtualenv -p <path-to-python2.7> .venv
+    . .venv/bin/activate
     pip install lamvery
 
 Setup
