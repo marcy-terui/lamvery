@@ -34,12 +34,15 @@ class Actions(object):
     def load_conf(self):
         return yaml.load(open(self._conf_file, 'r').read())
 
-    def get_conf_data(self):
+    def get_configuration(self):
         return self.load_conf().get('configuration')
+
+    def get_secret(self):
+        return self.load_conf().get('secret')
 
     def get_function_name(self):
         if os.path.exists(self._conf_file):
-            return self.get_conf_data().get('name')
+            return self.get_configuration().get('name')
         else:
             return os.path.basename(os.getcwd())
 
@@ -48,14 +51,14 @@ class Actions(object):
 
     def get_region(self):
         if os.path.exists(self._conf_file):
-            return self.get_conf_data().get('region')
+            return self.get_configuration().get('region')
         else:
             return None
 
     def get_alias_name(self):
         if self._alias is not None:
             return self._alias
-        return self.get_conf_data().get('alias')
+        return self.get_configuration().get('alias')
 
     def get_alias_version(self):
         if self._alias_version is None:
@@ -79,14 +82,21 @@ class Actions(object):
         init_config['region']      = 'us-east-1'
         init_config['name']        = self.get_function_name()
         init_config['runtime']     = 'python2.7'
-        init_config['role']        = 'arn:aws:iam::<your-account-number>:role/<role>'
+        init_config['role']        = 'arn:aws:iam::<account-number>:role/<role>'
         init_config['handler']     = 'lambda_function.lambda_handler'
         init_config['description'] = 'This is sample lambda function.'
         init_config['timeout']     = 10
         init_config['memory_size'] = 128
+
+        init_secret = OrderedDict()
+        init_secret['key'] = 'arn:aws:kms:<region>:<account-number>:key/<key-id>'
+        init_secret['cipher_texts'] = OrderedDict()
+
         init_yaml = OrderedDict()
         init_yaml['profile'] = None
         init_yaml['configuration'] = init_config
+        init_yaml['secret'] = init_secret
+
         return init_yaml
 
     def _needs_write_conf(self):
@@ -109,7 +119,7 @@ class Actions(object):
     def deploy(self):
         archive     = Archive(self.get_archive_name())
         func_name   = self.get_function_name()
-        local_conf  = self.get_conf_data()
+        local_conf  = self.get_configuration()
         zipfile     = archive.create_zipfile()
         client = Client(
             region=self.get_region(),

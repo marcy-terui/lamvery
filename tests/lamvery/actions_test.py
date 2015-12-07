@@ -53,9 +53,9 @@ class ActionsTestCase(TestCase):
         actions = Actions(self.get_default_args())
         eq_(actions.load_conf(), yaml.load(DEFAULT_CONF))
 
-    def test_get_conf_data(self):
+    def test_get_configuration(self):
         actions = Actions(self.get_default_args())
-        eq_(actions.get_conf_data(), yaml.load(DEFAULT_CONF).get('configuration'))
+        eq_(actions.get_configuration(), yaml.load(DEFAULT_CONF).get('configuration'))
 
     def test_get_function_name(self):
         actions = Actions(self.get_default_args())
@@ -102,7 +102,7 @@ class ActionsTestCase(TestCase):
         actions._needs_write_conf = Mock(return_value=True)
         actions._get_default_conf = Mock(return_value={'configuration': {'foo': 'bar'}})
         actions.init()
-        eq_(actions.get_conf_data(), {'foo': 'bar'})
+        eq_(actions.get_configuration(), {'foo': 'bar'})
 
     def test_get_default_conf(self):
         actions = Actions(self.get_default_args())
