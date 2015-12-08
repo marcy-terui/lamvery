@@ -33,7 +33,6 @@ class Archive:
         shutil.rmtree(self._tmpdir)
 
     def create_zipfile(self):
-        print('Aechiving sources...')
         with PyZipFile(self._zippath, 'w', compression=ZIP_DEFLATED) as zipfile:
             for p in self._get_paths():
                 if os.path.isdir(p):

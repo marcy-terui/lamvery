@@ -2,10 +2,13 @@
 
 import yaml
 import os
+import logging
+from abc import ABCMeta, abstractmethod
 from termcolor import cprint, colored
 from collections import OrderedDict
 from lamvery.archive import Archive
 from lamvery.client import Client
+from lamvery.config import Config
 
 CONF_DIFF_KEYS = [
     ('Runtime', 'runtime',),
@@ -16,114 +19,74 @@ CONF_DIFF_KEYS = [
     ('MemorySize', 'memory_size',),
 ]
 
+class BaseAction:
 
-def represent_odict(dumper, instance):
-     return dumper.represent_mapping(u'tag:yaml.org,2002:map', instance.items())
-
-yaml.add_representer(OrderedDict, represent_odict)
-
-class Actions(object):
+    __metaclass__ = ABCMeta
 
     def __init__(self, args):
-        self._conf_file = args.conf_file
-        self._dry_run = args.dry_run
-        self._alias = args.alias
-        self._alias_version = args.alias_version
-        self._publish = args.publish
+        self._args = args
+        self._config = Config(args.conf_file)
 
-    def load_conf(self):
-        return yaml.load(open(self._conf_file, 'r').read())
-
-    def get_configuration(self):
-        return self.load_conf().get('configuration')
-
-    def get_secret(self):
-        return self.load_conf().get('secret')
-
-    def get_function_name(self):
-        if os.path.exists(self._conf_file):
-            return self.get_configuration().get('name')
+        logging.basicConfig(format='%(name)s: %(message)s', level=logging.INFO)
+        if hasattr(args, 'dry_run') and args.dry_run:
+            self._logger = logging.getLogger('(Dry run) lamvery')
         else:
-            return os.path.basename(os.getcwd())
+            self._logger = logging.getLogger('lamvery')
 
-    def get_archive_name(self):
-        return '{}.zip'.format(self.get_function_name())
+    @abstractmethod
+    def action(self):
+        raise NotImplementedError
 
-    def get_region(self):
-        if os.path.exists(self._conf_file):
-            return self.get_configuration().get('region')
-        else:
-            return None
+class InitAction(BaseAction):
 
-    def get_alias_name(self):
-        if self._alias is not None:
-            return self._alias
-        return self.get_configuration().get('alias')
-
-    def get_alias_version(self):
-        if self._alias_version is None:
-            return '$LATEST'
-        return self._alias_version
-
-    def get_profile(self):
-        return self.load_conf().get('profile')
-
-    def init(self):
+    def action(self):
+        self._logger.info(
+            colored('Start initialization...', 'green'))
         if self._needs_write_conf():
-            yaml.dump(
-                self._get_default_conf(),
-                open(self._conf_file, 'w'),
-                default_flow_style=False,
-                allow_unicode=True)
-            print('Output initial configuration file to {}.'.format(self._conf_file))
-
-    def _get_default_conf(self):
-        init_config = OrderedDict()
-        init_config['region']      = 'us-east-1'
-        init_config['name']        = self.get_function_name()
-        init_config['runtime']     = 'python2.7'
-        init_config['role']        = 'arn:aws:iam::<account-number>:role/<role>'
-        init_config['handler']     = 'lambda_function.lambda_handler'
-        init_config['description'] = 'This is sample lambda function.'
-        init_config['timeout']     = 10
-        init_config['memory_size'] = 128
-
-        init_secret = OrderedDict()
-        init_secret['key'] = 'arn:aws:kms:<region>:<account-number>:key/<key-id>'
-        init_secret['cipher_texts'] = OrderedDict()
-
-        init_yaml = OrderedDict()
-        init_yaml['profile'] = None
-        init_yaml['configuration'] = init_config
-        init_yaml['secret'] = init_secret
-
-        return init_yaml
+            self._config.write_default()
+            self._logger.info(
+                colored('Output initial configuration file to {}.'.format(self._config._file), 'green'))
 
     def _needs_write_conf(self):
         ret = True
-        if os.path.exists(self._conf_file):
+        if self._config.file_exists():
             y_n = raw_input(
-                colored('Overwrite {}? [y/n]: '.format(self._conf_file), 'yellow'))
+                colored('Overwrite {}? [y/n]: '.format(self._config._file), 'yellow'))
             if y_n != 'y':
                 ret = False
         return ret
 
-    def archive(self):
-        archive = Archive(self.get_archive_name())
+class ArchiveAction(BaseAction):
+
+    def action(self):
+        self._logger.info(
+            colored('Start archiving...', 'green'))
+        archive_name = self._config.get_archive_name()
+        archive = Archive(archive_name)
         zipfile = archive.create_zipfile()
-        with open(self.get_archive_name(), 'w') as f:
+        with open(archive_name, 'w') as f:
             f.write(zipfile.read())
         zipfile.close()
-        print('Output package zip file to {}'.format(self.get_archive_name()))
+        self._logger.info(
+            colored('Output package zip file to {}'.format(archive_name), 'green'))
 
-    def deploy(self):
-        archive     = Archive(self.get_archive_name())
-        func_name   = self.get_function_name()
-        local_conf  = self.get_configuration()
+class DeployAction(BaseAction):
+
+    def __init__(self, args):
+        super(DeployAction, self).__init__(args)
+        self._dry_run = args.dry_run
+        self._publish = args.publish
+
+    def action(self):
+        self._logger.info(
+            colored('Start deployment...', 'green'))
+        archive     = Archive(self._config.get_archive_name())
+        func_name   = self._config.get_function_name()
+        local_conf  = self._config.get_configuration()
         zipfile     = archive.create_zipfile()
         client = Client(
-            region=self.get_region(),
-            profile=self.get_profile())
+            region=self._config.get_region(),
+            profile=self._config.get_profile())
         remote_conf = client.get_function_conf(func_name)
 
         self.print_conf_diff(remote=remote_conf, local=local_conf)
@@ -135,34 +98,9 @@ class Actions(object):
             else:
                 client.create_function(zipfile, local_conf, self._publish)
         zipfile.close()
-        self.set_alias()
-
-    def set_alias(self):
-        alias_name = self.get_alias_name()
-        version    = self.get_alias_version()
-        func_name  = self.get_function_name()
-        client = Client(
-            region=self.get_region(),
-            profile=self.get_profile())
-
-        if alias_name is not None:
-            current_alias = client.get_alias(func_name, alias_name)
-            self.print_alias_diff(alias_name, current_alias, version)
-
-            if not self._dry_run:
-                if len(current_alias) > 0:
-                    client.update_alias(func_name, alias_name, version)
-                else:
-                    client.create_alias(func_name, alias_name, version)
-
-    def print_alias_diff(self, name, current, version):
-        print('Alias update...')
-        cprint(
-            '[Alias] {name}: {cur} > {new}'.format(
-                name=name,
-                cur=current.get('FunctionVersion'),
-                new=version),
-            'yellow', attrs=['bold'])
+        SetAliasAction(self.args).action()
+        self._logger.info(
+            colored('Deploy finished.', 'green'))
 
     def _get_conf_diff(self, remote, local):
         diff = {}
@@ -176,10 +114,44 @@ class Actions(object):
         return diff
 
     def print_conf_diff(self, remote, local):
-        print('Configuration update...')
         diff = self._get_conf_diff(remote, local)
         for k,v in diff.items():
             if v is None:
-                cprint('[Configuration] {k}: No change'.format(k=k), 'green')
+                self._logger.info(
+                    colored('[Configuration] {k}: No change'.format(k=k), 'green'))
             else:
-                cprint('[Configuration] {k}: {r} > {l}'.format(k=k, r=v[0], l=v[1]), 'yellow', attrs=['bold'])
+                self._logger.info(
+                    colored('[Configuration] {k}: {r} > {l}'.format(k=k, r=v[0], l=v[1]), 'yellow'))
+
+class SetAliasAction(BaseAction):
+
+    def __init__(self, args):
+        super(SetAliasAction, self).__init__(args)
+        self._dry_run = args.dry_run
+
+    def action(self):
+        self._logger.info(
+            colored('Start alias setting...', 'green'))
+        alias_name = self._config.get_alias_name()
+        version    = self._config.get_alias_version()
+        func_name  = self._config.get_function_name()
+        client = Client(
+            region=self._config.get_region(),
+            profile=self._config.get_profile())
+
+        if alias_name is not None:
+            current_alias = client.get_alias(func_name, alias_name)
+            self.print_alias_diff(alias_name, current_alias, version)
+
+            if not self._dry_run:
+                if len(current_alias) > 0:
+                    client.update_alias(func_name, alias_name, version)
+                else:
+                    client.create_alias(func_name, alias_name, version)
+        self._logger.info(
+            colored('Finish alias setting.', 'green'))
+
+    def print_alias_diff(self, name, current, version):
+        self._logger.info(colored(
+            '[Alias] {name}: {cur} > {new}'.format(
+                name=name, cur=current.get('FunctionVersion'), new=version), 'yellow'))

@@ -2,95 +2,110 @@
 
 import sys
 import argparse
-import logging
 import lamvery
 from termcolor import cprint, colored
-from lamvery.actions import Actions
+from lamvery.actions import *
 
+def init(args):
+    InitAction(args).action()
 
-def action(args):
+def archive(args):
+    ArchiveAction(args).action()
 
-    print(args)
+def deploy(args):
+    DeployAction(args).action()
 
-    is_dry_msg = ''
-    if args.dry_run:
-        is_dry_msg = '(Dry run)'
+def encrypt(args):
+    EncryptAction(args).action()
 
-    actions = Actions(args)
-    if args.command == 'init':
-        cprint('Start initialization...', 'blue', attrs=['bold'])
-        actions.init()
-    elif args.command == 'archive':
-        cprint('Start archiving...', 'blue', attrs=['bold'])
-        actions.archive()
-    elif args.command == 'deploy':
-        cprint('Start deployment...{}'.format(is_dry_msg), 'blue', attrs=['bold'])
-        actions.deploy()
-    elif args.command == 'set-alias':
-        cprint('Start alias setting...{}'.format(is_dry_msg), 'blue', attrs=['bold'])
-        actions.set_alias()
-    else:
-        raise Exception("'{}' command is not exist.".format(args.command))
-
+def set_alias(args):
+    SetAliasAction(args).action()
 
 def main():
+    a_args = ('-a', '--alias',)
+    a_kwargs = {
+        'help': 'Alias for a version of the function',
+        'default': None
+    }
+    c_args = ('-c', '--conf-file',)
+    c_kwargs = {
+        'help': 'Configuration YAML file (default: lamvery.yml)',
+        'default': 'lamvery.yml'
+    }
+    d_args = ('-d', '--dry-run',)
+    d_kwargs = {
+        'help': 'Dry run',
+        'action': 'store_true',
+        'default': False
+    }
+    n_args = ('-n', '--name',)
+    n_kwargs = {
+        'help': 'The name for specifying the decoded data on lambda function',
+        'default': None
+    }
+    p_args = ('-p', '--publish')
+    p_kwargs = {
+        'help': 'Publish the version as an atomic operation',
+        'action': 'store_true',
+        'default': False
+    }
+    s_args = ('-s', '--store',)
+    s_kwargs = {
+        'help': 'Store encripted value to configuration file (default: lamvery.yml)',
+        'action': 'store_true',
+        'default': False
+    }
+
+    v_args = ('-v', '--alias-version',)
+    v_kwargs = {
+        'help': 'Version of the function to set the alias',
+        'default': None
+    }
+
     parser = argparse.ArgumentParser(
         description='Yet another deploy tool for AWS Lambda in the virtualenv environment.',
         epilog='Lamvery version: {}'.format(lamvery.__version__))
-
-    parser.add_argument(
-        '-c', '--conf-file',
-        help='Configuration YAML file (default: lamvery.yml)',
-        default='lamvery.yml')
-    parser.add_argument(
-        '-d', '--dry-run',
-        help='Dry run', action='store_true', default=False)
-    parser.add_argument(
-        '-p', '--publish',
-        help='Publish the version as an atomic operation', action='store_true', default=False)
-    parser.add_argument(
-        '-v', '--alias-version',
-        help='Version of the function to set the alias', default=None)
-
     subparsers = parser.add_subparsers(title='subcommands')
 
     init_parser = subparsers.add_parser(
         'init',
         help='Generate initial configuration file')
+    init_parser.add_argument(*c_args, **c_kwargs)
+    init_parser.set_defaults(func=init)
 
     archive_parser = subparsers.add_parser(
         'archive',
         help='Archive your code and libraries to <your-function-name>.zip')
+    archive_parser.add_argument(*c_args, **c_kwargs)
+    archive_parser.set_defaults(func=archive)
 
-    alias_parser = subparsers.add_parser(
+    set_alias_parser = subparsers.add_parser(
         'set-alias',
         help='Set alias to a version of the function')
-    alias_parser.add_argument(
-        '-a', '--alias',
-        help='Alias for a version of the function',
-        default=None)
+    set_alias_parser.add_argument(*a_args, **a_kwargs)
+    set_alias_parser.add_argument(*c_args, **c_kwargs)
+    set_alias_parser.add_argument(*d_args, **d_kwargs)
+    set_alias_parser.set_defaults(func=set_alias)
 
     deploy_parser = subparsers.add_parser(
         'deploy',
         help='Deploy your code and libraries, Update the remote configuration, Set alias (optional)')
-    deploy_parser.add_argument(
-        '-a', '--alias',
-        help='Alias for a version of the function',
-        default=None)
+    deploy_parser.add_argument(*a_args, **a_kwargs)
+    deploy_parser.add_argument(*c_args, **c_kwargs)
+    deploy_parser.add_argument(*d_args, **d_kwargs)
+    deploy_parser.add_argument(*p_args, **p_kwargs)
+    deploy_parser.set_defaults(func=deploy)
 
     encrypt_parser = subparsers.add_parser('encrypt', help='Encrypt a text value using KMS')
     encrypt_parser.add_argument('plaintext', help='The text to be encrypted')
-    encrypt_parser.add_argument(
-        '-n', '--name',
-        help='The name for specifying the decoded data on lambda function',
-        default=None)
-    encrypt_parser.add_argument(
-        '-s', '--store',
-        help='Store encripted value to configuration file (default: lamvery.yml)',
-        action='store_ltrue', default=False)
+    encrypt_parser.add_argument(*c_args, **c_kwargs)
+    encrypt_parser.add_argument(*n_args, **n_kwargs)
+    encrypt_parser.add_argument(*s_args, **s_kwargs)
+    encrypt_parser.set_defaults(func=encrypt)
 
     try:
-        action(parser.parse_args())
+        args = parser.parse_args()
+        args.func(args)
         sys.exit(0)
     except Exception as e:
         msg = str(e)
