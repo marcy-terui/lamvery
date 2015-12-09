@@ -15,6 +15,9 @@ def archive(args):
 def deploy(args):
     DeployAction(args).action()
 
+def decrypt(args):
+    DecryptAction(args).action()
+
 def encrypt(args):
     EncryptAction(args).action()
 
@@ -29,8 +32,8 @@ def main():
     }
     c_args = ('-c', '--conf-file',)
     c_kwargs = {
-        'help': 'Configuration YAML file (default: lamvery.yml)',
-        'default': 'lamvery.yml'
+        'help': 'Configuration YAML file (default: .lamvery.yml)',
+        'default': '.lamvery.yml'
     }
     d_args = ('-d', '--dry-run',)
     d_kwargs = {
@@ -38,7 +41,7 @@ def main():
         'action': 'store_true',
         'default': False
     }
-    n_args = ('-n', '--name',)
+    n_args = ('-n', '--secret-name',)
     n_kwargs = {
         'help': 'The name for specifying the decoded data on lambda function',
         'default': None
@@ -51,11 +54,10 @@ def main():
     }
     s_args = ('-s', '--store',)
     s_kwargs = {
-        'help': 'Store encripted value to configuration file (default: lamvery.yml)',
+        'help': 'Store encripted value to configuration file (default: .lamvery.yml)',
         'action': 'store_true',
         'default': False
     }
-
     v_args = ('-v', '--alias-version',)
     v_kwargs = {
         'help': 'Version of the function to set the alias',
@@ -97,11 +99,16 @@ def main():
     deploy_parser.set_defaults(func=deploy)
 
     encrypt_parser = subparsers.add_parser('encrypt', help='Encrypt a text value using KMS')
-    encrypt_parser.add_argument('plaintext', help='The text to be encrypted')
+    encrypt_parser.add_argument('text', help='The text to be encrypted')
     encrypt_parser.add_argument(*c_args, **c_kwargs)
     encrypt_parser.add_argument(*n_args, **n_kwargs)
     encrypt_parser.add_argument(*s_args, **s_kwargs)
     encrypt_parser.set_defaults(func=encrypt)
+
+    decrypt_parser = subparsers.add_parser('decrypt', help='Decrypt the secret value using KMS')
+    decrypt_parser.add_argument(*c_args, **c_kwargs)
+    decrypt_parser.add_argument(*n_args, **n_kwargs)
+    decrypt_parser.set_defaults(func=decrypt)
 
     try:
         args = parser.parse_args()

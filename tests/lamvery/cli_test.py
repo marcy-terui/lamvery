@@ -9,38 +9,35 @@ from nose.tools import ok_, eq_, raises
 from mock import Mock,MagicMock,patch
 from lamvery.cli import *
 
-class CliTestCase(TestCase):
+class FunctionsTestCase(TestCase):
 
-    def test_action(self):
-        with patch('lamvery.cli.Actions'):
-            args = Mock()
-            args.file = '/foo/bar'
-            args.dry_run = True
-            args.command = 'init'
-            action(args)
-            args.command = 'archive'
-            action(args)
-            args.command = 'deploy'
-            action(args)
-            args.command = 'set-alias'
-            action(args)
+    def test_init(self):
+        with patch('lamvery.cli.InitAction'):
+            init(Mock())
 
-    @raises(Exception)
-    def test_action_command_not_exists(self):
-        with patch('lamvery.cli.Actions'):
-            args = Mock()
-            args.file = '/foo/bar'
-            args.dry_run = True
-            args.command = 'foo'
-            action(args)
+    def test_archive(self):
+        with patch('lamvery.cli.ArchiveAction'):
+            archive(Mock())
+
+    def test_deploy(self):
+        with patch('lamvery.cli.DeployAction'):
+            deploy(Mock())
+
+    def test_encrypt(self):
+        with patch('lamvery.cli.EncryptAction'):
+            encrypt(Mock())
+
+    def test_set_alias(self):
+        with patch('lamvery.cli.SetAliasAction'):
+            set_alias(Mock())
 
     @patch('argparse.ArgumentParser')
     @patch('sys.exit')
-    @patch('lamvery.cli.action')
-    def test_main(self, argp, ex, act):
+    def test_main(self, argp, ex):
         main()
 
     @patch('argparse.ArgumentParser')
     @patch('sys.exit')
     def test_main_error(self, argp, ex):
+        argp.parse_args = Mock(side_effect=Exception)
         main()

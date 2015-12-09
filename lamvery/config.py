@@ -11,6 +11,8 @@ def represent_odict(dumper, instance):
      return dumper.represent_mapping(u'tag:yaml.org,2002:map', instance.items())
 
 yaml.add_representer(OrderedDict, represent_odict)
+yaml.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
+    lambda loader, node: OrderedDict(loader.construct_pairs(node)))
 
 class Config:
 
@@ -41,16 +43,6 @@ class Config:
         else:
             return None
 
-    def get_alias_name(self):
-        if self._alias is not None:
-            return self._alias
-        return self.get_configuration().get('alias')
-
-    def get_alias_version(self):
-        if self._alias_version is None:
-            return '$LATEST'
-        return self._alias_version
-
     def get_profile(self):
         return self.load_conf().get('profile')
 
@@ -77,11 +69,26 @@ class Config:
         return init_yaml
 
     def write_default(self):
+        self.write(self.get_default())
+
+    def write(self, conf):
         yaml.dump(
-            self.get_default(),
+            conf,
             open(self._file, 'w'),
             default_flow_style=False,
             allow_unicode=True)
 
     def file_exists(self):
         return os.path.exists(self._file)
+
+    def store_secret(self, key, value):
+        conf = self.load_conf()
+        default = self.get_default()
+
+        if not conf.has_key('secret'):
+            conf['secret'] = default['secret']
+        elif conf['secret'].has_key('cipher_texts'):
+            conf['secret']['cipher_texts'] = {}
+
+        conf['secret']['cipher_texts'][key] = value
+        self.write(conf)
