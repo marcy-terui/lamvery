@@ -218,14 +218,61 @@ cipher\_texts
 Using confidential information in lambda function
 -------------------------------------------------
 
-1. Encrypt and store the confidential information to your configuration file.
+1. Create key on KMS
+
+    See `Document <https://docs.aws.amazon.com/kms/latest/developerguide/create-keys.html>`__
+
+2. Create IAM role for lambda function
+
+    Policy example :
+
+    ... code:
+
+        {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Action": [
+                        "kms:Decrypt"
+                    ],
+                    "Resource": [
+                        "arn:aws:kms:us-east-1:<your-account-number>:key/<your-key-id>"
+                    ]
+                }
+            ]
+        }
+
+3. Set the key-id to your configuration file.
+
+    Configuration example:
+
+    .. code::
+
+        profile: default
+        region: us-east-1
+        configuration:
+          name: sample_lambda_function
+          runtime: python2.7
+          role: arn:aws:iam::000000000000:role/lambda_basic_execution
+          handler: lambda_function.lambda_handler
+          description: This is sample lambda function.
+          timeout: 10
+          memory_size: 128
+        secret:
+          key: xxxx-yyyy-zzzz # <-here!
+          cipher_texts: {}
+
+4. Encrypt and store the confidential information to your configuration file.
+
     Command example:
 
     .. code::
 
         lamvery encrypt -s -n foo "This is a secret"
 
-2. Write your function
+5. Write your function
+
     Code example:
 
     .. code::
@@ -235,14 +282,16 @@ Using confidential information in lambda function
         def lambda_handler(event, context):
             print(lamvery.secret.get('foo'))
 
-3. Deploy your function
+6. Deploy your function
+
     Command example:
 
     .. code::
 
         lamvery deploy
 
-4. Invoke your function
+7. Invoke your function
+
     Result example:
 
     .. code::
