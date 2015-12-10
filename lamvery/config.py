@@ -6,6 +6,7 @@ from termcolor import cprint, colored
 from collections import OrderedDict
 from lamvery.archive import Archive
 from lamvery.client import Client
+from jinja2 import Environment, FileSystemLoader
 
 def represent_odict(dumper, instance):
      return dumper.represent_mapping(u'tag:yaml.org,2002:map', instance.items())
@@ -20,7 +21,9 @@ class Config:
         self._file = conf_file
 
     def load_conf(self):
-        return yaml.load(open(self._file, 'r').read())
+        env = Environment(loader=FileSystemLoader('./', encoding='utf8'))
+        tmpl = env.get_template(self._file)
+        return yaml.load(tmpl.render({'env': os.environ}))
 
     def get_configuration(self):
         return self.load_conf().get('configuration')
@@ -63,7 +66,7 @@ class Config:
         init_config['memory_size'] = 128
 
         init_secret = OrderedDict()
-        init_secret['key'] = 'arn:aws:kms:<region>:<account-number>:key/<key-id>'
+        init_secret['key'] = '<key-id>'
         init_secret['cipher_texts'] = OrderedDict()
 
         init_yaml = OrderedDict()

@@ -22,6 +22,7 @@ configuration:
   description: This is sample lambda function.
   timeout: 10
   memory_size: 128
+  test_env: {{ env['PATH'] }}
 secret:
   key: arn:aws:kms:<region>:<account-number>:key/<key-id>
   cipher_texts:
@@ -38,20 +39,19 @@ class FunctionsTestCase(TestCase):
 class ConfigTestCase(TestCase):
 
     def setUp(self):
-        tmp = tempfile.mkstemp(prefix=__name__)
-        open(tmp[1], 'w').write(DEFAULT_CONF)
-        self.conf_file = tmp[1]
+        self.conf_file = '.test.lamvery.yml'
+        open(self.conf_file, 'w').write(DEFAULT_CONF)
 
     def tearDown(self):
         os.remove(self.conf_file)
 
     def test_load_conf(self):
         config = Config(self.conf_file)
-        eq_(config.load_conf(), yaml.load(DEFAULT_CONF))
+        eq_(config.load_conf().get('profile'), 'default')
 
     def test_get_configuration(self):
         config = Config(self.conf_file)
-        eq_(config.get_configuration(), yaml.load(DEFAULT_CONF).get('configuration'))
+        eq_(config.get_configuration().get('test_env'), os.environ.get('PATH'))
 
     def test_get_function_name(self):
         config = Config(self.conf_file)
