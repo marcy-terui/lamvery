@@ -228,28 +228,28 @@ Using confidential information in lambda function
 2. Write your function
     Code example:
 
-.. code::
+    .. code::
 
-    import lamvery.secret
+        import lamvery.secret
 
-    def lambda_handler(event, context):
-        print(lamvery.secret.get('foo'))
+        def lambda_handler(event, context):
+            print(lamvery.secret.get('foo'))
 
 3. Deploy your function
     Command example:
 
-.. code::
+    .. code::
 
-    lamvery deploy
+        lamvery deploy
 
 4. Invoke your function
     Result example:
 
-.. code::
+    .. code::
 
-    START RequestId: 13829c9c-9f13-11e5-921b-6f048cff3c2d Version: $LATEST
-    This is a secret
-    END RequestId: 13829c9c-9f13-11e5-921b-6f048cff3c2d
+        START RequestId: 13829c9c-9f13-11e5-921b-6f048cff3c2d Version: $LATEST
+        This is a secret
+        END RequestId: 13829c9c-9f13-11e5-921b-6f048cff3c2d
 
 Development
 -----------
