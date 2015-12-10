@@ -1,13 +1,10 @@
 Lamvery
 =======
 
-![image](https://img.shields.io/travis/marcy-terui/lamvery/master.svg%0A%20:target:%20https://travis-ci.org/marcy-terui/lamvery)
-
-![image](https://img.shields.io/coveralls/marcy-terui/lamvery.svg%0A%20:target:%20https://coveralls.io/github/marcy-terui/lamvery)
-
-![image](https://img.shields.io/pypi/v/lamvery.svg%0A%20:target:%20https://pypi.python.org/pypi/lamvery)
-
-![image](https://img.shields.io/pypi/dm/lamvery.svg%0A%20:target:%20https://pypi.python.org/pypi/lamvery/)
+[![Build Status](https://img.shields.io/travis/marcy-terui/lamvery/master.svg)](http://travis-ci.org/marcy-terui/lamvery)
+[![Coverage](https://img.shields.io/coveralls/marcy-terui/lamvery.svg)](https://coveralls.io/github/marcy-terui/lamvery)
+[![Version](https://img.shields.io/pypi/v/lamvery.svg)](https://pypi.python.org/pypi/lamvery)
+[![Downloads](https://img.shields.io/pypi/dm/lamvery.svg)](https://pypi.python.org/pypi/lamvery/)
 
 Yet another deploy tool for AWS Lambda in the virtualenv.
 
