@@ -4,6 +4,8 @@ import logging
 import sys
 from termcolor import colored
 
+logger = None
+
 class ColoredStreamHandler(logging.StreamHandler):
 
     def format(self, record):
@@ -15,11 +17,14 @@ class ColoredStreamHandler(logging.StreamHandler):
         return message
 
 def get_logger(name):
-    logger = logging.getLogger(name)
-    logger.setLevel(logging.INFO)
-    handler = ColoredStreamHandler(stream=sys.stderr)
-    handler.setLevel(logging.INFO)
-    handler.setFormatter(
-        logging.Formatter('%(name)s: %(message)s'))
-    logger.addHandler(handler)
+    global logger
+    if logger is None:
+        logger = logging.getLogger(name)
+        logger.setLevel(logging.INFO)
+        handler = ColoredStreamHandler(stream=sys.stderr)
+        handler.setLevel(logging.INFO)
+        handler.setFormatter(
+            logging.Formatter('%(name)s: %(message)s'))
+        logger.removeHandler(handler)
+        logger.addHandler(handler)
     return logger
