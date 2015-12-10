@@ -1,7 +1,11 @@
+## 0.3.0
+
+- Support jinja2 template in configuration file [#15]()
+
 ## 0.2.0
 
 - Change default name of the configuration file to '.lamvery.yml'
-- Change format of the configuration file (See: [README]())
+- Change format of the configuration file (See: [README](https://github.com/marcy-terui/lamvery/blob/master/README.md#setup))
 - Support passing some confidential information using KMS [#8]()
 - Add `encrypt` command
 - Add `decrypt` command
@@ -44,4 +48,4 @@
 [#8]: https://github.com/marcy-terui/lamvery/issues/8
 [#9]: https://github.com/marcy-terui/lamvery/issues/9
 [#10]: https://github.com/marcy-terui/lamvery/issues/10
-[README]: https://github.com/marcy-terui/lamvery/blob/master/README.rst
+[#15]: https://github.com/marcy-terui/lamvery/issues/15

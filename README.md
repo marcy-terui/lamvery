@@ -29,20 +29,22 @@ At first,
 lamvery init
 ```
 
-And put your `lamvery.yml` like this.
+And put your `.lamvery.yml` like this.  
+The configuration is written in YAML syntax with `jinja2` template.
 
 ```yml
+ profile: default
  region: us-east-1
  configuration:
    name: sample_lambda_function
    runtime: python2.7
-   role: arn:aws:iam::000000000000:role/lambda_basic_execution
+   role: {{ env['AWS_LAMBDA_ROLE'] }}
    handler: lambda_function.lambda_handler
    description: This is sample lambda function.
    timeout: 10
    memory_size: 128
  secret:
-   key: xxxx-yyyy-zzzz
+   key: {{ env['AWS_KMS_KEY_ID'] }}
    cipher_texts:
      foo: !!binary |
        fsdiugfhaeiotgheat+d9yJMyY1uw1i7tYVvQz9I8+e2UBKTAQEBAgB4uMVvZYOx2sWrnnjfnfci
@@ -107,7 +109,7 @@ Alias for a version of the function.
 - `-c` or `--conf-file`  
 This option needed by all commands.  
 Specify the configuration file.  
-default: `lamvery.yml`
+default: `.lamvery.yml`
 
 - `-d` or `--dry-run`  
 This option needed by `deploy` and `alias` commands.  
