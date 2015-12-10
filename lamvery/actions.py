@@ -135,7 +135,10 @@ class SetAliasAction(BaseAction):
         super(SetAliasAction, self).__init__(args)
         self._dry_run = args.dry_run
         self._alias = args.alias
-        self._alias_version = args.alias_version
+        if hasattr(args, 'alias_version'):
+            self._alias_version = args.alias_version
+        else:
+            self._alias_version = None
 
     def action(self):
         self._logger.info('Start alias setting...')
