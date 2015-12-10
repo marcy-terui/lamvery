@@ -177,9 +177,9 @@ The name and cipher texts for passing to lambda function.
 Using confidential information in lambda function
 -------------------------------------------------
 
-1. Create key on KMS  
+#### 1. Create key on KMS  
 See: https://docs.aws.amazon.com/kms/latest/developerguide/create-keys.html
-2.  Create IAM role for lambda function  
+#### 2. Create IAM role for lambda function  
 Policy example:  
 ```json
 {
@@ -197,7 +197,7 @@ Policy example:
     ]
 }
 ```
-3. Set the key-id to your configuration file.  
+#### 3. Set the key-id to your configuration file.  
 Configuration example:  
 ```yml
   profile: default
@@ -214,12 +214,12 @@ Configuration example:
     key: xxxx-yyyy-zzzz # <-here!
     cipher_texts: {}
 ```
-4. Encrypt and store the confidential information to your configuration file.  
+#### 4. Encrypt and store the confidential information to your configuration file.  
 Command example:  
 ```sh
 lamvery encrypt -s -n foo "This is a secret"
 ```
-5. Write your function.  
+#### 5. Write your function.  
 Code example:  
 ```py
   import lamvery.secret
@@ -227,12 +227,12 @@ Code example:
   def lambda_handler(event, context):
       print(lamvery.secret.get('foo'))
 ```
-6. Deploy your function  
+#### 6. Deploy your function  
 Command example:  
 ```sh
 lamvery deploy
 ```
-7. Invoke your function  
+#### 7. Invoke your function  
 Result example:  
 ```
 START RequestId: 13829c9c-9f13-11e5-921b-6f048cff3c2d Version: $LATEST
