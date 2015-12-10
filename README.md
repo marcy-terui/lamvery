@@ -30,7 +30,8 @@ lamvery init
 ```
 
 And put your `.lamvery.yml` like this.  
-The configuration is written in YAML syntax with `jinja2` template.
+The configuration is written in YAML syntax with `jinja2` template.  
+And environment variables stored `env` variable.
 
 ```yml
  profile: default
