@@ -38,7 +38,7 @@ class ArchiveTestCase(TestCase):
             self.zipfile, os.path.join(self.pj_root, 'setup.py'))
         ok_(isinstance(self.zipfile.getinfo('setup.pyc'), zipfile.ZipInfo))
         archive._archive_file(
-            self.zipfile, os.path.join(self.pj_root, 'README.rst'))
+            self.zipfile, os.path.join(self.pj_root, 'README.md'))
         ok_(isinstance(self.zipfile.getinfo('README.rst'), zipfile.ZipInfo))
 
     def test_is_exclude_file(self):
