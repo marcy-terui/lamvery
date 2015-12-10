@@ -111,7 +111,7 @@ decrypt
 ~~~~~~~~~
 
 - Decrypt the secret value using KMS
- <secret-value> -s
+
 .. code::
 
     lamvery decrypt -n <secret-name>
