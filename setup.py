@@ -9,7 +9,9 @@ setup_options = dict(
     name='lamvery',
     version=lamvery.__version__,
     description='Yet another deploy tool for AWS Lambda in the virtualenv environment.',
-    long_description=open('README.rst').read(),
+    long_description='''
+See: `GitHub <https://github.com/marcy-terui/lamvery/blob/master/README.md>`__
+    ''',
     author='Masashi Terui',
     author_email='marcy9114+pypi@gmail.com',
     url='https://github.com/marcy-terui/lamvery',
