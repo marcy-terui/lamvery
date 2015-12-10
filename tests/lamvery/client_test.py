@@ -24,13 +24,14 @@ class ClientTestCase(TestCase):
 
     def setUp(self):
         self.client = Client(region='us-east-1')
-        self.client._client = Mock()
+        self.client._lambda = Mock()
+        self.client._kms = Mock()
 
     def test_get_function_conf(self):
-        self.client._client.get_function = Mock(
+        self.client._lambda.get_function = Mock(
             return_value={'Configuration': 'foo'})
         eq_(self.client.get_function_conf('test'), 'foo')
-        self.client._client.get_function = Mock(
+        self.client._lambda.get_function = Mock(
             side_effect=botocore.exceptions.ClientError({'Error': {}}, 'bar'))
         eq_(self.client.get_function_conf('test'), {})
 
@@ -44,10 +45,9 @@ class ClientTestCase(TestCase):
         self.client.update_function_conf(TEST_CONF)
 
     def test_get_alias(self):
-        self.client._client.get_alias = Mock(
-            return_value='foo')
+        self.client._lambda.get_alias = Mock(return_value='foo')
         eq_(self.client.get_alias('function', 'alias'), 'foo')
-        self.client._client.get_alias = Mock(
+        self.client._lambda.get_alias = Mock(
             side_effect=botocore.exceptions.ClientError({'Error': {}}, 'bar'))
         eq_(self.client.get_alias('function', 'alias'), {})
 
@@ -56,3 +56,11 @@ class ClientTestCase(TestCase):
 
     def test_update_alias(self):
         self.client.update_alias('function', 'alias', 'version')
+
+    def test_encrypt(self):
+        self.client._kms.encrypt = Mock(return_value={'CiphertextBlob': 'foo'})
+        eq_(self.client.encrypt('key', 'val'), 'foo')
+
+    def test_decrypt(self):
+        self.client._kms.decrypt = Mock(return_value={'Plaintext': 'bar'})
+        eq_(self.client.decrypt('secret'), 'bar')

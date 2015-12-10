@@ -8,18 +8,19 @@ class Client:
     def __init__(self, region=None, profile=None):
         session = boto3.session.Session(
             profile_name=profile, region_name=region)
-        self._client = session.client('lambda')
+        self._lambda = session.client('lambda')
+        self._kms = session.client('kms')
 
     def get_function_conf(self, name):
         try:
-            res = self._client.get_function(
+            res = self._lambda.get_function(
                 FunctionName=name)
             return res['Configuration']
         except botocore.exceptions.ClientError:
             return {}
 
     def create_function(self, zipfile, conf, publish):
-        self._client.create_function(
+        self._lambda.create_function(
             FunctionName=conf['name'],
             Runtime=conf['runtime'],
             Role=conf['role'],
@@ -34,14 +35,14 @@ class Client:
         )
 
     def update_function_code(self, zipfile, conf, publish):
-        self._client.update_function_code(
+        self._lambda.update_function_code(
             FunctionName=conf['name'],
             ZipFile=zipfile.read(),
             Publish=publish,
         )
 
     def update_function_conf(self, conf):
-        self._client.update_function_configuration(
+        self._lambda.update_function_configuration(
             FunctionName=conf['name'],
             Role=conf['role'],
             Handler=conf['handler'],
@@ -52,20 +53,28 @@ class Client:
 
     def get_alias(self, function, alias):
         try:
-            return self._client.get_alias(
+            return self._lambda.get_alias(
                 FunctionName=function,
                 Name=alias)
         except botocore.exceptions.ClientError:
             return {}
 
     def create_alias(self, function, alias, version):
-        self._client.create_alias(
+        self._lambda.create_alias(
                 FunctionName=function,
                 Name=alias,
                 FunctionVersion=version)
 
     def update_alias(self, function, alias, version):
-        self._client.update_alias(
+        self._lambda.update_alias(
                 FunctionName=function,
                 Name=alias,
                 FunctionVersion=version)
+
+    def encrypt(self, key, text):
+        res = self._kms.encrypt(KeyId=key, Plaintext=text)
+        return res.get('CiphertextBlob')
+
+    def decrypt(self, cipher_text):
+        res = self._kms.decrypt(CiphertextBlob=cipher_text)
+        return res.get('Plaintext')

@@ -5,6 +5,8 @@ import sys
 import tempfile
 import shutil
 import re
+import yaml
+import lamvery.secret
 from zipfile import PyZipFile, ZIP_DEFLATED
 
 EXCLUDE_FILE = [
@@ -24,22 +26,25 @@ PYFILE_PATTERN = re.compile('.+\.py.?$')
 
 class Archive:
 
-    def __init__(self, filename):
+    def __init__(self, filename, secret={}):
         self._filename = filename
         self._tmpdir = tempfile.mkdtemp(suffix='lamvery')
         self._zippath = os.path.join(self._tmpdir, self._filename)
+        self._secretpath = os.path.join(self._tmpdir, lamvery.secret.SECRET_FILE_NAME)
+        self._secret = secret
 
     def __del__(self):
         shutil.rmtree(self._tmpdir)
 
     def create_zipfile(self):
-        print('Aechiving sources...')
+        lamvery.secret.generate(self._secretpath, self._secret)
         with PyZipFile(self._zippath, 'w', compression=ZIP_DEFLATED) as zipfile:
             for p in self._get_paths():
                 if os.path.isdir(p):
                     self._archive_dir(zipfile, p)
                 else:
                     self._archive_file(zipfile, p)
+            self._archive_file(zipfile, self._secretpath)
         return open(self._zippath, 'rb')
 
     def _archive_dir(self, zipfile, path):
