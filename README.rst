@@ -156,7 +156,7 @@ Options
     | Version of the function to set the alias.
     |
 
-Configuration file (lamvery.yml)
+Configuration file (.lamvery.yml)
 --------------------------------
 
 profile
@@ -214,6 +214,38 @@ key
 cipher\_texts
     | The name and cipher texts for passing to lambda function.
     |
+
+Using confidential information in lambda function
+-------------------------------------------------
+
+1. Encrypt and store the confidential information to your configuration file.
+    Command example:
+
+    .. code::
+        lamvery encrypt -s -n foo "This is a secret"
+
+2. Write your function
+    Code example:
+
+    .. code::
+        import lamvery.secret
+
+        def lambda_handler(event, context):
+            print(lamvery.secret.get('foo'))
+
+3. Deploy your function
+    Command example:
+
+    .. code::
+        lamvery deploy
+
+4. Invoke your function
+    Result example:
+
+    .. code::
+        START RequestId: 13829c9c-9f13-11e5-921b-6f048cff3c2d Version: $LATEST
+        This is a secret
+        END RequestId: 13829c9c-9f13-11e5-921b-6f048cff3c2d
 
 Development
 -----------
