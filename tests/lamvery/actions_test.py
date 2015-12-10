@@ -131,7 +131,7 @@ class DeployActionTestCase(TestCase):
         action._print_conf_diff(remote, local)
 
 
-class SetAliasAction(BaseAction):
+class SetAliasActionTestCase(TestCase):
 
     @patch('lamvery.actions.Client')
     def test_action(self, c):
@@ -164,19 +164,19 @@ class SetAliasAction(BaseAction):
 
     def test_get_alias_name(self):
         action = SetAliasAction(default_args())
-        eq_(action.get_alias_name(), None)
+        eq_(action._get_alias_name(), None)
         args = default_args()
         args.alias = 'foo'
         action = SetAliasAction(args)
-        eq_(action.get_alias_name(), 'foo')
+        eq_(action._get_alias_name(), 'foo')
 
     def test_get_alias_version(self):
-        actions = SetAliasAction(default_args())
-        eq_(actions.get_alias_version(), '$LATEST')
+        action = SetAliasAction(default_args())
+        eq_(action._get_alias_version(), '$LATEST')
         args = default_args()
         args.alias_version = '1'
         action = SetAliasAction(args)
-        eq_(action.get_alias_version(), '1')
+        eq_(action._get_alias_version(), '1')
 
 class EncryptActionTestCase(TestCase):
 

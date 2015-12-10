@@ -27,6 +27,10 @@ class FunctionsTestCase(TestCase):
         with patch('lamvery.cli.EncryptAction'):
             encrypt(Mock())
 
+    def test_decrypt(self):
+        with patch('lamvery.cli.DecryptAction'):
+            decrypt(Mock())
+
     def test_set_alias(self):
         with patch('lamvery.cli.SetAliasAction'):
             set_alias(Mock())

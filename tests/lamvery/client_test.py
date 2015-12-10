@@ -54,6 +54,9 @@ class ClientTestCase(TestCase):
     def test_create_alias(self):
         self.client.create_alias('function', 'alias', 'version')
 
+    def test_update_alias(self):
+        self.client.update_alias('function', 'alias', 'version')
+
     def test_encrypt(self):
         self.client._kms.encrypt = Mock(return_value={'CiphertextBlob': 'foo'})
         eq_(self.client.encrypt('key', 'val'), 'foo')
