@@ -10,8 +10,9 @@ from mock import Mock,MagicMock,patch
 import lamvery.secret
 
 SECRET_YAML = '''
-foo: 1
-bar: 2
+cipher_texts:
+  foo: 1
+  bar: 2
 '''
 
 class FunctionsTestCase(TestCase):

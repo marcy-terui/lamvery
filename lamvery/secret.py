@@ -14,6 +14,9 @@ def generate(path, secret):
 
 def get(name):
     data = yaml.load(open(SECRET_FILE_NAME, 'r').read())
-    if name not in data:
+    if 'cipher_texts' not in data:
         return None
-    return Client().decrypt(data.get(name))
+    if name not in data['cipher_texts']:
+        return None
+    client = Client(region=data.get('region'))
+    return client.decrypt(data['cipher_texts'].get(name))

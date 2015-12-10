@@ -28,6 +28,12 @@ class Config:
     def get_secret(self):
         return self.load_conf().get('secret')
 
+    def generate_lambda_secret(self):
+        return {
+            'region': self.get_region(),
+            'cipher_texts': self.get_secret().get('cipher_texts')
+        }
+
     def get_function_name(self):
         if os.path.exists(self._file):
             return self.get_configuration().get('name')
@@ -39,7 +45,7 @@ class Config:
 
     def get_region(self):
         if os.path.exists(self._file):
-            return self.get_configuration().get('region')
+            return self.load_conf().get('region')
         else:
             return None
 
@@ -48,7 +54,6 @@ class Config:
 
     def get_default(self):
         init_config = OrderedDict()
-        init_config['region']      = 'us-east-1'
         init_config['name']        = self.get_function_name()
         init_config['runtime']     = 'python2.7'
         init_config['role']        = 'arn:aws:iam::<account-number>:role/<role>'
@@ -63,6 +68,7 @@ class Config:
 
         init_yaml = OrderedDict()
         init_yaml['profile'] = None
+        init_yaml['region']  = 'us-east-1'
         init_yaml['configuration'] = init_config
         init_yaml['secret'] = init_secret
 

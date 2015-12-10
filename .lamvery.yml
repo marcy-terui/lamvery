@@ -1,6 +1,6 @@
 profile: null
+region: us-east-1
 configuration:
-  region: us-east-1
   name: lambery
   runtime: python2.7
   role: arn:aws:iam::<account-number>:role/<role>
