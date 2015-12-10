@@ -222,12 +222,14 @@ Using confidential information in lambda function
     Command example:
 
     .. code::
+
         lamvery encrypt -s -n foo "This is a secret"
 
 2. Write your function
     Code example:
 
 .. code::
+
     import lamvery.secret
 
     def lambda_handler(event, context):
@@ -237,12 +239,14 @@ Using confidential information in lambda function
     Command example:
 
 .. code::
+
     lamvery deploy
 
 4. Invoke your function
     Result example:
 
 .. code::
+
     START RequestId: 13829c9c-9f13-11e5-921b-6f048cff3c2d Version: $LATEST
     This is a secret
     END RequestId: 13829c9c-9f13-11e5-921b-6f048cff3c2d
