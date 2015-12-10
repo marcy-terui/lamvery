@@ -24,8 +24,9 @@ class BaseAction:
 
     __metaclass__ = ABCMeta
 
+    _logger = None
+
     def __init__(self, args):
-        self._args = args
         self._config = Config(args.conf_file)
 
         if hasattr(args, 'dry_run') and args.dry_run:
