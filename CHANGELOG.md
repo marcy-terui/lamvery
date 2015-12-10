@@ -1,3 +1,7 @@
+## 0.3.1
+
+- Bugfix: Duplicate output on `deploy`
+
 ## 0.3.0
 
 - Support jinja2 template in configuration file [#15]()
