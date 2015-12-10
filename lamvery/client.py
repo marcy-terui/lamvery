@@ -73,7 +73,7 @@ class Client:
 
     def encrypt(self, key, text):
         res = self._kms.encrypt(KeyId=key, Plaintext=text)
-        return res.get('CiphertextBlob').encode('utf8')
+        return res.get('CiphertextBlob')
 
     def decrypt(self, cipher_text):
         res = self._kms.decrypt(CiphertextBlob=cipher_text)

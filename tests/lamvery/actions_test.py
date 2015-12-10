@@ -16,6 +16,9 @@ def default_args():
     args.dry_run = True
     args.alias = None
     args.alias_version = None
+    args.text = 'foo'
+    args.secret_name = 'bar'
+    args.store = True
     return args
 
 class BaseActionTestCase(TestCase):
@@ -67,6 +70,7 @@ class ArchiveActionTestCase(TestCase):
         action = ArchiveAction(default_args())
         action._config = Mock()
         action._config.get_archive_name = Mock(return_value='test.zip')
+        action._config.get_secret = Mock(return_value={})
         action.action()
         ok_(os.path.exists('test.zip'))
 
@@ -173,3 +177,22 @@ class SetAliasAction(BaseAction):
         args.alias_version = '1'
         action = SetAliasAction(args)
         eq_(action.get_alias_version(), '1')
+
+class EncryptActionTestCase(TestCase):
+
+    def test_action(self):
+        with patch('lamvery.actions.Client'):
+            args = default_args()
+            action = EncryptAction(args)
+            action._config = Mock()
+            action.action()
+            args.store_secret = False
+            action.action()
+
+class DecryptActionTestCase(TestCase):
+
+    def test_action(self):
+        with patch('lamvery.actions.Client'):
+            action = DecryptAction(default_args())
+            action._config = Mock()
+            action.action()

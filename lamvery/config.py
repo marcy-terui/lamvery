@@ -85,9 +85,9 @@ class Config:
         conf = self.load_conf()
         default = self.get_default()
 
-        if not conf.has_key('secret'):
+        if 'secret' not in conf:
             conf['secret'] = default['secret']
-        elif conf['secret'].has_key('cipher_texts'):
+        elif 'cipher_texts' not in conf['secret']:
             conf['secret']['cipher_texts'] = {}
 
         conf['secret']['cipher_texts'][key] = value
