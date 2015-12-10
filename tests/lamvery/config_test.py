@@ -13,8 +13,8 @@ import lamvery.config
 
 DEFAULT_CONF = """
 profile: default
+region: us-east-1
 configuration:
-  region: us-east-1
   runtime: python2.7
   name: test_lambda_function
   role: arn:aws:iam::000000000000:role/lambda_basic_execution
@@ -24,7 +24,8 @@ configuration:
   memory_size: 128
 secret:
   key: arn:aws:kms:<region>:<account-number>:key/<key-id>
-  cipher_texts: {}
+  cipher_texts:
+    foo: bar
 """
 
 class FunctionsTestCase(TestCase):
@@ -81,6 +82,16 @@ class ConfigTestCase(TestCase):
         config = Config(self.conf_file)
         key = config.get_secret().get('key')
         eq_(key, 'arn:aws:kms:<region>:<account-number>:key/<key-id>')
+
+    def test_generate_lambda_secret(self):
+        config = Config(self.conf_file)
+        secret = config.generate_lambda_secret()
+        eq_(secret, {
+            'region': 'us-east-1',
+            'cipher_texts': {
+                'foo': 'bar'
+            }
+        })
 
     def test_write_default(self):
         config = Config(self.conf_file)

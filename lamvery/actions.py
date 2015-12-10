@@ -69,7 +69,7 @@ class ArchiveAction(BaseAction):
     def action(self):
         self._logger.info('Start archiving...')
         archive_name = self._config.get_archive_name()
-        secret = self._config.get_secret().get('cipher_texts')
+        secret = self._config.generate_lambda_secret()
         archive = Archive(archive_name, secret)
         zipfile = archive.create_zipfile()
         with open(archive_name, 'w') as f:
@@ -88,7 +88,7 @@ class DeployAction(BaseAction):
     def action(self):
         self._logger.info('Start deployment...')
         archive_name = self._config.get_archive_name()
-        secret = self._config.get_secret().get('cipher_texts')
+        secret = self._config.generate_lambda_secret()
         archive = Archive(archive_name, secret)
         func_name   = self._config.get_function_name()
         local_conf  = self._config.get_configuration()

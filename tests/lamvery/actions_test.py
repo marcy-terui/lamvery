@@ -70,7 +70,7 @@ class ArchiveActionTestCase(TestCase):
         action = ArchiveAction(default_args())
         action._config = Mock()
         action._config.get_archive_name = Mock(return_value='test.zip')
-        action._config.get_secret = Mock(return_value={})
+        action._config.generate_lambda_secret = Mock(return_value={})
         action.action()
         ok_(os.path.exists('test.zip'))
 
