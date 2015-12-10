@@ -29,7 +29,10 @@ class FunctionsTestCase(TestCase):
         eq_(data.get('foo'), 2)
 
     def test_get(self):
-        with patch.object(lamvery.secret.Client, 'decrypt') as decrypt:
-            decrypt.return_value = 'test'
+        with patch('lamvery.secret.Client') as c:
+            class Dummy:
+                def decrypt(self, foo):
+                    return 'test'
+            c.return_value = Dummy()
             eq_(lamvery.secret.get('hoge'), None)
             eq_(lamvery.secret.get('foo'), 'test')
