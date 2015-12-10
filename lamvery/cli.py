@@ -43,7 +43,7 @@ def main():
     }
     n_args = ('-n', '--secret-name',)
     n_kwargs = {
-        'help': 'The name for specifying the decoded data on lambda function',
+        'help': 'The name of the secret value',
         'default': None
     }
     p_args = ('-p', '--publish')

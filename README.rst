@@ -46,8 +46,8 @@ And put your ``lamvery.yml`` like this.
 
 .. code::
     profile: default
+    region: us-east-1
     configuration:
-      region: us-east-1
       name: sample_lambda_function
       runtime: python2.7
       role: arn:aws:iam::000000000000:role/lambda_basic_execution
@@ -55,6 +55,14 @@ And put your ``lamvery.yml`` like this.
       description: This is sample lambda function.
       timeout: 10
       memory_size: 128
+    secret:
+      key: xxxx-yyyy-zzzz
+      cipher_texts:
+        foo: !!binary |
+          fsdiugfhaeiotgheat+d9yJMyY1uw1i7tYVvQz9I8+e2UBKTAQEBAgB4uMVvZYOx2sWrnnjfnfci
+          TMmNbsNYu7WFb0M/fsampogdgoiejeijgdpijgdogjegjoepgjspogfkspofksaopfkaseopfkso
+          fsdifsaiogjsaigjsaiogjsaiogjasoigjsaigjasgiasgojsogjsaojsogag+ty6FvbtAFsn3/B
+          Kj2+VwQVgD1zO3lTkQ==
 
 Commands
 -----
@@ -63,6 +71,7 @@ archive
 ~~~~~~~
 
 - Archive your code and libraries to ``<your-function-name>.zip``
+- Store secret informations to the archive
 
 .. code::
 
@@ -72,6 +81,7 @@ deploy
 ~~~~~~
 
 - Archive and deploy your code and libraries
+- Store secret informations to the archive
 - Update configuration of the function
 - Set alias to a version of the function
 
@@ -82,11 +92,29 @@ deploy
 set-alias
 ~~~~~~~~~
 
-- Set alias
+- Set alias to a version of the function
 
 .. code::
 
-    lamvery set-alias
+    lamvery set-alias -a <alias> -v <alias-version>
+
+encrypt
+~~~~~~~~~
+
+- Encrypt a text value using KMS
+
+.. code::
+
+    lamvery encrypt -n <secret-name> <secret-value> [-s]
+
+decrypt
+~~~~~~~~~
+
+- Decrypt the secret value using KMS
+ <secret-value> -s
+.. code::
+
+    lamvery decrypt -n <secret-name>
 
 Options
 -------
@@ -107,29 +135,41 @@ Options
     | Output the difference of configuration and the alias without updating.
     |
 
+``-n`` or ``--secret-name``
+    | This option needed by ``encrypt`` and ``decrypt`` commands.
+    | The name of the secret value.
+    |
+
 ``-p`` or ``--publish``
     | This option only needed by ``deploy`` command.
     | Publish the version as an atomic operation.
     |
 
+``-s`` or ``--store``
+    | This option only needed by ``encrypt`` command.
+    | Store encripted value to configuration file (default: .lamvery.yml).
+    | This option is required `-n` or `--secret-name` option.
+    |
+
 ``-v`` or ``--alias-version``
     | This option only needed by ``alias`` command.
     | Version of the function to set the alias.
+    |
 
 Configuration file (lamvery.yml)
 --------------------------------
 
-Profile
+profile
 ~~~~~~
-The name of a profile to use. If not given, then the default profile is used.
-
-Configuration
-~~~~~~~~~~~~~
+The name of a profile to use. If not given, this depends on ``boto3``.
 
 region
-    | The region name in AWS.
-    | The behaviour depends on ``boto3`` if you doesn't set this option.
-    |
+~~~~~~
+| The region name of your environment.
+| If you doesn't set this option, this depends on ``boto3``.
+
+configuration
+~~~~~~~~~~~~~
 
 name
     | The name of your function.
@@ -162,6 +202,17 @@ memory\_size
 
 alias
     | The default alias when not given ``-a`` or ``--alias`` argument.
+    |
+
+secret
+~~~~~~~~~~~~~
+
+key
+    | The ID of your encryption key on KMS
+    |
+
+cipher\_texts
+    | The name and cipher texts for passing to lambda function.
     |
 
 Development

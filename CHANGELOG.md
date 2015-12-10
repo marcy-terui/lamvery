@@ -1,3 +1,12 @@
+## 0.2.0
+
+- Change default name of the configuration file to '.lamvery.yml'
+- Change format of the configuration file (See: [README]())
+- Support passing some confidential information using KMS [#8]()
+- Add `encrypt` command
+- Add `decrypt` command
+- Adjust all outputs
+
 ## 0.1.0
 
 - Support `profile` specification [#6]() [#10]()
@@ -5,7 +14,7 @@
 
 ## 0.0.6
 
-- Collect help meassages
+- Collect help messages
 
 ## 0.0.5
 
@@ -32,5 +41,7 @@
 [#1]: https://github.com/marcy-terui/lamvery/issues/1
 [#6]: https://github.com/marcy-terui/lamvery/issues/6
 [#7]: https://github.com/marcy-terui/lamvery/issues/7
+[#8]: https://github.com/marcy-terui/lamvery/issues/8
 [#9]: https://github.com/marcy-terui/lamvery/issues/9
 [#10]: https://github.com/marcy-terui/lamvery/issues/10
+[README]: https://github.com/marcy-terui/lamvery/blob/master/README.rst
