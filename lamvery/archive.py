@@ -14,7 +14,9 @@ EXCLUDE_FILE = [
     'python27',
     'python2.7',
     'lamvery',
-    'pip'
+    'pip',
+    'pbr',
+    'wheel'
 ]
 
 EXCLUDE_DIR = [
