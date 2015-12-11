@@ -1,3 +1,7 @@
+## 0.3.2
+
+- Add some files to list of exclude from the archive
+
 ## 0.3.1
 
 - Bugfix: Duplicate output on `deploy`
