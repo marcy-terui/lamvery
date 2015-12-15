@@ -1,3 +1,7 @@
+## 0.3.3
+
+- Exclude bin directory form archive(Reduce capacity of the archive file)
+
 ## 0.3.2
 
 - Add some files to list of exclude from the archive
