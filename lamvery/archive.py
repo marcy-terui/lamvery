@@ -74,6 +74,7 @@ class Archive:
             elif filename.endswith('.py'):
                 try:
                     zipfile.getinfo('{}c'.format(filename))
+                    zipfile.getinfo('{}o'.format(filename))
                 except KeyError:
                     zipfile.writepy(path)
 
@@ -102,8 +103,8 @@ class Archive:
             raise Exception(msg)
         paths = []
         for p in sys.path:
-            if p.startswith(venv) and os.path.exists(p):
-                if os.path.isdir(p):
+            if os.path.isdir(p) and os.path.exists(p):
+                if p.startswith(venv) and not p.endswith('bin'):
                     for f in os.listdir(p):
                         f_path = os.path.join(p ,f)
                         paths.append(f_path)
