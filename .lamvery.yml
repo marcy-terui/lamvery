@@ -1,7 +1,7 @@
 profile: null
 region: us-east-1
 configuration:
-  name: lambery
+  name: lamvery
   runtime: python2.7
   role: arn:aws:iam::<account-number>:role/<role>
   handler: lambda_function.lambda_handler
@@ -9,5 +9,5 @@ configuration:
   timeout: 10
   memory_size: 128
 secret:
-  key: arn:aws:kms:<region>:<account-number>:key/<key-id>
+  key: <key-id>
   cipher_texts: {}
