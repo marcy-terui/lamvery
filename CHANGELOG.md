@@ -1,6 +1,6 @@
 ## 0.3.3
 
-- Exclude bin directory form archive(Reduce capacity of the archive file)
+- Exclude bin directory form archive(Reduce size of the archive file)
 
 ## 0.3.2
 
