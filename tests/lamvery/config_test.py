@@ -24,7 +24,7 @@ configuration:
   memory_size: 128
   test_env: {{ env['PATH'] }}
 secret:
-  key: arn:aws:kms:<region>:<account-number>:key/<key-id>
+  key_id: arn:aws:kms:<region>:<account-number>:key/<key-id>
   cipher_texts:
     foo: bar
 """
@@ -48,6 +48,15 @@ class ConfigTestCase(TestCase):
     def test_load_conf(self):
         config = Config(self.conf_file)
         eq_(config.load_conf().get('profile'), 'default')
+
+    def test_raw_conf(self):
+        config = Config(self.conf_file)
+        eq_(config.load_raw_conf().get('configuration').get('test_env'), "{{ env['PATH'] }}")
+
+    def test_escape(self):
+        config = Config(self.conf_file)
+        eq_(config.escape('{{ foo[\'bar\'] }}'), '\'{{ foo[\'\'bar\'\'] }}\'')
+        eq_(config.escape('{% foo["bar"] %}'), '\'{% foo["bar"] %}\'')
 
     def test_get_configuration(self):
         config = Config(self.conf_file)
@@ -80,7 +89,7 @@ class ConfigTestCase(TestCase):
 
     def test_get_secret(self):
         config = Config(self.conf_file)
-        key = config.get_secret().get('key')
+        key = config.get_secret().get('key_id')
         eq_(key, 'arn:aws:kms:<region>:<account-number>:key/<key-id>')
 
     def test_generate_lambda_secret(self):

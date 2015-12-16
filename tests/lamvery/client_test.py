@@ -3,6 +3,7 @@
 import os
 import sys
 import botocore
+import base64
 
 from unittest import TestCase
 from nose.tools import ok_, eq_, raises
@@ -59,8 +60,8 @@ class ClientTestCase(TestCase):
 
     def test_encrypt(self):
         self.client._kms.encrypt = Mock(return_value={'CiphertextBlob': 'foo'})
-        eq_(self.client.encrypt('key', 'val'), 'foo')
+        eq_(self.client.encrypt('key', 'val'), base64.b64encode('foo'))
 
     def test_decrypt(self):
         self.client._kms.decrypt = Mock(return_value={'Plaintext': 'bar'})
-        eq_(self.client.decrypt('secret'), 'bar')
+        eq_(self.client.decrypt(base64.b64encode('secret')), 'bar')

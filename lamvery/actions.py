@@ -185,7 +185,7 @@ class EncryptAction(BaseAction):
     def action(self):
         client = self.get_client()
         cipher_text = self.get_client().encrypt(
-            self._config.get_secret().get('key'), self._text)
+            self._config.get_secret().get('key_id'), self._text)
 
         if self._store:
             self._config.store_secret(self._name, cipher_text)
