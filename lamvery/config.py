@@ -2,6 +2,7 @@
 
 import yaml
 import os
+import uuid
 from termcolor import cprint, colored
 from collections import OrderedDict
 from lamvery.archive import Archive
@@ -19,11 +20,47 @@ class Config:
 
     def __init__(self, conf_file):
         self._file = conf_file
+        self._template_env = Environment(loader=FileSystemLoader('./', encoding='utf8'))
 
     def load_conf(self):
-        env = Environment(loader=FileSystemLoader('./', encoding='utf8'))
-        tmpl = env.get_template(self._file)
+        tmpl = self._template_env.get_template(self._file)
         return yaml.load(tmpl.render({'env': os.environ}))
+
+    def load_raw_conf(self):
+        txt = open(self._file, 'r').read()
+        return yaml.load(self.escape(txt))
+
+    def escape(self, txt):
+        txt = txt.replace("'", "''")
+        txt = txt.replace(
+            self._template_env.variable_start_string,
+            "'" + self._template_env.variable_start_string)
+        txt = txt.replace(
+            self._template_env.block_start_string,
+            "'" + self._template_env.block_start_string)
+        txt = txt.replace(
+            self._template_env.variable_end_string,
+            self._template_env.variable_end_string + "'")
+        txt = txt.replace(
+            self._template_env.block_end_string,
+            self._template_env.block_end_string + "'")
+        return txt
+
+    def unescape(self, txt):
+        txt = txt.replace("''", "'")
+        txt = txt.replace(
+            "'" + self._template_env.variable_start_string,
+            self._template_env.variable_start_string)
+        txt = txt.replace(
+            "'" + self._template_env.block_start_string,
+            self._template_env.block_start_string)
+        txt = txt.replace(
+            self._template_env.variable_end_string + "'",
+            self._template_env.variable_end_string)
+        txt = txt.replace(
+            self._template_env.block_end_string + "'",
+            self._template_env.block_end_string)
+        return txt
 
     def get_configuration(self):
         return self.load_conf().get('configuration')
@@ -66,7 +103,7 @@ class Config:
         init_config['memory_size'] = 128
 
         init_secret = OrderedDict()
-        init_secret['key'] = '<key-id>'
+        init_secret['key_id'] = '<key-id>'
         init_secret['cipher_texts'] = OrderedDict()
 
         init_yaml = OrderedDict()
@@ -81,17 +118,17 @@ class Config:
         self.write(self.get_default())
 
     def write(self, conf):
-        yaml.dump(
+        txt = yaml.dump(
             conf,
-            open(self._file, 'w'),
             default_flow_style=False,
             allow_unicode=True)
+        open(self._file, 'w').write(self.unescape(txt))
 
     def file_exists(self):
         return os.path.exists(self._file)
 
     def store_secret(self, key, value):
-        conf = self.load_conf()
+        conf = self.load_raw_conf()
         default = self.get_default()
 
         if 'secret' not in conf:

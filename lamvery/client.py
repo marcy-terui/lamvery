@@ -2,6 +2,7 @@
 
 import boto3
 import botocore
+import base64
 
 class Client:
 
@@ -71,10 +72,10 @@ class Client:
                 Name=alias,
                 FunctionVersion=version)
 
-    def encrypt(self, key, text):
-        res = self._kms.encrypt(KeyId=key, Plaintext=text)
-        return res.get('CiphertextBlob')
+    def encrypt(self, key_id, text):
+        res = self._kms.encrypt(KeyId=key_id, Plaintext=text)
+        return base64.b64encode(res.get('CiphertextBlob'))
 
     def decrypt(self, cipher_text):
-        res = self._kms.decrypt(CiphertextBlob=cipher_text)
+        res = self._kms.decrypt(CiphertextBlob=base64.b64decode(cipher_text))
         return res.get('Plaintext')
