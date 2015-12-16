@@ -1,3 +1,9 @@
+## 0.4.0
+
+- Change configuration file option `secret: key` -> `secret: key_id` [#17]()
+- Simplify importing of `lamvery.secret` [#17]()
+- Lost jinja2 descriptor when call `encrypt` command with `-s` option [#17]()
+
 ## 0.3.3
 
 - Exclude bin directory form archive(Reduce size of the archive file)
@@ -61,3 +67,4 @@
 [#9]: https://github.com/marcy-terui/lamvery/issues/9
 [#10]: https://github.com/marcy-terui/lamvery/issues/10
 [#15]: https://github.com/marcy-terui/lamvery/issues/15
+[#17]: https://github.com/marcy-terui/lamvery/issues/17

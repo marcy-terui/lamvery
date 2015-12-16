@@ -45,13 +45,9 @@ And environment variables stored `env` variable.
    timeout: 10
    memory_size: 128
  secret:
-   key: {{ env['AWS_KMS_KEY_ID'] }}
+   key_id: {{ env['AWS_KMS_KEY_ID'] }}
    cipher_texts:
-     foo: !!binary |
-       fsdiugfhaeiotgheat+d9yJMyY1uw1i7tYVvQz9I8+e2UBKTAQEBAgB4uMVvZYOx2sWrnnjfnfci
-       TMmNbsNYu7WFb0M/fsampogdgoiejeijgdpijgdogjegjoepgjspogfkspofksaopfkaseopfkso
-       fsdifsaiogjsaigjsaiogjsaiogjasoigjsaigjasgiasgojsogjsaojsogag+ty6FvbtAFsn3/B
-       Kj2+VwQVgD1zO3lTkQ==}
+     foo: CiC4xW9lg7HaxaueeN+
 ```
 
 # Commands
@@ -100,8 +96,7 @@ lamvery encrypt -n <secret-name> <secret-value> [-s]
 lamvery decrypt -n <secret-name>
 ```
 
-Options
--------
+## Options
 
 - `-a` or `--alias`  
 This option needed by `deploy` and `alias` commands.  
@@ -171,7 +166,7 @@ The default alias when not given `-a` or `--alias` argument.
 
 ### secret
 
-- key  
+- key_id  
 The ID of your encryption key on KMS.
 
 - cipher_texts  
@@ -214,7 +209,7 @@ Configuration example:
     timeout: 10
     memory_size: 128
   secret:
-    key: xxxx-yyyy-zzzz # <-here!
+    key_id: xxxx-yyyy-zzzz # <-here!
     cipher_texts: {}
 ```
 #### 4. Encrypt and store the confidential information to your configuration file.  
@@ -225,7 +220,7 @@ lamvery encrypt -s -n foo "This is a secret"
 #### 5. Write your function.  
 Code example:  
 ```py
-  import lamvery.secret
+  import lamvery
 
   def lambda_handler(event, context):
       print(lamvery.secret.get('foo'))
