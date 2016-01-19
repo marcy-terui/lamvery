@@ -67,11 +67,17 @@ class InitAction(BaseAction):
 
 class ArchiveAction(BaseAction):
 
+    def __init__(self, args):
+        super(ArchiveAction, self).__init__(args)
+        self._no_libs = args.no_libs
+
     def action(self):
         self._logger.info('Start archiving...')
         archive_name = self._config.get_archive_name()
         secret = self._config.generate_lambda_secret()
-        archive = Archive(archive_name, secret)
+        archive = Archive(filename=archive_name,
+                          secret=secret,
+                          no_libs=self._no_libs)
         zipfile = archive.create_zipfile()
         with open(archive_name, 'w') as f:
             f.write(zipfile.read())
@@ -85,12 +91,15 @@ class DeployAction(BaseAction):
         self._dry_run = args.dry_run
         self._publish = args.publish
         self._set_alias = SetAliasAction(args)
+        self._no_libs = args.no_libs
 
     def action(self):
         self._logger.info('Start deployment...')
         archive_name = self._config.get_archive_name()
         secret = self._config.generate_lambda_secret()
-        archive = Archive(archive_name, secret)
+        archive = Archive(filename=archive_name,
+                          secret=secret,
+                          no_libs=self._no_libs)
         func_name   = self._config.get_function_name()
         local_conf  = self._config.get_configuration()
         zipfile     = archive.create_zipfile()
@@ -98,6 +107,9 @@ class DeployAction(BaseAction):
         remote_conf = client.get_function_conf(func_name)
 
         self._print_conf_diff(remote=remote_conf, local=local_conf)
+        self._print_capacity(
+            remote=client.calculate_capacity(),
+            local=archive.get_size())
 
         if not self._dry_run:
             if len(remote_conf) > 0:
@@ -129,6 +141,11 @@ class DeployAction(BaseAction):
             else:
                 self._logger.warn(
                     '[Configuration] {k}: {r} > {l}'.format(k=k, r=v[0], l=v[1]))
+
+    def _print_capacity(self, remote, local):
+        self._logger.warn(
+            '[Capacity] {r} bytes > {t} bytes'.format(
+                r='{:,d}'.format(remote), t='{:,d}'.format(remote + local)))
 
 class SetAliasAction(BaseAction):
 

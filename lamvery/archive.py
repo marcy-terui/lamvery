@@ -28,12 +28,13 @@ PYFILE_PATTERN = re.compile('.+\.py.?$')
 
 class Archive:
 
-    def __init__(self, filename, secret={}):
+    def __init__(self, filename, no_libs=False, secret={}):
         self._filename = filename
         self._tmpdir = tempfile.mkdtemp(suffix='lamvery')
         self._zippath = os.path.join(self._tmpdir, self._filename)
         self._secretpath = os.path.join(self._tmpdir, lamvery.secret.SECRET_FILE_NAME)
         self._secret = secret
+        self._no_libs = no_libs
 
     def __del__(self):
         shutil.rmtree(self._tmpdir)
@@ -102,14 +103,18 @@ class Archive:
             msg = 'VIRTUAL_ENV environment variable can not be found. Are you running in virtualenv?'
             raise Exception(msg)
         paths = []
-        for p in sys.path:
-            if os.path.isdir(p) and os.path.exists(p):
-                if p.startswith(venv) and not p.endswith('bin'):
-                    for f in os.listdir(p):
-                        f_path = os.path.join(p ,f)
-                        paths.append(f_path)
+        if not self._no_libs:
+            for p in sys.path:
+                if os.path.isdir(p) and os.path.exists(p):
+                    if p.startswith(venv) and not p.endswith('bin'):
+                        for f in os.listdir(p):
+                            f_path = os.path.join(p ,f)
+                            paths.append(f_path)
         for f in os.listdir(os.getcwd()):
             f_path = os.path.join(os.getcwd() ,f)
             if not f_path == venv:
                 paths.append(f_path)
         return paths
+
+    def get_size(self):
+        return os.stat(self._zippath).st_size
