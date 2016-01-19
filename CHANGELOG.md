@@ -1,3 +1,7 @@
+## 0.5.1
+
+- Bugfix (Installation failure)
+
 ## 0.5.0
 
 - Add `-l`,`--no-libs` option to archive without all libraries [#20]() [#21]()
