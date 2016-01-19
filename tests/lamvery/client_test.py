@@ -65,3 +65,14 @@ class ClientTestCase(TestCase):
     def test_decrypt(self):
         self.client._kms.decrypt = Mock(return_value={'Plaintext': 'bar'})
         eq_(self.client.decrypt(base64.b64encode('secret')), 'bar')
+
+    def test_calculate_capacity(self):
+        ret = {'Functions': [{'FunctionName':'foo'}, {'FunctionName':'bar'}]}
+        self.client._lambda.list_functions = Mock(return_value=ret)
+        self.client._calculate_versions_capacity = Mock(return_value=10)
+        eq_(self.client.calculate_capacity(), 20)
+
+    def test_calculate_versions_capacity(self):
+        ret = {'Versions': [{'CodeSize':20}, {'CodeSize':20}]}
+        self.client._lambda.list_versions_by_function = Mock(return_value=ret)
+        eq_(self.client._calculate_versions_capacity('foo'), 40)

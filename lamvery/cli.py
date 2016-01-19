@@ -41,6 +41,12 @@ def main():
         'action': 'store_true',
         'default': False
     }
+    l_args = ('-l', '--no-libs',)
+    l_kargs = {
+        'help': 'Archiving without all libraries',
+        'action': 'store_true',
+        'default': False
+    }
     n_args = ('-n', '--secret-name',)
     n_kwargs = {
         'help': 'The name of the secret value',
@@ -64,6 +70,7 @@ def main():
         'default': None
     }
 
+
     parser = argparse.ArgumentParser(
         description='Yet another deploy tool for AWS Lambda in the virtualenv environment.',
         epilog='Lamvery version: {}'.format(lamvery.__version__))
@@ -79,6 +86,7 @@ def main():
         'archive',
         help='Archive your code and libraries to <your-function-name>.zip')
     archive_parser.add_argument(*c_args, **c_kwargs)
+    archive_parser.add_argument(*l_args, **l_kargs)
     archive_parser.set_defaults(func=archive)
 
     set_alias_parser = subparsers.add_parser(
@@ -95,6 +103,7 @@ def main():
     deploy_parser.add_argument(*a_args, **a_kwargs)
     deploy_parser.add_argument(*c_args, **c_kwargs)
     deploy_parser.add_argument(*d_args, **d_kwargs)
+    deploy_parser.add_argument(*l_args, **l_kargs)
     deploy_parser.add_argument(*p_args, **p_kwargs)
     deploy_parser.set_defaults(func=deploy)
 

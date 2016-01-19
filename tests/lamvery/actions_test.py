@@ -82,6 +82,7 @@ class DeployActionTestCase(TestCase):
         # Dry run
         action = DeployAction(default_args())
         action._print_conf_diff = Mock()
+        action._print_capacity = Mock()
         action.action()
 
         # No dry run
@@ -89,6 +90,7 @@ class DeployActionTestCase(TestCase):
         args.dry_run = False
         action = DeployAction(args)
         action._print_conf_diff = Mock()
+        action._print_capacity = Mock()
         # New
         c.get_function_conf = Mock(return_value={})
         action.action()
@@ -130,6 +132,9 @@ class DeployActionTestCase(TestCase):
         action = DeployAction(default_args())
         action._print_conf_diff(remote, local)
 
+    def test_print_capacity(self):
+        action = DeployAction(default_args())
+        action._print_capacity(1000000, 200000)
 
 class SetAliasActionTestCase(TestCase):
 

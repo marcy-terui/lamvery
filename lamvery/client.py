@@ -79,3 +79,34 @@ class Client:
     def decrypt(self, cipher_text):
         res = self._kms.decrypt(CiphertextBlob=base64.b64decode(cipher_text))
         return res.get('Plaintext')
+
+    def calculate_capacity(self, next_marker=None):
+        if next_marker:
+            r = self._lambda.list_functions(MaxItems=500, Marker=next_marker)
+        else:
+            r = self._lambda.list_functions(MaxItems=500)
+
+        size = sum(
+            self._calculate_versions_capacity(
+                f['FunctionName']) for f in r['Functions'])
+
+        if 'NextMarker' in r:
+            return size + self.calculate_capacity(next_marker=r['NextMarker'])
+        else:
+            return size
+
+    def _calculate_versions_capacity(self, function_name, next_marker=None):
+        if next_marker:
+            r = self._lambda.list_versions_by_function(
+                FunctionName=function_name, MaxItems=500, Marker=next_marker)
+        else:
+            r = self._lambda.list_versions_by_function(
+                FunctionName=function_name, MaxItems=500)
+
+        size = sum(f['CodeSize'] for f in r['Versions'])
+
+        if 'NextMarker' in r:
+            return size + self._calculate_versions_capacity(
+                function_name=function_name, next_marker=r['NextMarker'])
+        else:
+            return size
