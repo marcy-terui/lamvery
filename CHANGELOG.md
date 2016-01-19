@@ -1,3 +1,9 @@
+## 0.6.0
+
+- Change the secret file format YAML -> JSON
+- Reduce capacity of the archive
+- Bugfix
+
 ## 0.5.2
 
 - Bugfix

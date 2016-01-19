@@ -6,7 +6,7 @@ import lamvery
 from termcolor import cprint, colored
 from lamvery.actions import *
 
-VERSION = '0.5.2'
+VERSION = '0.6.0'
 
 def init(args):
     InitAction(args).action()
