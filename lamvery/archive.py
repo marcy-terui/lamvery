@@ -106,7 +106,7 @@ class Archive:
         if not self._no_libs:
             for p in sys.path:
                 if os.path.isdir(p) and os.path.exists(p):
-                    if p.startswith(venv) and not p.endswith('bin'):
+                    if p.startswith(venv) and p.find('site-packages') != -1:
                         for f in os.listdir(p):
                             f_path = os.path.join(p ,f)
                             paths.append(f_path)
