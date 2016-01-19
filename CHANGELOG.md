@@ -1,3 +1,8 @@
+## 0.5.0
+
+- Add `-l`,`--no-libs` option to archive without all libraries [#20]() [#21]()
+- Calculate and print the function's usage capacity [#19]() [#21]()
+
 ## 0.4.0
 
 - Change configuration file option `secret: key` -> `secret: key_id` [#17]()
@@ -68,3 +73,6 @@
 [#10]: https://github.com/marcy-terui/lamvery/issues/10
 [#15]: https://github.com/marcy-terui/lamvery/issues/15
 [#17]: https://github.com/marcy-terui/lamvery/issues/17
+[#19]: https://github.com/marcy-terui/lamvery/issues/19
+[#20]: https://github.com/marcy-terui/lamvery/issues/20
+[#21]: https://github.com/marcy-terui/lamvery/issues/21

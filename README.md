@@ -111,6 +111,10 @@ default: `.lamvery.yml`
 This option needed by `deploy` and `alias` commands.  
 Output the difference of configuration and the alias without updating.
 
+- `-l` or `--no-libs`  
+This option only needed by `deploy` command.  
+Archiving without all libraries.
+
 - `-n` or `--secret-name`  
 This option needed by `encrypt` and `decrypt` commands.  
 The name of the secret value.
