@@ -1,19 +1,17 @@
 # -*- coding: utf-8 -*-
 
-import yaml
+import json
 from lamvery.client import Client
 
-SECRET_FILE_NAME = '.lamvery_secret.yml'
+SECRET_FILE_NAME = '.lamvery_secret.json'
 
 def generate(path, secret):
-    yaml.dump(
+    json.dump(
         secret,
-        open(path, 'w'),
-        default_flow_style=False,
-        allow_unicode=True)
+        open(path, 'w'))
 
 def get(name):
-    data = yaml.load(open(SECRET_FILE_NAME, 'r').read())
+    data = json.load(open(SECRET_FILE_NAME, 'r'))
     if 'cipher_texts' not in data:
         return None
     if name not in data['cipher_texts']:

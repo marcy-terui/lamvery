@@ -9,16 +9,19 @@ from nose.tools import ok_, eq_, raises
 from mock import Mock,MagicMock,patch
 import lamvery.secret
 
-SECRET_YAML = '''
-cipher_texts:
-  foo: 1
-  bar: 2
+SECRET_JSON = '''
+{
+  "cipher_texts": {
+    "foo": 1,
+    "bar": 2
+  }
+}
 '''
 
 class FunctionsTestCase(TestCase):
 
     def setUp(self):
-        open(lamvery.secret.SECRET_FILE_NAME, 'w').write(SECRET_YAML)
+        open(lamvery.secret.SECRET_FILE_NAME, 'w').write(SECRET_JSON)
 
     def tearDown(self):
         os.remove(lamvery.secret.SECRET_FILE_NAME)
