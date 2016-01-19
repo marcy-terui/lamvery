@@ -1,6 +1,10 @@
+## 0.5.2
+
+- Bugfix
+
 ## 0.5.1
 
-- Bugfix (Installation failure)
+- Bugfix
 
 ## 0.5.0
 

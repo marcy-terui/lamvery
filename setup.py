@@ -3,11 +3,9 @@ import sys
 
 from setuptools import setup, find_packages
 
-import lamvery.version
-
 setup_options = dict(
     name='lamvery',
-    version=lamvery.version.__version__,
+    version='0.5.2',
     description='Yet another deploy tool for AWS Lambda in the virtualenv environment.',
     long_description='''
 See: `GitHub <https://github.com/marcy-terui/lamvery/blob/master/README.md>`__

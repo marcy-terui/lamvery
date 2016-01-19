@@ -2,9 +2,11 @@
 
 import sys
 import argparse
-import lamvery.version
+import lamvery
 from termcolor import cprint, colored
 from lamvery.actions import *
+
+VERSION = '0.5.2'
 
 def init(args):
     InitAction(args).action()
@@ -73,7 +75,7 @@ def main():
 
     parser = argparse.ArgumentParser(
         description='Yet another deploy tool for AWS Lambda in the virtualenv environment.',
-        epilog='Lamvery version: {}'.format(lamvery.version.__version__))
+        epilog='Lamvery version: {}'.format(VERSION))
     subparsers = parser.add_subparsers(title='subcommands')
 
     init_parser = subparsers.add_parser(
