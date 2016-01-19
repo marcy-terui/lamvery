@@ -37,7 +37,7 @@
 
 - Change default name of the configuration file to '.lamvery.yml'
 - Change format of the configuration file (See: [README](https://github.com/marcy-terui/lamvery/blob/master/README.md#setup))
-- Support passing some confidential information using KMS [#8]()
+- Support passing some confidential informations using KMS [#8]()
 - Add `encrypt` command
 - Add `decrypt` command
 - Adjust all outputs
