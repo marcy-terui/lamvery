@@ -84,7 +84,51 @@ class ArchiveAction(BaseAction):
         zipfile.close()
         self._logger.info('Output package zip file to {}'.format(archive_name))
 
-class DeployAction(BaseAction):
+class ConfigureAction(BaseAction):
+
+    def __init__(self, args):
+        super(ConfigureAction, self).__init__(args)
+        self._dry_run = args.dry_run
+
+    def action(self):
+        self._logger.info('Start configuring...')
+        func_name   = self._config.get_function_name()
+        local_conf  = self._config.get_configuration()
+        client      = self.get_client()
+        remote_conf = client.get_function_conf(func_name)
+
+        if len(remote_conf) > 0:
+            self._print_conf_diff(remote=remote_conf, local=local_conf)
+            if not self._dry_run:
+                client.update_function_conf(local_conf)
+        else:
+            msg = '"{}" function is not exists. Please `deploy` at first.'.format(func_name)
+            raise Exception(msg)
+
+        self._logger.info('Finish configuring.')
+
+    def _get_conf_diff(self, remote, local):
+        diff = {}
+        for k in CONF_DIFF_KEYS:
+            r = remote.get(k[0])
+            l = local.get(k[1])
+            if r == l:
+                diff[k[1]] = None
+            else:
+                diff[k[1]] = (r, l,)
+        return diff
+
+    def _print_conf_diff(self, remote, local):
+        diff = self._get_conf_diff(remote, local)
+        for k,v in diff.items():
+            if v is None:
+                self._logger.warn(
+                    '[Configuration] {k}: No change'.format(k=k))
+            else:
+                self._logger.warn(
+                    '[Configuration] {k}: {r} > {l}'.format(k=k, r=v[0], l=v[1]))
+
+class DeployAction(ConfigureAction):
 
     def __init__(self, args):
         super(DeployAction, self).__init__(args)
@@ -119,28 +163,7 @@ class DeployAction(BaseAction):
                 client.create_function(zipfile, local_conf, self._publish)
         zipfile.close()
         self._set_alias.action()
-        self._logger.info('Deploy finished.')
-
-    def _get_conf_diff(self, remote, local):
-        diff = {}
-        for k in CONF_DIFF_KEYS:
-            r = remote.get(k[0])
-            l = local.get(k[1])
-            if r == l:
-                diff[k[1]] = None
-            else:
-                diff[k[1]] = (r, l,)
-        return diff
-
-    def _print_conf_diff(self, remote, local):
-        diff = self._get_conf_diff(remote, local)
-        for k,v in diff.items():
-            if v is None:
-                self._logger.warn(
-                    '[Configuration] {k}: No change'.format(k=k))
-            else:
-                self._logger.warn(
-                    '[Configuration] {k}: {r} > {l}'.format(k=k, r=v[0], l=v[1]))
+        self._logger.info('Finish deployment.')
 
     def _print_capacity(self, remote, local):
         self._logger.warn(

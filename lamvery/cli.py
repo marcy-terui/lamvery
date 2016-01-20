@@ -14,6 +14,9 @@ def init(args):
 def archive(args):
     ArchiveAction(args).action()
 
+def configure(args):
+    ConfigureAction(args).action()
+
 def deploy(args):
     DeployAction(args).action()
 
@@ -98,6 +101,13 @@ def main():
     set_alias_parser.add_argument(*c_args, **c_kwargs)
     set_alias_parser.add_argument(*d_args, **d_kwargs)
     set_alias_parser.set_defaults(func=set_alias)
+
+    configure_parser = subparsers.add_parser(
+        'configure',
+        help='Update the remote configuration')
+    configure_parser.add_argument(*c_args, **c_kwargs)
+    configure_parser.add_argument(*d_args, **d_kwargs)
+    configure_parser.set_defaults(func=configure)
 
     deploy_parser = subparsers.add_parser(
         'deploy',

@@ -74,28 +74,32 @@ class ArchiveActionTestCase(TestCase):
         action.action()
         ok_(os.path.exists('test.zip'))
 
-class DeployActionTestCase(TestCase):
+class ConfigureActionTestCase(TestCase):
 
-    @patch('lamvery.actions.SetAliasAction')
-    @patch('lamvery.actions.Client')
-    def test_action(self, a, c):
+    @raises(Exception)
+    def test_action_not_exists(self):
+        with patch('lamvery.actions.Client') as c:
+            action = ConfigureAction(default_args())
+            action._print_conf_diff = Mock()
+            c.get_function_conf = Mock(return_value={})
+            action.action()
+
+    def test_action(self):
+        c = Mock()
+        c.get_function_conf = Mock(return_value={'foo': 'bar'})
+
         # Dry run
-        action = DeployAction(default_args())
+        action = ConfigureAction(default_args())
+        action.get_client = Mock(return_value=c)
         action._print_conf_diff = Mock()
-        action._print_capacity = Mock()
         action.action()
 
         # No dry run
         args = default_args()
         args.dry_run = False
-        action = DeployAction(args)
+        action = ConfigureAction(args)
+        action.get_client = Mock(return_value=c)
         action._print_conf_diff = Mock()
-        action._print_capacity = Mock()
-        # New
-        c.get_function_conf = Mock(return_value={})
-        action.action()
-        # Update
-        c.get_function_conf = Mock(return_value={'foo': 'bar'})
         action.action()
 
     def test_get_conf_diff(self):
@@ -131,6 +135,32 @@ class DeployActionTestCase(TestCase):
         }
         action = DeployAction(default_args())
         action._print_conf_diff(remote, local)
+
+class DeployActionTestCase(TestCase):
+
+    @patch('lamvery.actions.SetAliasAction')
+    @patch('lamvery.actions.Client')
+    def test_action(self, a, c):
+        # Dry run
+        action = DeployAction(default_args())
+        action._print_conf_diff = Mock()
+        action._print_capacity = Mock()
+        action.action()
+
+        # No dry run
+        args = default_args()
+        args.dry_run = False
+        action = DeployAction(args)
+        action._print_conf_diff = Mock()
+        action._print_capacity = Mock()
+        # New
+        c.get_function_conf = Mock(return_value={})
+        action.get_client = Mock(return_value=c)
+        action.action()
+        # Update
+        c.get_function_conf = Mock(return_value={'foo': 'bar'})
+        action.get_client = Mock(return_value=c)
+        action.action()
 
     def test_print_capacity(self):
         action = DeployAction(default_args())
