@@ -19,6 +19,10 @@ class FunctionsTestCase(TestCase):
         with patch('lamvery.cli.ArchiveAction'):
             archive(Mock())
 
+    def test_configure(self):
+        with patch('lamvery.cli.ConfigureAction'):
+            configure(Mock())
+
     def test_deploy(self):
         with patch('lamvery.cli.DeployAction'):
             deploy(Mock())
@@ -26,6 +30,10 @@ class FunctionsTestCase(TestCase):
     def test_encrypt(self):
         with patch('lamvery.cli.EncryptAction'):
             encrypt(Mock())
+
+    def test_events(self):
+        with patch('lamvery.cli.EventsAction'):
+            events(Mock())
 
     def test_decrypt(self):
         with patch('lamvery.cli.DecryptAction'):

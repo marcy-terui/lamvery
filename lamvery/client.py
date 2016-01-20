@@ -3,14 +3,17 @@
 import boto3
 import botocore
 import base64
+import uuid
 
 class Client:
 
-    def __init__(self, region=None, profile=None):
+    def __init__(self, region=None, profile=None, dry_run=False):
         session = boto3.session.Session(
             profile_name=profile, region_name=region)
         self._lambda = session.client('lambda')
         self._kms = session.client('kms')
+        self._events = session.client('events')
+        self._dry_run = dry_run
 
     def get_function_conf(self, name):
         try:
@@ -21,36 +24,39 @@ class Client:
             return {}
 
     def create_function(self, zipfile, conf, publish):
-        self._lambda.create_function(
-            FunctionName=conf['name'],
-            Runtime=conf['runtime'],
-            Role=conf['role'],
-            Handler=conf['handler'],
-            Code={
-                'ZipFile': zipfile.read(),
-            },
-            Description=conf['description'],
-            Timeout=conf['timeout'],
-            MemorySize=conf['memory_size'],
-            Publish=publish,
-        )
+        if not self._dry_run:
+            self._lambda.create_function(
+                FunctionName=conf['name'],
+                Runtime=conf['runtime'],
+                Role=conf['role'],
+                Handler=conf['handler'],
+                Code={
+                    'ZipFile': zipfile.read(),
+                },
+                Description=conf['description'],
+                Timeout=conf['timeout'],
+                MemorySize=conf['memory_size'],
+                Publish=publish,
+            )
 
     def update_function_code(self, zipfile, conf, publish):
-        self._lambda.update_function_code(
-            FunctionName=conf['name'],
-            ZipFile=zipfile.read(),
-            Publish=publish,
-        )
+        if not self._dry_run:
+            self._lambda.update_function_code(
+                FunctionName=conf['name'],
+                ZipFile=zipfile.read(),
+                Publish=publish,
+            )
 
     def update_function_conf(self, conf):
-        self._lambda.update_function_configuration(
-            FunctionName=conf['name'],
-            Role=conf['role'],
-            Handler=conf['handler'],
-            Description=conf['description'],
-            Timeout=conf['timeout'],
-            MemorySize=conf['memory_size'],
-        )
+        if not self._dry_run:
+            self._lambda.update_function_configuration(
+                FunctionName=conf['name'],
+                Role=conf['role'],
+                Handler=conf['handler'],
+                Description=conf['description'],
+                Timeout=conf['timeout'],
+                MemorySize=conf['memory_size'],
+            )
 
     def get_alias(self, function, alias):
         try:
@@ -61,16 +67,18 @@ class Client:
             return {}
 
     def create_alias(self, function, alias, version):
-        self._lambda.create_alias(
-                FunctionName=function,
-                Name=alias,
-                FunctionVersion=version)
+        if not self._dry_run:
+            self._lambda.create_alias(
+                    FunctionName=function,
+                    Name=alias,
+                    FunctionVersion=version)
 
     def update_alias(self, function, alias, version):
-        self._lambda.update_alias(
-                FunctionName=function,
-                Name=alias,
-                FunctionVersion=version)
+        if not self._dry_run:
+            self._lambda.update_alias(
+                    FunctionName=function,
+                    Name=alias,
+                    FunctionVersion=version)
 
     def encrypt(self, key_id, text):
         res = self._kms.encrypt(KeyId=key_id, Plaintext=text)
@@ -110,3 +118,83 @@ class Client:
                 function_name=function_name, next_marker=r['NextMarker'])
         else:
             return size
+
+    def get_rules_by_target(self, arn):
+        names = self._get_rule_names_by_tagert(arn=arn)
+
+        rules = []
+        for name in names:
+            rules.append(self._events.describe_rule(Name=name))
+
+        return rules
+
+    def _get_rule_names_by_tagert(self, arn, next_token=None):
+        try:
+            if next_token:
+                names = self._events.list_rule_names_by_target(
+                    TargetArn=arn, NextToken=next_token, Limit=100)
+            else:
+                names = self._events.list_rule_names_by_target(
+                    TargetArn=arn, Limit=100)
+        except botocore.exceptions.ClientError:
+            return []
+
+        ret = names['RuleNames']
+        if 'NextToken' in names:
+            return ret.extend(
+                self._get_rule_names_by_tagert(
+                    arn=arn, next_token=names['NextToken']))
+        else:
+            return ret
+
+    def put_rule(self, rule):
+        if not self._dry_run:
+            kwargs = {}
+
+            kwargs['Name'] = rule['rule']
+            kwargs['State'] = rule.get('state', 'ENABLED')
+            if rule.get('description') is not None:
+                kwargs['Description'] = rule.get('description')
+            if rule.get('pattern') is not None:
+                kwargs['EventPattern'] = rule.get('pattern')
+            if rule.get('schedule') is not None:
+                kwargs['ScheduleExpression'] = rule.get('schedule')
+
+            self._events.put_rule(**kwargs)
+
+    def put_target(self, rule, target, arn):
+        if not self._dry_run:
+            self._events.put_targets(
+                Rule=rule,
+                Targets=[{
+                    'Arn': arn,
+                    'Id': target
+                }]
+            )
+
+    def get_targets_by_rule(self, rule, next_token=None):
+        try:
+            if next_token:
+                rules = self._events.list_targets_by_rule(
+                    Rule=rule, NextToken=next_token, Limit=100)
+            else:
+                rules = self._events.list_targets_by_rule(
+                    Rule=rule, Limit=100)
+        except botocore.exceptions.ClientError:
+            return []
+
+        ret = rules['Targets']
+        if 'NextToken' in rules:
+            return ret.extend(
+                self.get_targets_by_rule(
+                    rule=rule, next_token=rules['NextToken']))
+        else:
+            return ret
+
+    def remove_targets(self, rule, targets):
+        if not self._dry_run:
+            self._events.remove_targets(Rule=rule, Ids=targets)
+
+    def delete_rule(self, name):
+        if not self._dry_run:
+            self._events.delete_rule(Name=name)

@@ -26,6 +26,9 @@ def decrypt(args):
 def encrypt(args):
     EncryptAction(args).action()
 
+def events(args):
+    EventsAction(args).action()
+
 def set_alias(args):
     SetAliasAction(args).action()
 
@@ -46,8 +49,14 @@ def main():
         'action': 'store_true',
         'default': False
     }
+    k_args = ('-k', '--keep-empty-events',)
+    k_kwargs = {
+        'help': 'Keep the event rules that does not have any targets.',
+        'action': 'store_true',
+        'default': False
+    }
     l_args = ('-l', '--no-libs',)
-    l_kargs = {
+    l_kwargs = {
         'help': 'Archiving without all libraries',
         'action': 'store_true',
         'default': False
@@ -91,7 +100,7 @@ def main():
         'archive',
         help='Archive your code and libraries to <your-function-name>.zip')
     archive_parser.add_argument(*c_args, **c_kwargs)
-    archive_parser.add_argument(*l_args, **l_kargs)
+    archive_parser.add_argument(*l_args, **l_kwargs)
     archive_parser.set_defaults(func=archive)
 
     set_alias_parser = subparsers.add_parser(
@@ -115,7 +124,7 @@ def main():
     deploy_parser.add_argument(*a_args, **a_kwargs)
     deploy_parser.add_argument(*c_args, **c_kwargs)
     deploy_parser.add_argument(*d_args, **d_kwargs)
-    deploy_parser.add_argument(*l_args, **l_kargs)
+    deploy_parser.add_argument(*l_args, **l_kwargs)
     deploy_parser.add_argument(*p_args, **p_kwargs)
     deploy_parser.set_defaults(func=deploy)
 
@@ -130,6 +139,14 @@ def main():
     decrypt_parser.add_argument(*c_args, **c_kwargs)
     decrypt_parser.add_argument(*n_args, **n_kwargs)
     decrypt_parser.set_defaults(func=decrypt)
+
+    events_parser = subparsers.add_parser(
+        'events',
+        help='Configure all events of CloudWatchEvents using the function')
+    events_parser.add_argument(*c_args, **c_kwargs)
+    events_parser.add_argument(*d_args, **d_kwargs)
+    events_parser.add_argument(*k_args, **k_kwargs)
+    events_parser.set_defaults(func=events)
 
     try:
         args = parser.parse_args()

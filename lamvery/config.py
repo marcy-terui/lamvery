@@ -68,6 +68,12 @@ class Config:
     def get_secret(self):
         return self.load_conf().get('secret')
 
+    def get_events(self):
+        events = self.load_conf().get('events')
+        if events is None:
+            return []
+        return events
+
     def generate_lambda_secret(self):
         return {
             'region': self.get_region(),
@@ -98,7 +104,7 @@ class Config:
         init_config['runtime']     = 'python2.7'
         init_config['role']        = 'arn:aws:iam::<account-number>:role/<role>'
         init_config['handler']     = 'lambda_function.lambda_handler'
-        init_config['description'] = 'This is sample lambda function.'
+        init_config['description'] = 'This is a sample lambda function.'
         init_config['timeout']     = 10
         init_config['memory_size'] = 128
 
@@ -106,10 +112,17 @@ class Config:
         init_secret['key_id'] = '<key-id>'
         init_secret['cipher_texts'] = OrderedDict()
 
+        event = OrderedDict()
+        event['rule']        = 'sample-rule-name'
+        event['description'] = 'This is a sample CloudWatchEvent'
+        event['schedule']    = 'rate(5 minutes)'
+        init_events = [event]
+
         init_yaml = OrderedDict()
         init_yaml['profile'] = None
         init_yaml['region']  = 'us-east-1'
         init_yaml['configuration'] = init_config
+        init_yaml['events'] = init_events
         init_yaml['secret'] = init_secret
 
         return init_yaml
