@@ -4,6 +4,7 @@ import yaml
 import os
 import logging
 import datetime
+import json
 from abc import ABCMeta, abstractmethod
 from collections import OrderedDict
 from termcolor import colored
@@ -27,6 +28,11 @@ EVENT_RULE_DIFF_KEYS = [
     ('RoleArn', 'role',),
     ('ScheduleExpression', 'schedule',),
     ('State', 'state',),
+]
+
+EVENT_TARGET_DIFF_KEYS = [
+    ('Input', 'input',),
+    ('InputPath', 'input_path',),
 ]
 
 class BaseAction:
@@ -278,7 +284,7 @@ class EventsAction(BaseAction):
         remote_rules = client.get_rules_by_target(arn)
 
         self._put_rules(remote_rules, local_rules)
-        self._put_target(local_rules, arn)
+        self._put_targets(local_rules, arn)
         self._clean(remote_rules, local_rules, arn)
         self._logger.info('Finish events setting.')
 
@@ -315,33 +321,35 @@ class EventsAction(BaseAction):
     def _exist_rule(self, rules, name):
         return len(self._search_rule(rules, name)) > 0
 
-    def _exist_target(self, targets, arn):
-        for t in targets:
-            if t['Arn'] == arn:
-                return True
-        return False
-
-    def _put_target(self, local, arn):
+    def _put_targets(self, local, arn):
         client = self.get_client()
 
         for l in local:
             targets = client.get_targets_by_rule(l['rule'])
 
-            if self._exist_target(targets, arn):
-                break
+            for lt in l['targets']:
+                if 'input' in lt:
+                    lt['input'] = json.dumps(lt['input'])
 
-            self._logger.warn(
-                '[EventRule - {name}] Add "{arn}" to targets'.format(name=l['rule'], arn=arn))
-            client.put_target(
-                rule=l['rule'], target=self._generate_target_id(l['rule'], arn), arn=arn)
+                diff_r = {}
+                for rt in targets:
+                    if rt['Id'] == lt['id']:
+                        self._print_diff(
+                            name='EventTarget - {}'.format(lt['id']),
+                            keys=EVENT_TARGET_DIFF_KEYS,
+                            remote=rt, local=lt)
+                        diff_r = rt
+                        break
+                    self._logger.warn(
+                        '[EventRule - {name}] Add "{id}" to targets'.format(name=l['rule'], id=t['id']))
 
-    def _generate_target_id(self, rule, arn):
-        ret = '{}-{}_{}'.format(
-            rule,
-            arn[arn.rfind(':')+1:],
-            datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
-        )
-        return ret[0:64]
+                self._print_diff(
+                    name='EventTarget - {}'.format(lt['id']),
+                    keys=EVENT_TARGET_DIFF_KEYS,
+                    remote=diff_r, local=lt)
+
+            client.put_targets(
+                rule=l['rule'], targets=l['targets'], arn=arn)
 
     def _clean(self, remote, local, arn):
         client = self.get_client()

@@ -273,26 +273,14 @@ class EventsActionTestCase(TestCase):
         eq_(action._exist_rule([{'Name': 'foo'}, {'rule': 'bar'}], 'bar'), True)
         eq_(action._exist_rule([{'Name': 'foo'}, {'rule': 'bar'}], 'baz'), False)
 
-    def test_exist_target(self):
-        action = EventsAction(default_args())
-        eq_(action._exist_target([{'Arn': 'foo'}, {'Arn': 'bar'}], 'bar'), True)
-        eq_(action._exist_target([{'Arn': 'foo'}, {'Arn': 'bar'}], 'baz'), False)
-
-    def test_put_target(self):
-        action = EventsAction(default_args())
-        action._put_target(local=[{'rule': 'foo'}, {'rule': 'bar'}], arn='baz')
-
-    def test_generate_target_id(self):
-        with patch('datetime.datetime') as d:
+    def test_put_targets(self):
+        with patch('lamvery.actions.Client') as c:
             action = EventsAction(default_args())
-            now = Mock()
-            now.strftime = Mock(return_value='2000-01-02-03-04-05')
-            d.now = Mock(return_value=now)
-            eq_(
-                action._generate_target_id(
-                    'foo',
-                    'arn:aws:lambda:us-east-1:000000000000:function:lamvery-test'),
-                'foo-lamvery-test_2000-01-02-03-04-05')
+            local = [
+                {'rule': 'foo', 'targets': [{'id': 'baz'}]},
+                {'rule': 'bar', 'targets': [{'id': 'qux'}]}
+            ]
+            action._put_targets(local=local, arn='baz')
 
     def test_clean(self):
         with patch('lamvery.actions.Client') as c:

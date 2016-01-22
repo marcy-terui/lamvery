@@ -3,6 +3,7 @@
 import yaml
 import os
 import uuid
+import json
 from termcolor import cprint, colored
 from collections import OrderedDict
 from lamvery.archive import Archive
@@ -112,10 +113,16 @@ class Config:
         init_secret['key_id'] = '<key-id>'
         init_secret['cipher_texts'] = OrderedDict()
 
+        targets = OrderedDict()
+        targets = [OrderedDict(
+            [('id', '<unique-target-id>',),
+            ('input', {'this': [{'is': 'a'}, {'sample': 'input'}]},),
+            ('input_path', 'json.path.format',)])]
         event = OrderedDict()
         event['rule']        = 'sample-rule-name'
         event['description'] = 'This is a sample CloudWatchEvent'
         event['schedule']    = 'rate(5 minutes)'
+        event['targets']     = targets
         init_events = [event]
 
         init_yaml = OrderedDict()

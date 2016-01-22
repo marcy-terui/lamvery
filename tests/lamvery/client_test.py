@@ -98,8 +98,9 @@ class ClientTestCase(TestCase):
     def test_put_rule(self):
         self.client.put_rule({'rule': 'foo'})
 
-    def test_put_target(self):
-        self.client.put_target('foo', 'bar', 'baz')
+    def test_put_targets(self):
+        self.client.put_targets(
+            'foo', [{'id': 'foo', 'input': 'bar', 'input_path': 'baz'}], 'baz')
 
     def test_get_targets_by_rule(self):
         self.client._events.list_targets_by_rule = Mock(return_value={'Targets': [{'foo': 'bar'}]})

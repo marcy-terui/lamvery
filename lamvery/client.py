@@ -150,9 +150,9 @@ class Client:
     def put_rule(self, rule):
         if not self._dry_run:
             kwargs = {}
-
             kwargs['Name'] = rule['rule']
             kwargs['State'] = rule.get('state', 'ENABLED')
+
             if rule.get('description') is not None:
                 kwargs['Description'] = rule.get('description')
             if rule.get('pattern') is not None:
@@ -162,15 +162,19 @@ class Client:
 
             self._events.put_rule(**kwargs)
 
-    def put_target(self, rule, target, arn):
+    def put_targets(self, rule, targets, arn):
         if not self._dry_run:
-            self._events.put_targets(
-                Rule=rule,
-                Targets=[{
-                    'Arn': arn,
-                    'Id': target
-                }]
-            )
+            t_args = []
+
+            for t in targets:
+                arg = {'Id': t['id'], 'Arn': arn}
+                if t.get('input') is not None:
+                    arg['Input'] = t['input']
+                if t.get('input_path') is not None:
+                    arg['InputPath'] = t['input_path']
+                t_args.append(arg)
+
+            self._events.put_targets(Rule=rule, Targets=t_args)
 
     def get_targets_by_rule(self, rule, next_token=None):
         try:
