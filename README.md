@@ -90,10 +90,18 @@ lamvery encrypt -n <secret-name> <secret-value> [-s]
 
 ### decrypt
 
--   Decrypt the secret value using KMS
+- Decrypt the secret value using KMS
 
 ```sh
 lamvery decrypt -n <secret-name>
+```
+
+### events
+
+- Apply CloudWatch Events settings
+
+```sh
+lamvery events [-k]
 ```
 
 ## Options
@@ -122,6 +130,10 @@ The name of the secret value.
 - `-p` or `--publish`  
 This option only needed by `deploy` command.
 Publish the version as an atomic operation.
+
+- `-k` or `--keep-empty-events`  
+This option only needed by `events` command.
+Keep the empty CloudWatch Event Rule that does not have CloudWatch Event Target.
 
 - `-s` or `--store`  
 This option only needed by `encrypt` command.  
@@ -176,8 +188,33 @@ The ID of your encryption key on KMS.
 - cipher_texts  
 The name and cipher texts for passing to lambda function.
 
-Using confidential information in lambda function
--------------------------------------------------
+### events
+
+- rule  
+The name of CloudWatch Event Rule.
+
+- description  
+The description of CloudWatch Event Rule.
+
+- schedule  
+The schedule expression of CloudWatch Event Rule.
+
+- disabled  
+When this setting is true, change the state of CloudWatch Event Rule to `DISABLED`.  
+default: `false`
+
+- targets  
+The targets of CloudWatch Event Rule.
+  - id  
+  The unique target assignment ID.
+  - input  
+  Arguments passed to the target.
+  - input_path  
+  The value of the JSONPath that is used for extracting part of the matched event when passing it to the target.  
+  *`input` and `input_path` are mutually-exclusive and optional parameters of a target.*
+
+
+# Using confidential information in lambda function
 
 #### 1. Create key on KMS  
 See: https://docs.aws.amazon.com/kms/latest/developerguide/create-keys.html
