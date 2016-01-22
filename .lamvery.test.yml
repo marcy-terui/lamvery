@@ -12,6 +12,12 @@ events:
   - rule: foo
     description: bar
     schedule: 'rate(5 minutes)'
+    targets:
+    - id: test-target-id
+      input:
+        this:
+        - is: a
+        - sample: input
 secret:
   key_id: {{ env['AWS_KMS_KEY_ID'] }}
   cipher_texts:

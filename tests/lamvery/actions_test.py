@@ -256,7 +256,10 @@ class EventsActionTestCase(TestCase):
         with patch('lamvery.actions.Client') as c:
             c.get_function_conf = Mock(return_value={'FunctionArn': 'foo'})
             action = EventsAction(default_args())
-            action._put_rules(remote=[{'Name': 'bar'}], local=[{'rule': 'foo'}, {'rule': 'bar'}])
+            action._put_rules(
+                remote=[{'Name': 'bar'}],
+                local=[{'rule': 'foo'}, {'rule': 'bar'}],
+                function='baz')
 
     def test_convert_state(self):
         action = EventsAction(default_args())
@@ -275,6 +278,7 @@ class EventsActionTestCase(TestCase):
 
     def test_put_targets(self):
         with patch('lamvery.actions.Client') as c:
+            c.get_targets_by_rule = Mock(return_value={'Id': 'baz'})
             action = EventsAction(default_args())
             local = [
                 {'rule': 'foo', 'targets': [{'id': 'baz'}]},
@@ -286,4 +290,8 @@ class EventsActionTestCase(TestCase):
         with patch('lamvery.actions.Client') as c:
             c.get_targets_by_rule = Mock(return_value=[{'Arn': 'baz'}])
             action = EventsAction(default_args())
-            action._clean(remote=[{'Name': 'bar'}], local=[{'rule': 'foo'}, {'rule': 'bar'}], arn='baz')
+            action._clean(
+                remote=[{'Name': 'bar'}],
+                local=[{'rule': 'foo'}, {'rule': 'bar'}],
+                arn='baz',
+                function='qux')

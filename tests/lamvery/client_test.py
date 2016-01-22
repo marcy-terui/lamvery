@@ -96,7 +96,9 @@ class ClientTestCase(TestCase):
         eq_(self.client._get_rule_names_by_tagert('foo', 'bar'), [])
 
     def test_put_rule(self):
-        self.client.put_rule({'rule': 'foo'})
+        ok_(self.client.put_rule({'rule': 'foo'}) != {})
+        client = Client(region='us-east-1', profile=None, dry_run=True)
+        eq_(client.put_rule({'rule': 'foo'}), {})
 
     def test_put_targets(self):
         self.client.put_targets(
@@ -115,3 +117,12 @@ class ClientTestCase(TestCase):
 
     def test_delete_rule(self):
         self.client.delete_rule('foo')
+
+    def test_add_permission(self):
+        self.client.add_permission('foo', 'bar', 'baz')
+
+    def test_remove_permission(self):
+        self.client.remove_permission('foo', 'bar')
+
+    def test_generate_statement_id(self):
+        self.client._generate_statement_id('foo', 'bar')

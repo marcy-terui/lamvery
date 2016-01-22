@@ -283,12 +283,12 @@ class EventsAction(BaseAction):
         local_rules = self._config.get_events()
         remote_rules = client.get_rules_by_target(arn)
 
-        self._put_rules(remote_rules, local_rules)
+        self._clean(remote_rules, local_rules, arn, func_name)
+        self._put_rules(remote_rules, local_rules, func_name)
         self._put_targets(local_rules, arn)
-        self._clean(remote_rules, local_rules, arn)
         self._logger.info('Finish events setting.')
 
-    def _put_rules(self, remote, local):
+    def _put_rules(self, remote, local, function):
         client = self.get_client()
 
         for l in local:
@@ -304,7 +304,8 @@ class EventsAction(BaseAction):
                 keys=EVENT_RULE_DIFF_KEYS,
                 remote=r, local=l)
 
-            client.put_rule(l)
+            ret = client.put_rule(l)
+            client.add_permission(function, l['rule'], ret.get('RuleArn'))
 
     def _convert_state(self, disabled):
         if disabled:
@@ -334,14 +335,10 @@ class EventsAction(BaseAction):
                 diff_r = {}
                 for rt in targets:
                     if rt['Id'] == lt['id']:
-                        self._print_diff(
-                            name='EventTarget - {}'.format(lt['id']),
-                            keys=EVENT_TARGET_DIFF_KEYS,
-                            remote=rt, local=lt)
                         diff_r = rt
                         break
                     self._logger.warn(
-                        '[EventRule - {name}] Add "{id}" to targets'.format(name=l['rule'], id=t['id']))
+                        '[EventRule - {name}] Add "{id}" to targets'.format(name=l['rule'], id=lt['id']))
 
                 self._print_diff(
                     name='EventTarget - {}'.format(lt['id']),
@@ -351,21 +348,35 @@ class EventsAction(BaseAction):
             client.put_targets(
                 rule=l['rule'], targets=l['targets'], arn=arn)
 
-    def _clean(self, remote, local, arn):
+    def _exist_target(self, targets, target_id):
+        for t in targets:
+            if target_id in [t.get('id'), t.get('Id')]:
+                return True
+        return False
+
+    def _clean(self, remote, local, arn, function):
         client = self.get_client()
 
         for r in remote:
-            if not self._exist_rule(local, r['Name']):
-                targets = client.get_targets_by_rule(r['Name'])
+            targets = client.get_targets_by_rule(r['Name'])
+            target_ids = []
 
-                target_ids = []
-                for t in targets:
-                    if arn == t['Arn']:
-                        self._logger.warn(
-                            '[EventRule {}] Remove event target "{}"'.format(r['Name'], t['Id']))
-                        target_ids.append(t['Id'])
+            l = self._search_rule(local, r['Name'])
+
+            for rt in targets:
+                msg = '[EventRule {}] Remove undifined event target "{}"'.format(r['Name'], rt['Id'])
+                if len(l) > 0:
+                    if not self._exist_target(l['targets'], rt['Id']):
+                        self._logger.warn(msg)
+                        target_ids.append(rt['Id'])
+                elif rt['Arn'] == arn:
+                    self._logger.warn(msg)
+                    target_ids.append(rt['Id'])
+
+            if len(target_ids) > 0:
                 client.remove_targets(r['Name'], target_ids)
 
-                if len(targets) == 1 and not self._keep_empty:
-                    self._logger.warn('[EventRule] Delete the event rule "{}" that does not have any targets'.format(r['Name']))
-                    client.delete_rule(r['Name'])
+            if len(targets) == len(target_ids) and not self._keep_empty:
+                self._logger.warn('[EventRule] Delete the event rule "{}" that does not have any targets'.format(r['Name']))
+                client.delete_rule(r['Name'])
+                client.remove_permission(function, r['Name'])

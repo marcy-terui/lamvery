@@ -3,7 +3,8 @@
 import boto3
 import botocore
 import base64
-import uuid
+import hashlib
+import json
 
 class Client:
 
@@ -148,7 +149,9 @@ class Client:
             return ret
 
     def put_rule(self, rule):
-        if not self._dry_run:
+        if self._dry_run:
+            return {}
+        else:
             kwargs = {}
             kwargs['Name'] = rule['rule']
             kwargs['State'] = rule.get('state', 'ENABLED')
@@ -160,7 +163,7 @@ class Client:
             if rule.get('schedule') is not None:
                 kwargs['ScheduleExpression'] = rule.get('schedule')
 
-            self._events.put_rule(**kwargs)
+            return self._events.put_rule(**kwargs)
 
     def put_targets(self, rule, targets, arn):
         if not self._dry_run:
@@ -202,3 +205,25 @@ class Client:
     def delete_rule(self, name):
         if not self._dry_run:
             self._events.delete_rule(Name=name)
+
+    def add_permission(self, function, rule_name, rule_arn):
+        if not self._dry_run:
+            try:
+                self._lambda.add_permission(
+                    FunctionName=function,
+                    Action='lambda:InvokeFunction',
+                    Principal='events.amazonaws.com',
+                    SourceArn=rule_arn,
+                    StatementId=self._generate_statement_id(function, rule_name))
+            except botocore.exceptions.ClientError:
+                pass
+
+    def remove_permission(self, function, rule):
+        if not self._dry_run:
+            self._lambda.remove_permission(
+                FunctionName=function,
+                StatementId=self._generate_statement_id(function, rule))
+
+    def _generate_statement_id(self, function, rule):
+        return hashlib.sha256(
+            'lamvery-{}-{}'.format(function, rule)).hexdigest()
