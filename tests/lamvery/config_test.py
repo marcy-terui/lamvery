@@ -23,6 +23,10 @@ configuration:
   timeout: 10
   memory_size: 128
   test_env: {{ env['PATH'] }}
+events:
+  - name: foo
+    description: This is a sample CloudWatchEvent
+    schedule: rate(5 minutes)
 secret:
   key_id: arn:aws:kms:<region>:<account-number>:key/<key-id>
   cipher_texts:
@@ -117,3 +121,9 @@ class ConfigTestCase(TestCase):
         config.store_secret('foo', 'bar')
         runtime = config.get_default().get('configuration').get('runtime')
         eq_(config.get_secret().get('cipher_texts').get('foo'), 'bar')
+
+    def test_get_events(self):
+        config = Config(self.conf_file)
+        eq_(config.get_events().pop().get('schedule'), 'rate(5 minutes)')
+        config.load_conf = Mock(return_value={'events': None})
+        eq_(config.get_events(), [])

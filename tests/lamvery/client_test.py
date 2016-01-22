@@ -27,6 +27,7 @@ class ClientTestCase(TestCase):
         self.client = Client(region='us-east-1')
         self.client._lambda = Mock()
         self.client._kms = Mock()
+        self.client._events = Mock()
 
     def test_get_function_conf(self):
         self.client._lambda.get_function = Mock(
@@ -71,8 +72,57 @@ class ClientTestCase(TestCase):
         self.client._lambda.list_functions = Mock(return_value=ret)
         self.client._calculate_versions_capacity = Mock(return_value=10)
         eq_(self.client.calculate_capacity(), 20)
+        eq_(self.client.calculate_capacity(next_marker='foo'), 20)
 
     def test_calculate_versions_capacity(self):
         ret = {'Versions': [{'CodeSize':20}, {'CodeSize':20}]}
         self.client._lambda.list_versions_by_function = Mock(return_value=ret)
         eq_(self.client._calculate_versions_capacity('foo'), 40)
+        eq_(self.client._calculate_versions_capacity('foo', next_marker='bar'), 40)
+
+    def test_get_rules_by_target(self):
+        self.client._get_rule_names_by_tagert = Mock(return_value=['foo', 'bar'])
+        self.client._events.describe_rule = Mock(return_value={'foo': 'bar'})
+        eq_(self.client.get_rules_by_target('foo'), [
+            {'foo': 'bar'},
+            {'foo': 'bar'}])
+
+    def test_get_rule_names_by_tagert(self):
+        self.client._events.list_rule_names_by_target = Mock(return_value={'RuleNames': ['foo', 'bar']})
+        eq_(self.client._get_rule_names_by_tagert('foo'), ['foo', 'bar'])
+
+        self.client._events.list_rule_names_by_target = Mock(
+            side_effect=botocore.exceptions.ClientError({'Error': {}}, 'bar'))
+        eq_(self.client._get_rule_names_by_tagert('foo', 'bar'), [])
+
+    def test_put_rule(self):
+        ok_(self.client.put_rule({'rule': 'foo'}) != {})
+        client = Client(region='us-east-1', profile=None, dry_run=True)
+        eq_(client.put_rule({'rule': 'foo'}), {})
+
+    def test_put_targets(self):
+        self.client.put_targets(
+            'foo', [{'id': 'foo', 'input': 'bar', 'input_path': 'baz'}], 'baz')
+
+    def test_get_targets_by_rule(self):
+        self.client._events.list_targets_by_rule = Mock(return_value={'Targets': [{'foo': 'bar'}]})
+        eq_(self.client.get_targets_by_rule('foo'), [{'foo': 'bar'}])
+
+        self.client._events.list_targets_by_rule = Mock(
+            side_effect=botocore.exceptions.ClientError({'Error': {}}, 'bar'))
+        eq_(self.client.get_targets_by_rule('foo', 'bar'), [])
+
+    def test_remove_targets(self):
+        self.client.remove_targets('foo', ['bar', 'baz'])
+
+    def test_delete_rule(self):
+        self.client.delete_rule('foo')
+
+    def test_add_permission(self):
+        self.client.add_permission('foo', 'bar', 'baz')
+
+    def test_remove_permission(self):
+        self.client.remove_permission('foo', 'bar')
+
+    def test_generate_statement_id(self):
+        self.client._generate_statement_id('foo', 'bar')

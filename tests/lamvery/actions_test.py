@@ -19,7 +19,12 @@ def default_args():
     args.text = 'foo'
     args.secret_name = 'bar'
     args.store = True
+    args.keep_empty_events = False
     return args
+
+class TestAction(BaseAction):
+    def action(self):
+        pass
 
 class BaseActionTestCase(TestCase):
 
@@ -28,10 +33,41 @@ class BaseActionTestCase(TestCase):
         BaseAction(default_args())
 
     def test_get_client(self):
-        class TestAction(BaseAction):
-            def action(self):
-                pass
         TestAction(default_args()).get_client()
+
+    def test_get_diff(self):
+        remote = {
+            'Runtime': 'python2.7',
+            'Role': 'foo',
+            'Handler': 'bar',
+        }
+        local = {
+            'runtime': 'python2.7',
+            'role': 'bar',
+        }
+        ret = {
+            'runtime': None,
+            'role': ('foo', 'bar',),
+            'handler': ('bar', None,),
+            'description': None,
+            'timeout': None,
+            'memory_size': None,
+        }
+        action = TestAction(default_args())
+        eq_(action._get_diff(remote, local, CONF_DIFF_KEYS), ret)
+
+    def test_print_diff(self):
+        remote = {
+            'Runtime': 'python2.7',
+            'Role': 'foo',
+            'Handler': 'bar',
+        }
+        local = {
+            'runtime': 'python2.7',
+            'role': 'bar',
+        }
+        action = TestAction(default_args())
+        action._print_diff('test', remote, local, CONF_DIFF_KEYS)
 
 class InitActionTestCase(TestCase):
 
@@ -101,40 +137,6 @@ class ConfigureActionTestCase(TestCase):
         action.get_client = Mock(return_value=c)
         action._print_conf_diff = Mock()
         action.action()
-
-    def test_get_conf_diff(self):
-        remote = {
-            'Runtime': 'python2.7',
-            'Role': 'foo',
-            'Handler': 'bar',
-        }
-        local = {
-            'runtime': 'python2.7',
-            'role': 'bar',
-        }
-        ret = {
-            'runtime': None,
-            'role': ('foo', 'bar',),
-            'handler': ('bar', None,),
-            'description': None,
-            'timeout': None,
-            'memory_size': None,
-        }
-        action = DeployAction(default_args())
-        eq_(action._get_conf_diff(remote, local), ret)
-
-    def test_print_conf_diff(self):
-        remote = {
-            'Runtime': 'python2.7',
-            'Role': 'foo',
-            'Handler': 'bar',
-        }
-        local = {
-            'runtime': 'python2.7',
-            'role': 'bar',
-        }
-        action = DeployAction(default_args())
-        action._print_conf_diff(remote, local)
 
 class DeployActionTestCase(TestCase):
 
@@ -231,3 +233,65 @@ class DecryptActionTestCase(TestCase):
             action = DecryptAction(default_args())
             action._config = Mock()
             action.action()
+
+class EventsActionTestCase(TestCase):
+
+    @raises(Exception)
+    def test_action_function_not_exists(self):
+        with patch('lamvery.actions.Client') as c:
+            c.get_function_conf = Mock(return_value={})
+            action = EventsAction(default_args())
+            actin.action()
+
+    def test_action(self):
+        with patch('lamvery.actions.Client') as c:
+            c.get_function_conf = Mock(return_value={'FunctionArn': 'foo'})
+            action = EventsAction(default_args())
+            action._put_rules = Mock()
+            action._put_target = Mock()
+            action._clean = Mock()
+            action.action()
+
+    def test_put_rules(self):
+        with patch('lamvery.actions.Client') as c:
+            c.get_function_conf = Mock(return_value={'FunctionArn': 'foo'})
+            action = EventsAction(default_args())
+            action._put_rules(
+                remote=[{'Name': 'bar'}],
+                local=[{'rule': 'foo'}, {'rule': 'bar'}],
+                function='baz')
+
+    def test_convert_state(self):
+        action = EventsAction(default_args())
+        eq_(action._convert_state(True), 'DISABLED')
+        eq_(action._convert_state(False), 'ENABLED')
+
+    def test_search_rule(self):
+        action = EventsAction(default_args())
+        eq_(action._search_rule([{'Name': 'foo'}, {'rule': 'bar'}], 'bar'), {'rule': 'bar'})
+        eq_(action._search_rule([{'Name': 'foo'}, {'rule': 'bar'}], 'baz'), {})
+
+    def test_exist_rule(self):
+        action = EventsAction(default_args())
+        eq_(action._exist_rule([{'Name': 'foo'}, {'rule': 'bar'}], 'bar'), True)
+        eq_(action._exist_rule([{'Name': 'foo'}, {'rule': 'bar'}], 'baz'), False)
+
+    def test_put_targets(self):
+        with patch('lamvery.actions.Client') as c:
+            c.get_targets_by_rule = Mock(return_value={'Id': 'baz'})
+            action = EventsAction(default_args())
+            local = [
+                {'rule': 'foo', 'targets': [{'id': 'baz'}]},
+                {'rule': 'bar', 'targets': [{'id': 'qux'}]}
+            ]
+            action._put_targets(local=local, arn='baz')
+
+    def test_clean(self):
+        with patch('lamvery.actions.Client') as c:
+            c.get_targets_by_rule = Mock(return_value=[{'Arn': 'baz'}])
+            action = EventsAction(default_args())
+            action._clean(
+                remote=[{'Name': 'bar'}],
+                local=[{'rule': 'foo'}, {'rule': 'bar'}],
+                arn='baz',
+                function='qux')
