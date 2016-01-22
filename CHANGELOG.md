@@ -1,3 +1,7 @@
+## 0.7.0
+
+- Support CloudWatch Events [#22] [#3]
+
 ## 0.6.0
 
 - Change the secret file format YAML -> JSON
