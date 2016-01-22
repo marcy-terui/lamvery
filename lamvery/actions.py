@@ -38,14 +38,13 @@ class BaseAction:
     def __init__(self, args):
         self._config = Config(args.conf_file)
 
+        logger_name = 'lamvery'
         if hasattr(args, 'dry_run'):
             self._dry_run = args.dry_run
-
             if self._dry_run:
-                self._logger = get_logger('(Dry run) lamvery')
-                self._dry_run = args.dry_run
-            else:
-                self._logger = get_logger('lamvery')
+                logger_name = '(Dry run) lamvery'
+
+        self._logger = get_logger(logger_name)
 
     @abstractmethod
     def action(self):
