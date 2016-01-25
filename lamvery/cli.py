@@ -3,6 +3,7 @@
 import sys
 import argparse
 import lamvery
+import logging
 from termcolor import cprint, colored
 from lamvery.actions import *
 
@@ -28,6 +29,9 @@ def encrypt(args):
 
 def events(args):
     EventsAction(args).action()
+
+def invoke(args):
+    InvokeAction(args).action()
 
 def set_alias(args):
     SetAliasAction(args).action()
@@ -78,12 +82,11 @@ def main():
         'action': 'store_true',
         'default': False
     }
-    v_args = ('-v', '--alias-version',)
+    v_args = ('-v', '--version',)
     v_kwargs = {
         'help': 'Version of the function to set the alias',
         'default': None
     }
-
 
     parser = argparse.ArgumentParser(
         description='Yet another deploy tool for AWS Lambda in the virtualenv environment.',
@@ -109,6 +112,7 @@ def main():
     set_alias_parser.add_argument(*a_args, **a_kwargs)
     set_alias_parser.add_argument(*c_args, **c_kwargs)
     set_alias_parser.add_argument(*d_args, **d_kwargs)
+    set_alias_parser.add_argument(*v_args, **v_kwargs)
     set_alias_parser.set_defaults(func=set_alias)
 
     configure_parser = subparsers.add_parser(
@@ -147,6 +151,16 @@ def main():
     events_parser.add_argument(*d_args, **d_kwargs)
     events_parser.add_argument(*k_args, **k_kwargs)
     events_parser.set_defaults(func=events)
+
+    invoke_parser = subparsers.add_parser(
+        'invoke',
+        help='Invoke the function')
+    invoke_parser.add_argument(
+        'json', default=None, help='The JSON string or file that pass to the function')
+    invoke_parser.add_argument(*a_args, **a_kwargs)
+    invoke_parser.add_argument(*c_args, **c_kwargs)
+    invoke_parser.add_argument(*v_args, **v_kwargs)
+    invoke_parser.set_defaults(func=invoke)
 
     try:
         args = parser.parse_args()

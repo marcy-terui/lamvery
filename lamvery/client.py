@@ -227,3 +227,16 @@ class Client:
     def _generate_statement_id(self, function, rule):
         return hashlib.sha256(
             'lamvery-{}-{}'.format(function, rule)).hexdigest()
+
+    def invoke(self, name, qualifier=None, payload=None):
+        kwargs = {}
+        kwargs['FunctionName'] = name
+        kwargs['InvocationType'] = 'RequestResponse'
+        kwargs['LogType'] = 'Tail'
+
+        if payload is not None:
+            kwargs['Payload'] = payload
+        if qualifier is not None:
+            kwargs['Qualifier'] = qualifier
+
+        return self._lambda.invoke(**kwargs)
