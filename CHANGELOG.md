@@ -1,3 +1,7 @@
+## 0.8.1
+
+- Exclusion list support [#26]()
+
 ## 0.8.0
 
 - Add invoke command [#18]() [#25]()
@@ -107,3 +111,4 @@
 [#23]: https://github.com/marcy-terui/lamvery/issues/23
 [#24]: https://github.com/marcy-terui/lamvery/issues/24
 [#25]: https://github.com/marcy-terui/lamvery/issues/25
+[#26]: https://github.com/marcy-terui/lamvery/issues/26
