@@ -3,6 +3,7 @@
 import base64
 import os
 from lamvery.actions.base import BaseAction
+from termcolor import cprint
 
 class InvokeAction(BaseAction):
 
@@ -19,7 +20,7 @@ class InvokeAction(BaseAction):
     def action(self):
         qualifier = self._alias
         client = self.get_client()
-        
+
         if self._version is not None:
             qualifier = self._version
 
@@ -28,14 +29,8 @@ class InvokeAction(BaseAction):
             qualifier=qualifier,
             payload=self._json)
 
-        log = """
-========== LOG START ==========
-
-{}
-========== LOG END ==========""".format(base64.b64decode(ret.get('LogResult')))
-
         if ret.get('FunctionError') is None:
-            self._logger.info(log)
+            cprint(base64.b64decode(ret.get('LogResult')), 'green')
         else:
             self._logger.error('{} error occurred'.format(ret.get('FunctionError')))
-            self._logger.error(log)
+            cprint(base64.b64decode(ret.get('LogResult')), 'red')
