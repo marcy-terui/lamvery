@@ -173,14 +173,19 @@ class DeployAction(ConfigureAction):
             name='Function - Configuration',
             remote=remote_conf, local=local_conf, keys=CONF_DIFF_KEYS)
 
-        self._print_capacity(
-            remote=client.calculate_capacity(),
-            local=archive.get_size())
+        remote=client.calculate_capacity()
+        local=archive.get_size()
 
         if len(remote_conf) > 0:
+            if not self._publish:
+                local -= remote_conf['CodeSize']
+            self._print_capacity(remote=remote, local=local)
             client.update_function_code(zipfile, local_conf, self._publish)
             client.update_function_conf(local_conf)
         else:
+            if self._publish:
+                local *= 2
+            self._print_capacity(remote=remote, local=local)
             client.create_function(zipfile, local_conf, self._publish)
         zipfile.close()
         self._set_alias.action()
