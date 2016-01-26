@@ -100,7 +100,7 @@ lamvery events [-k]
 
 ### invoke
 
-- Invoke the function and output logs to stdin
+- Invoke the function and output logs to stdout
 
 ```sh
 lamvery invoke [-a <alias>] [-v <version>] '{"foo": "bar"}'
