@@ -31,6 +31,9 @@ def events(args):
 def invoke(args):
     InvokeAction(args).action()
 
+def rollback(args):
+    RollbackAction(args).action()
+
 def set_alias(args):
     SetAliasAction(args).action()
 
@@ -154,11 +157,19 @@ def main():
         'invoke',
         help='Invoke the function')
     invoke_parser.add_argument(
-        'json', default=None, help='The JSON string or file that pass to the function')
+        'json', default='{}', help='The JSON string or file that pass to the function')
     invoke_parser.add_argument(*a_args, **a_kwargs)
     invoke_parser.add_argument(*c_args, **c_kwargs)
     invoke_parser.add_argument(*v_args, **v_kwargs)
     invoke_parser.set_defaults(func=invoke)
+
+    rollback_parser = subparsers.add_parser(
+        'rollback',
+        help='Rollback your code and libraries')
+    rollback_parser.add_argument(*a_args, **a_kwargs)
+    rollback_parser.add_argument(*c_args, **c_kwargs)
+    rollback_parser.add_argument(*v_args, **v_kwargs)
+    rollback_parser.set_defaults(func=rollback)
 
     try:
         args = parser.parse_args()

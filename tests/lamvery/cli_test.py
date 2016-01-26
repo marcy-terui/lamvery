@@ -43,6 +43,14 @@ class FunctionsTestCase(TestCase):
         with patch('lamvery.cli.SetAliasAction'):
             set_alias(Mock())
 
+    def test_invoke(args):
+        with patch('lamvery.cli.InvokeAction'):
+            invoke(Mock())
+
+    def test_rollback(args):
+        with patch('lamvery.cli.RollbackAction'):
+            rollback(Mock())
+
     @patch('argparse.ArgumentParser')
     @patch('sys.exit')
     def test_main(self, argp, ex):

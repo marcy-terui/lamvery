@@ -22,5 +22,8 @@ class EncryptActionTestCase(TestCase):
             action = EncryptAction(args)
             action._config = Mock()
             action.action()
-            args.store_secret = True
+
+            args.store = True
+            action = EncryptAction(args)
+            action._config.store_secret = Mock()
             action.action()

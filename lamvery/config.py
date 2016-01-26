@@ -76,6 +76,12 @@ class Config:
             return []
         return events
 
+    def get_default_alias(self):
+        return self.load_conf().get('default_alias')
+
+    def enable_versioning(self):
+        return bool(self.load_conf().get('versioning'))
+
     def generate_lambda_secret(self):
         return {
             'region': self.get_region(),
@@ -108,13 +114,15 @@ class Config:
 
     def get_default(self):
         init_config = OrderedDict()
-        init_config['name']        = self.get_function_name()
-        init_config['runtime']     = 'python2.7'
-        init_config['role']        = 'arn:aws:iam::<account-number>:role/<role>'
-        init_config['handler']     = 'lambda_function.lambda_handler'
-        init_config['description'] = 'This is a sample lambda function.'
-        init_config['timeout']     = 10
-        init_config['memory_size'] = 128
+        init_config['name']          = self.get_function_name()
+        init_config['runtime']       = 'python2.7'
+        init_config['versioning']    = False
+        init_config['default_alias'] = None
+        init_config['role']          = 'arn:aws:iam::<account-number>:role/<role>'
+        init_config['handler']       = 'lambda_function.lambda_handler'
+        init_config['description']   = 'This is a sample lambda function.'
+        init_config['timeout']       = 10
+        init_config['memory_size']   = 128
 
         init_secret = OrderedDict()
         init_secret['key_id'] = '<key-id>'

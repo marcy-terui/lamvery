@@ -1,5 +1,7 @@
 profile: null
 region: us-east-1
+versioning: true
+default_alias: test
 configuration:
   name: lamvery
   runtime: python2.7

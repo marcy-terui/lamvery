@@ -44,9 +44,9 @@ class BaseAction:
                 diff[k[1]] = (r, l,)
         return diff
 
-    def _print_diff(self, name, remote, local, keys):
+    def _print_diff(self, prefix, remote, local, keys):
         diff = self._get_diff(remote, local, keys)
         for k,v in diff.items():
             if v is not None:
                 self._logger.warn(
-                    '[{n}] {k}: {r} -> {l}'.format(n=name, k=k, r=v[0], l=v[1]))
+                    '{p} {k}: {r} -> {l}'.format(p=prefix, k=k, r=v[0], l=v[1]))

@@ -23,12 +23,11 @@ class EventsAction(BaseAction):
         self._keep_empty = args.keep_empty_events
 
     def action(self):
-        self._logger.info('Start events setting...')
         client = self.get_client()
         func_name  = self._config.get_function_name()
         conf = client.get_function_conf(func_name)
 
-        if len(conf) < 0:
+        if len(conf) == 0:
             msg = '"{}" function is not exists. Please `deploy` at first.'.format(func_name)
             raise Exception(msg)
 
@@ -39,7 +38,6 @@ class EventsAction(BaseAction):
         self._clean(remote_rules, local_rules, arn, func_name)
         self._put_rules(remote_rules, local_rules, func_name)
         self._put_targets(local_rules, arn)
-        self._logger.info('Finish events setting.')
 
     def _put_rules(self, remote, local, function):
         client = self.get_client()
@@ -53,7 +51,7 @@ class EventsAction(BaseAction):
                     '[EventRule] Create new event rule "{}"'.format(l['rule']))
 
             self._print_diff(
-                name='EventRule - {}'.format(l['rule']),
+                prefix='[EventRule] {}:'.format(l['rule']),
                 keys=EVENT_RULE_DIFF_KEYS,
                 remote=r, local=l)
 
@@ -91,10 +89,10 @@ class EventsAction(BaseAction):
                         diff_r = rt
                         break
                     self._logger.warn(
-                        '[EventRule - {name}] Add "{id}" to targets'.format(name=l['rule'], id=lt['id']))
+                        '[EventRule] {}: Add "{}" to targets'.format(l['rule'], lt['id']))
 
                 self._print_diff(
-                    name='EventTarget - {}'.format(lt['id']),
+                    prefix='[EventTarget] {}:'.format(lt['id']),
                     keys=EVENT_TARGET_DIFF_KEYS,
                     remote=diff_r, local=lt)
 
@@ -117,7 +115,7 @@ class EventsAction(BaseAction):
             l = self._search_rule(local, r['Name'])
 
             for rt in targets:
-                msg = '[EventRule {}] Remove undifined event target "{}"'.format(r['Name'], rt['Id'])
+                msg = '[EventRule] {}: Remove undifined event target "{}"'.format(r['Name'], rt['Id'])
                 if len(l) > 0:
                     if not self._exist_target(l['targets'], rt['Id']):
                         self._logger.warn(msg)

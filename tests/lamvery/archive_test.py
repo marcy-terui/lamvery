@@ -50,11 +50,15 @@ class ArchiveTestCase(TestCase):
         archive = Archive('test.zip')
         eq_(archive.is_exclude_file('test.zip'), True)
         eq_(archive.is_exclude_file('foo.txt'), False)
+        archive.is_exclude = Mock(return_value=True)
+        eq_(archive.is_exclude_file('foo.txt'), True)
 
     def test_is_exclude_dir(self):
         archive = Archive('test.zip')
         eq_(archive.is_exclude_dir('.git'), True)
         eq_(archive.is_exclude_dir('foo'), False)
+        archive.is_exclude = Mock(return_value=True)
+        eq_(archive.is_exclude_file('foo'), True)
 
     def test_is_source_file(self):
         archive = Archive('test.zip')

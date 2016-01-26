@@ -19,8 +19,7 @@ def default_args():
 class DeployActionTestCase(TestCase):
 
     @patch('lamvery.actions.deploy.SetAliasAction')
-    @patch('lamvery.actions.base.Client')
-    def test_action(self, a, c):
+    def test_action(self, a):
         # Dry run
         action = DeployAction(default_args())
         action._print_conf_diff = Mock()
@@ -34,17 +33,34 @@ class DeployActionTestCase(TestCase):
         action._print_conf_diff = Mock()
         action._print_capacity = Mock()
         # New
-        args.publish = False
-        c.get_function_conf = Mock(return_value={})
-        action.get_client = Mock(return_value=c)
-        action.action()
+        with patch('lamvery.actions.base.Client') as c:
+            action._enable_versioning = Mock(return_value=False)
+            c.get_function_conf = Mock(return_value={})
+            action.get_client = Mock(return_value=c)
+            action.action()
         # Update
-        args.publish = True
-        c.get_function_conf = Mock(return_value={'foo': 'bar'})
-        action.get_client = Mock(return_value=c)
-        action.action()
+        with patch('lamvery.actions.base.Client') as c:
+            action._enable_versioning = Mock(return_value=False)
+            c.get_function_conf = Mock(return_value={'CodeSize': 100})
+            action.get_client = Mock(return_value=c)
+            action.action()
+        # Update (versioning)
+        with patch('lamvery.actions.base.Client') as c:
+            action._enable_versioning = Mock(return_value=True)
+            c.get_function_conf = Mock(return_value={'CodeSize': 100})
+            action.get_client = Mock(return_value=c)
+            action.action()
 
     def test_print_capacity(self):
         action = DeployAction(default_args())
         action._print_capacity(1000000, 200000)
         action._print_capacity(1000000, -200)
+
+    def test_enable_versioning(self):
+        args = default_args()
+        action = DeployAction(args)
+        eq_(action._enable_versioning(), True)
+
+        args.publish = False
+        action = DeployAction(args)
+        eq_(action._enable_versioning(), True)
