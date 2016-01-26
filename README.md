@@ -31,21 +31,37 @@ At first,
 lamvery init
 ```
 
-And put your `.lamvery.yml` like this.  
+And edit your `.lamvery.yml` like this.  
 The configuration is written in YAML syntax with `jinja2` template.  
 And environment variables stored `env` variable.
 
 ```yml
- profile: default
- region: us-east-1
- configuration:
-   name: sample_lambda_function
-   runtime: python2.7
-   role: {{ env['AWS_LAMBDA_ROLE'] }}
-   handler: lambda_function.lambda_handler
-   description: This is sample lambda function.
-   timeout: 10
-   memory_size: 128
+profile: default
+region: us-east-1
+configuration:
+  name: lamvery-test
+  runtime: python2.7
+  role: {{ env['AWS_LAMBDA_ROLE'] }}
+  handler: lambda_function.lambda_handler
+  description: This is sample lambda function.
+  timeout: 10
+  memory_size: 128
+events:
+  - rule: foo
+    description: bar
+    schedule: 'rate(5 minutes)'
+    targets:
+    - id: test-target-id
+      input:
+        this:
+        - is: a
+        - sample: input
+secret:
+  key_id: {{ env['AWS_KMS_KEY_ID'] }}
+  cipher_texts:
+    foo: CiC4xW9lg7HaxaueeN+d9yJMyY1uw1i7tYVvQz9I8+e2UBKVAQEBAgB4uMVvZYOx2sWrnnjfnfciTMmNbsNYu7WFb0M/SPPntlAAAABsMGoGCSqGSIb3DQEHBqBdMFsCAQAwVgYJKoZIhvcNAQcBMB4GCWCGSAFlAwQBLjARBAwN5YM9tDwY/TItbG8CARCAKW1+6MfloCrykA+gT1roV1IoZPt3dsfoJQEJNWPQ83/Cj1b7Om22Pboz
+exclude:
+- ^\.lamvery\.yml$
 ```
 
 # Commands
@@ -223,6 +239,8 @@ The targets of CloudWatch Event Rule.
   The value of the JSONPath that is used for extracting part of the matched event when passing it to the target.  
   *`input` and `input_path` are mutually-exclusive and optional parameters of a target.*
 
+### exclude
+Exclude files or directories using regular expression.
 
 # Using confidential information in lambda function
 
@@ -282,6 +300,11 @@ Command example:
 lamvery deploy
 ```
 #### 7. Invoke your function  
+Command example:  
+```sh
+lamvery invoke {}
+```
+
 Result example:  
 ```
 START RequestId: 13829c9c-9f13-11e5-921b-6f048cff3c2d Version: $LATEST
