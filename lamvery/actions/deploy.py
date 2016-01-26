@@ -17,9 +17,11 @@ class DeployAction(ConfigureAction):
         self._logger.info('Start deployment...')
         archive_name = self._config.get_archive_name()
         secret = self._config.generate_lambda_secret()
+        exclude = self._config.get_exclude()
         archive = Archive(filename=archive_name,
                           secret=secret,
-                          no_libs=self._no_libs)
+                          no_libs=self._no_libs,
+                          exclude=exclude)
         func_name   = self._config.get_function_name()
         local_conf  = self._config.get_configuration()
         zipfile     = archive.create_zipfile()

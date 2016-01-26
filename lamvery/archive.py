@@ -10,16 +10,6 @@ import lamvery.secret
 from zipfile import PyZipFile, ZIP_DEFLATED
 from lamvery.log import get_logger
 
-EXCLUDE_FILE = [
-    'python',
-    'python27',
-    'python2.7',
-    'lamvery',
-    'pip',
-    'pbr',
-    'wheel'
-]
-
 EXCLUDE_DIR = [
     '.git',
     '__pycache__'
@@ -29,13 +19,14 @@ PYFILE_PATTERN = re.compile('.+\.py.?$')
 
 class Archive:
 
-    def __init__(self, filename, no_libs=False, secret={}):
+    def __init__(self, filename, no_libs=False, secret={}, exclude=[]):
         self._filename = filename
         self._tmpdir = tempfile.mkdtemp(suffix='lamvery')
         self._zippath = os.path.join(self._tmpdir, self._filename)
         self._secretpath = os.path.join(self._tmpdir, lamvery.secret.SECRET_FILE_NAME)
         self._secret = secret
         self._no_libs = no_libs
+        self._exclude = exclude
 
     def __del__(self):
         shutil.rmtree(self._tmpdir)
@@ -80,15 +71,22 @@ class Archive:
                 except KeyError:
                     zipfile.writepy(path)
 
-    def is_exclude_file(self, name):
-        for ex in EXCLUDE_FILE:
-            if name == ex:
+    def is_exclude(self, name):
+        for ex in self._exclude:
+            if re.compile(ex).match(name) is not None:
                 return True
+        return False
+
+    def is_exclude_file(self, name):
+        if self.is_exclude(name):
+            return True
         if name == self._filename:
             return True
         return False
 
     def is_exclude_dir(self, name):
+        if self.is_exclude(name):
+            return True
         for ex in EXCLUDE_DIR:
             if name == ex:
                 return True

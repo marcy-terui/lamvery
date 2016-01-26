@@ -13,9 +13,11 @@ class ArchiveAction(BaseAction):
         self._logger.info('Start archiving...')
         archive_name = self._config.get_archive_name()
         secret = self._config.generate_lambda_secret()
+        exclude = self._config.get_exclude()
         archive = Archive(filename=archive_name,
                           secret=secret,
-                          no_libs=self._no_libs)
+                          no_libs=self._no_libs,
+                          exclude=exclude)
         zipfile = archive.create_zipfile()
         with open(archive_name, 'w') as f:
             f.write(zipfile.read())

@@ -22,3 +22,5 @@ events:
 secret:
   key_id: <key-id>
   cipher_texts: {}
+exclude:
+- ^\.lamvery\.yml$

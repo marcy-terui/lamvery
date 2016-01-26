@@ -22,3 +22,5 @@ secret:
   key_id: {{ env['AWS_KMS_KEY_ID'] }}
   cipher_texts:
     foo: CiC4xW9lg7HaxaueeN+d9yJMyY1uw1i7tYVvQz9I8+e2UBKVAQEBAgB4uMVvZYOx2sWrnnjfnfciTMmNbsNYu7WFb0M/SPPntlAAAABsMGoGCSqGSIb3DQEHBqBdMFsCAQAwVgYJKoZIhvcNAQcBMB4GCWCGSAFlAwQBLjARBAwN5YM9tDwY/TItbG8CARCAKW1+6MfloCrykA+gT1roV1IoZPt3dsfoJQEJNWPQ83/Cj1b7Om22Pboz
+exclude:
+- ^\.lamvery\.yml$

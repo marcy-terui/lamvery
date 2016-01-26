@@ -41,9 +41,13 @@ class ArchiveTestCase(TestCase):
             self.zipfile, os.path.join(self.pj_root, 'README.md'))
         ok_(isinstance(self.zipfile.getinfo('README.md'), zipfile.ZipInfo))
 
+    def test_is_exclude(self):
+        archive = Archive('test.zip', exclude=['^\.lamvery\.yml$'])
+        eq_(archive.is_exclude('foo.txt'), False)
+        eq_(archive.is_exclude('.lamvery.yml'), True)
+
     def test_is_exclude_file(self):
         archive = Archive('test.zip')
-        eq_(archive.is_exclude_file('python'), True)
         eq_(archive.is_exclude_file('test.zip'), True)
         eq_(archive.is_exclude_file('foo.txt'), False)
 
