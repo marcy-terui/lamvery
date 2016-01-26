@@ -1,17 +1,21 @@
+## 0.8.2
+
+- Pull request [#27][]: Adjust final capacity depending on publishing lambda function or not ([@ijin][])
+
 ## 0.8.1
 
-- Exclusion list support [#26]()
+- Exclusion list support [#26][]
 
 ## 0.8.0
 
-- Add invoke command [#18]() [#25]()
-- Allow archiving without `virtualenv` [#23]() [#25]()
-- Initial support `node.js` runtime [#23]() [#25]()
-- Bugfix [#24]() [#25]()
+- Add invoke command [#18][] [#25][]
+- Allow archiving without `virtualenv` [#23][] [#25][]
+- Initial support `node.js` runtime [#23][] [#25][]
+- Bugfix [#24][] [#25][]
 
 ## 0.7.0
 
-- Support CloudWatch Events [#22]() [#3]()
+- Support CloudWatch Events [#22][] [#3][]
 
 ## 0.6.0
 
@@ -29,14 +33,14 @@
 
 ## 0.5.0
 
-- Add `-l`,`--no-libs` option to archive without all libraries [#20]() [#21]()
-- Calculate and print the function's usage capacity [#19]() [#21]()
+- Add `-l`,`--no-libs` option to archive without all libraries [#20][] [#21][]
+- Calculate and print the function's usage capacity [#19][] [#21][]
 
 ## 0.4.0
 
-- Change configuration file option `secret: key` -> `secret: key_id` [#17]()
-- Simplify importing of `lamvery.secret` [#17]()
-- Lost jinja2 descriptor when call `encrypt` command with `-s` option [#17]()
+- Change configuration file option `secret: key` -> `secret: key_id` [#17][]
+- Simplify importing of `lamvery.secret` [#17][]
+- Lost jinja2 descriptor when call `encrypt` command with `-s` option [#17][]
 
 ## 0.3.3
 
@@ -52,21 +56,21 @@
 
 ## 0.3.0
 
-- Support jinja2 template in configuration file [#15]()
+- Support jinja2 template in configuration file [#15][]
 
 ## 0.2.0
 
 - Change default name of the configuration file to '.lamvery.yml'
 - Change format of the configuration file (See: [README](https://github.com/marcy-terui/lamvery/blob/master/README.md#setup))
-- Support passing some confidential informations using KMS [#8]()
+- Support passing some confidential informations using KMS [#8][]
 - Add `encrypt` command
 - Add `decrypt` command
 - Adjust all outputs
 
 ## 0.1.0
 
-- Support `profile` specification [#6]() [#10]()
-- Change `publish` to command-line argument [#9]()
+- Support `profile` specification [#6][] [#10][]
+- Change `publish` to command-line argument [#9][]
 
 ## 0.0.6
 
@@ -74,7 +78,7 @@
 
 ## 0.0.5
 
-- Add `alias` option [#1]() [#7]()
+- Add `alias` option [#1][] [#7][]
 
 ## 0.0.4
 
@@ -112,3 +116,5 @@
 [#24]: https://github.com/marcy-terui/lamvery/issues/24
 [#25]: https://github.com/marcy-terui/lamvery/issues/25
 [#26]: https://github.com/marcy-terui/lamvery/issues/26
+[#27]: https://github.com/marcy-terui/lamvery/issues/27
+[@ijin]: https://github.com/ijin
