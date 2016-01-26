@@ -20,12 +20,17 @@ class InvokeActionTestCase(TestCase):
 
     def test_action(self):
         with patch('lamvery.actions.base.Client') as c:
-            c.invoke = Mock(return_value={'LogResult': base64.b64encode('foo')})
+            m = Mock()
+            m.invoke = Mock(return_value={'LogResult': base64.b64encode('foo')})
+            c.return_value = m
             action = InvokeAction(default_args())
             action.action()
+
             args = default_args()
             args.json = '.lamvery.yml'
             action = InvokeAction(args)
-            c.invoke = Mock(
+            m.invoke = Mock(
                 return_value={'FunctionError': 'unhandled', 'LogResult': base64.b64encode('foo')})
+            c.return_value = m
+            action.get_client = c
             action.action()

@@ -18,11 +18,12 @@ class InvokeAction(BaseAction):
 
     def action(self):
         qualifier = self._alias
-
+        client = self.get_client()
+        
         if self._version is not None:
             qualifier = self._version
 
-        ret = self.get_client().invoke(
+        ret = client.invoke(
             name=self._config.get_function_name(),
             qualifier=qualifier,
             payload=self._json)
