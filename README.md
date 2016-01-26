@@ -6,12 +6,16 @@ Lamvery
 [![Version](https://img.shields.io/pypi/v/lamvery.svg)](https://pypi.python.org/pypi/lamvery)
 [![Downloads](https://img.shields.io/pypi/dm/lamvery.svg)](https://pypi.python.org/pypi/lamvery/)
 
-Yet another deploy tool for AWS Lambda in the virtualenv.
+Function based deploy and management tool for AWS Lambda.
 
 # Requirements
 
 - Python2.7
-- ~~virtualenv~~
+- pip
+
+# Recommends
+- **virtualenv**  
+  **Automatically collect the lightweighted and compiled libraries in virtualenv environment.**
 
 # Installation
 
