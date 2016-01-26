@@ -7,7 +7,7 @@ import logging
 from termcolor import cprint, colored
 from lamvery.actions import *
 
-VERSION = '0.7.0'
+VERSION = '0.8.0'
 
 def init(args):
     InitAction(args).action()

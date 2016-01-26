@@ -3,17 +3,19 @@ import sys
 
 from setuptools import setup, find_packages
 
+long_description = 'Function based deploy and management tool for AWS Lambda.'
+if os.path.exists('README.txt'):
+    long_description = open('README.txt').read()
+
 setup_options = dict(
     name='lamvery',
     version='0.8.0',
     description='Function based deploy and management tool for AWS Lambda.',
-    long_description='''
-See: `GitHub <https://github.com/marcy-terui/lamvery/blob/master/README.md>`__
-    ''',
+    long_description=long_description,
     author='Masashi Terui',
     author_email='marcy9114+pypi@gmail.com',
     url='https://github.com/marcy-terui/lamvery',
-    packages=find_packages(exclude=['tests*', 'lambda_function']),
+    packages=find_packages(exclude=['tests*', 'lambda_function', 'register']),
     install_requires=open('requirements.txt').read().splitlines(),
     entry_points={
     'console_scripts':

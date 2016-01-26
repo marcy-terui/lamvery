@@ -15,7 +15,7 @@ Function based deploy and management tool for AWS Lambda.
 
 # Recommends
 - **virtualenv**  
-  **Automatically collect the lightweighted and compiled libraries in virtualenv environment.**
+  **Automatically collect the lightweighted and compiled libraries in the virtualenv environment.**
 
 # Installation
 
