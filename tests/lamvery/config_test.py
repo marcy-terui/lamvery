@@ -35,6 +35,8 @@ exclude:
 - ^bar
 """
 
+NODE_CONF = DEFAULT_CONF.replace('python2.7', 'nodejs')
+
 class FunctionsTestCase(TestCase):
 
     def test_represent_odict(self):
@@ -73,6 +75,16 @@ class ConfigTestCase(TestCase):
         eq_(config.get_function_name(), 'test_lambda_function')
         config = Config('/foo/bar')
         eq_(config.get_function_name(), os.path.basename(os.getcwd()))
+
+    def test_get_function_filename(self):
+        config = Config(self.conf_file)
+        eq_(config.get_function_filename(), 'lambda_function.py')
+
+        open(self.conf_file, 'w').write(NODE_CONF)
+        config = Config(self.conf_file)
+        runtime = config.get_configuration().get('runtime')
+        eq_(runtime, 'nodejs')
+        eq_(config.get_function_filename(), 'lambda_function.js')
 
     def test_get_archive_name(self):
         config = Config(self.conf_file)

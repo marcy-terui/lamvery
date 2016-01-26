@@ -26,6 +26,17 @@ class ArchiveTestCase(TestCase):
     def test_create_zipfile(self):
         archive = Archive('test.zip')
         ok_(hasattr(archive.create_zipfile(), 'read'))
+        with PyZipFile(archive._zippath, 'r', compression=ZIP_DEFLATED) as zipfile:
+            ok_('lambda_function.pyc' in zipfile.namelist())
+            ok_('.lamvery_secret.json' in zipfile.namelist())
+
+    def test_create_zipfile_with_single_file(self):
+        archive = Archive('test.zip', function_filename='lambda_function.py', single_file=True)
+        archive.create_zipfile()
+        print()
+        with PyZipFile(archive._zippath, 'r', compression=ZIP_DEFLATED) as zipfile:
+            ok_('lambda_function.py' in zipfile.namelist())
+            ok_(not ('.lamvery_secret.json' in zipfile.namelist()))
 
     def test_archive_dir(self):
         archive = Archive('test.zip')
@@ -40,6 +51,21 @@ class ArchiveTestCase(TestCase):
         archive._archive_file(
             self.zipfile, os.path.join(self.pj_root, 'README.md'))
         ok_(isinstance(self.zipfile.getinfo('README.md'), zipfile.ZipInfo))
+
+    @raises(KeyError)
+    def test_archive_single_file_key_error(self):
+        self._single_file = True
+        archive = Archive('test.zip', single_file=True)
+        archive._archive_file(
+            self.zipfile, os.path.join(self.pj_root, 'setup.py'))
+        ok_(isinstance(self.zipfile.getinfo('setup.pyc'), zipfile.ZipInfo))
+
+    def test_archive_single_file(self):
+        self._single_file = True
+        archive = Archive('test.zip', single_file=True)
+        archive._archive_file(
+            self.zipfile, os.path.join(self.pj_root, 'setup.py'))
+        ok_(isinstance(self.zipfile.getinfo('setup.py'), zipfile.ZipInfo))
 
     def test_is_exclude(self):
         archive = Archive('test.zip', exclude=['^\.lamvery\.yml$'])
@@ -67,16 +93,26 @@ class ArchiveTestCase(TestCase):
         paths = archive._get_paths()
         ok_(os.path.join(self.pj_root, 'lamvery') in paths)
 
-        archive = Archive('test.zip', True)
+        archive = Archive('test.zip', no_libs=True)
         paths = archive._get_paths()
         ok_(os.path.join(self.pj_root, 'lamvery') in paths)
+        ok_(os.path.join(self.pj_root, 'lambda_function.py') in paths)
+        ok_(os.path.join(self.pj_root, 'lambda_function.pyc') in paths)
+        ok_(os.path.join(self.pj_root, '.lamvery.yml') in paths)
+
+        archive = Archive('test.zip', function_filename='test.py', single_file=True)
+        paths = archive._get_paths()
+        ok_(os.path.join(self.pj_root, 'test.py') in paths)
+        ok_(not os.path.join(self.pj_root, 'lambda_function.pyc') in paths)
+        ok_(not os.path.join(self.pj_root, '.lamvery.yml') in paths)
 
         del os.environ['VIRTUAL_ENV']
         archive = Archive('test.zip')
         paths = archive._get_paths()
         ok_(os.path.join(self.pj_root, 'lamvery') in paths)
 
-    def terst_get_size(self):
+    def test_get_size(self):
         archive = Archive('test.zip')
         archive.create_zipfile()
         ok_(isinstance(archive.get_size(), int))
+

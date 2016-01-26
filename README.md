@@ -25,15 +25,15 @@ pip install lamvery
 
 # Setup
 
-At first,
+First,
 
 ```sh
 lamvery init
 ```
 
-And edit your `.lamvery.yml` like this.  
+And then edit your `.lamvery.yml` like so.  
 The configuration is written in YAML syntax with `jinja2` template.  
-And environment variables stored `env` variable.
+Environment variables are stored in the `env` variable.
 
 ```yml
 profile: default
@@ -133,7 +133,7 @@ lamvery invoke [-a <alias>] [-v <version>] path/to/input.json
 ## Options
 
 - `-a` or `--alias`  
-This option needed by `deploy` and `set-alias` and `invoke` commands.  
+This option is needed by the `deploy` and `set-alias` and `invoke` commands.  
 Alias for a version of the function.
 
 - `-c` or `--conf-file`  
@@ -142,32 +142,36 @@ Specify the configuration file.
 default: `.lamvery.yml`
 
 - `-d` or `--dry-run`  
-This option needed by `deploy` and `alias` commands.  
+This option is needed by the `deploy` and `alias` commands.  
 Output the difference of configuration and the alias without updating.
 
+- `-s` or `--single-file`  
+This option is needed by the `archive` and `deploy` command.  
+Archive only the lambda function file, so you can inline edit in the AWS Management Console.
+
 - `-l` or `--no-libs`  
-This option only needed by `deploy` command.  
-Archiving without all libraries.
+This option is needed by the `archive` and `deploy` command.  
+Archive without all libraries.
 
 - `-n` or `--secret-name`  
-This option needed by `encrypt` and `decrypt` commands.  
+This option is needed by the `encrypt` and `decrypt` commands.  
 The name of the secret value.
 
 - `-p` or `--publish`  
-This option only needed by `deploy` command.
+This option is only needed by the `deploy` command.
 Publish the version as an atomic operation.
 
 - `-k` or `--keep-empty-events`  
-This option only needed by `events` command.
+This option is only needed by the `events` command.
 Keep the empty CloudWatch Event Rule that does not have CloudWatch Event Target.
 
 - `-s` or `--store`  
-This option only needed by `encrypt` command.  
+This option is only needed by the `encrypt` command.  
 Store encripted value to configuration file (default: `.lamvery.yml`).  
-This option is required `-n` or `--secret-name` option.
+Requires the `-n` or `--secret-name` option.
 
 - `-v` or `--version`  
-This option needed by `set-alias` and `invoke` commands.  
+This option is needed by the `set-alias` and `invoke` commands.  
 Version of the function.
 
 # Configuration file (.lamvery.yml)
