@@ -9,7 +9,6 @@ from lamvery.actions.encrypt import EncryptAction
 def default_args():
     args = Mock()
     args.conf_file = '.lamvery.yml'
-    args.dry_run = True
     args.text = 'foo'
     args.secret_name = 'bar'
     args.store = False

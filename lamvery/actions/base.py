@@ -13,6 +13,7 @@ class BaseAction:
 
     def __init__(self, args):
         self._config = Config(args.conf_file)
+        self._dry_run = False
 
         logger_name = 'lamvery'
         if hasattr(args, 'dry_run'):

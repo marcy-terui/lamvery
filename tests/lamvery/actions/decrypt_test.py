@@ -9,7 +9,6 @@ from lamvery.actions.decrypt import DecryptAction
 def default_args():
     args = Mock()
     args.conf_file = '.lamvery.yml'
-    args.dry_run = True
     args.secret_name = 'bar'
     return args
 
