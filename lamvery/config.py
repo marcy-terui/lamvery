@@ -4,6 +4,7 @@ import yaml
 import os
 import uuid
 import json
+import re
 from termcolor import cprint, colored
 from collections import OrderedDict
 from lamvery.archive import Archive
@@ -99,6 +100,12 @@ class Config:
     def get_profile(self):
         return self.load_conf().get('profile')
 
+    def get_exclude(self):
+        exclude = self.load_conf().get('exclude')
+        if exclude is None:
+            return []
+        return exclude
+
     def get_default(self):
         init_config = OrderedDict()
         init_config['name']        = self.get_function_name()
@@ -131,6 +138,7 @@ class Config:
         init_yaml['configuration'] = init_config
         init_yaml['events'] = init_events
         init_yaml['secret'] = init_secret
+        init_yaml['exclude'] = ['^{}$'.format(re.escape(self._file))]
 
         return init_yaml
 

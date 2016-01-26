@@ -25,5 +25,6 @@ class ArchiveActionTestCase(TestCase):
         action._config = Mock()
         action._config.get_archive_name = Mock(return_value='test.zip')
         action._config.generate_lambda_secret = Mock(return_value={})
+        action._config.get_exclude = Mock(return_value=[])
         action.action()
         ok_(os.path.exists('test.zip'))

@@ -24,13 +24,15 @@ configuration:
   memory_size: 128
   test_env: {{ env['PATH'] }}
 events:
-  - name: foo
-    description: This is a sample CloudWatchEvent
-    schedule: rate(5 minutes)
+- name: foo
+  description: This is a sample CloudWatchEvent
+  schedule: rate(5 minutes)
 secret:
   key_id: arn:aws:kms:<region>:<account-number>:key/<key-id>
   cipher_texts:
     foo: bar
+exclude:
+- ^bar
 """
 
 class FunctionsTestCase(TestCase):
@@ -85,6 +87,10 @@ class ConfigTestCase(TestCase):
     def test_get_profile(self):
         config = Config(self.conf_file)
         eq_(config.get_profile(), 'default')
+
+    def test_get_exclude(self):
+        config = Config(self.conf_file)
+        eq_(config.get_exclude(), ['^bar'])
 
     def test_get_default(self):
         config = Config(self.conf_file)

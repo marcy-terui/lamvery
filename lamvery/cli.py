@@ -7,8 +7,6 @@ import logging
 from termcolor import cprint, colored
 from lamvery.actions import *
 
-VERSION = '0.8.0'
-
 def init(args):
     InitAction(args).action()
 
@@ -84,13 +82,13 @@ def main():
     }
     v_args = ('-v', '--version',)
     v_kwargs = {
-        'help': 'Version of the function to set the alias',
+        'help': 'Version of the function',
         'default': None
     }
 
     parser = argparse.ArgumentParser(
         description='Yet another deploy tool for AWS Lambda in the virtualenv environment.',
-        epilog='Lamvery version: {}'.format(VERSION))
+        epilog='Lamvery version: {}'.format(lamvery.__version__))
     subparsers = parser.add_subparsers(title='subcommands')
 
     init_parser = subparsers.add_parser(
