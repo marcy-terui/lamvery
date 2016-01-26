@@ -11,13 +11,11 @@ Yet another deploy tool for AWS Lambda in the virtualenv.
 # Requirements
 
 - Python2.7
-- virtualenv
+- ~~virtualenv~~
 
 # Installation
 
 ```sh
-virtualenv -p <path-to-python2.7> .venv
-. .venv/bin/activate
 pip install lamvery
 ```
 
@@ -44,10 +42,6 @@ And environment variables stored `env` variable.
    description: This is sample lambda function.
    timeout: 10
    memory_size: 128
- secret:
-   key_id: {{ env['AWS_KMS_KEY_ID'] }}
-   cipher_texts:
-     foo: CiC4xW9lg7HaxaueeN+
 ```
 
 # Commands
@@ -104,10 +98,22 @@ lamvery decrypt -n <secret-name>
 lamvery events [-k]
 ```
 
+### invoke
+
+- Invoke the function and output logs to stdin
+
+```sh
+lamvery invoke [-a <alias>] [-v <version>] '{"foo": "bar"}'
+```
+or
+```sh
+lamvery invoke [-a <alias>] [-v <version>] path/to/input.json
+```
+
 ## Options
 
 - `-a` or `--alias`  
-This option needed by `deploy` and `alias` commands.  
+This option needed by `deploy` and `set-alias` and `invoke` commands.  
 Alias for a version of the function.
 
 - `-c` or `--conf-file`  
@@ -140,9 +146,9 @@ This option only needed by `encrypt` command.
 Store encripted value to configuration file (default: `.lamvery.yml`).  
 This option is required `-n` or `--secret-name` option.
 
-- `-v` or `--alias-version`  
-This option only needed by `alias` command.  
-Version of the function to set the alias.
+- `-v` or `--version`  
+This option needed by `set-alias` and `invoke` commands.  
+Version of the function.
 
 # Configuration file (.lamvery.yml)
 
@@ -160,7 +166,7 @@ The name of your function.
 
 - runtime  
 The runtime environment for the Lambda function you are uploading.  
-Currently, `lamvery` supports only `python2.7`.
+Currently, `lamvery` supports `python2.7` and `nodejs`.
 
 - role  
 The Amazon Resource Name (ARN) of the IAM role for your function.
