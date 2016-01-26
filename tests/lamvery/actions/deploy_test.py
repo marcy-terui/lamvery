@@ -34,10 +34,12 @@ class DeployActionTestCase(TestCase):
         action._print_conf_diff = Mock()
         action._print_capacity = Mock()
         # New
+        args.publish = False
         c.get_function_conf = Mock(return_value={})
         action.get_client = Mock(return_value=c)
         action.action()
         # Update
+        args.publish = True
         c.get_function_conf = Mock(return_value={'foo': 'bar'})
         action.get_client = Mock(return_value=c)
         action.action()
@@ -45,3 +47,4 @@ class DeployActionTestCase(TestCase):
     def test_print_capacity(self):
         action = DeployAction(default_args())
         action._print_capacity(1000000, 200000)
+        action._print_capacity(1000000, -200)
