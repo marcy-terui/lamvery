@@ -126,3 +126,6 @@ class ClientTestCase(TestCase):
 
     def test_generate_statement_id(self):
         self.client._generate_statement_id('foo', 'bar')
+
+    def test_invoke(self):
+        self.client.invoke('foo', 'bar', 'baz')

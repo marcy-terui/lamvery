@@ -8,6 +8,7 @@ import re
 import yaml
 import lamvery.secret
 from zipfile import PyZipFile, ZIP_DEFLATED
+from lamvery.log import get_logger
 
 EXCLUDE_FILE = [
     'python',
@@ -97,13 +98,15 @@ class Archive:
         return PYFILE_PATTERN.match(name) is not None
 
     def _get_paths(self):
+        logger = get_logger(__name__)
         try:
             venv = os.environ['VIRTUAL_ENV']
         except:
-            msg = 'VIRTUAL_ENV environment variable can not be found. Are you running in virtualenv?'
-            raise Exception(msg)
+            logger.warn(
+                'VIRTUAL_ENV environment variable can not be found. Python libraries are not included in the archive.')
+            venv = None
         paths = []
-        if not self._no_libs:
+        if not self._no_libs and venv is not None:
             for p in sys.path:
                 if os.path.isdir(p) and os.path.exists(p):
                     if p.startswith(venv) and p.find('site-packages') != -1:

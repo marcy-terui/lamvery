@@ -14,6 +14,8 @@ class ColoredStreamHandler(logging.StreamHandler):
             message = colored(message, 'green')
         elif record.levelno == logging.WARN:
             message = colored(message, 'yellow')
+        elif record.levelno == logging.ERROR:
+            message = colored(message, 'red')
         return message
 
 def get_logger(name):
