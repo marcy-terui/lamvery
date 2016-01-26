@@ -67,6 +67,11 @@ class ArchiveTestCase(TestCase):
         paths = archive._get_paths()
         ok_(os.path.join(self.pj_root, 'lamvery') in paths)
 
+        del os.environ['VIRTUAL_ENV']
+        archive = Archive('test.zip')
+        paths = archive._get_paths()
+        ok_(os.path.join(self.pj_root, 'lamvery') in paths)
+
     def terst_get_size(self):
         archive = Archive('test.zip')
         archive.create_zipfile()
