@@ -15,7 +15,11 @@ class InvokeAction(BaseAction):
         else:
             self._json = args.json
         self._version = args.version
-        self._alias = args.alias
+        
+        if args.alias is None:
+            self._alias = self._config.get_default_alias()
+        else:
+            self._alias = args.alias
 
     def action(self):
         qualifier = self._alias
