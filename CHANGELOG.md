@@ -126,4 +126,6 @@
 [#25]: https://github.com/marcy-terui/lamvery/issues/25
 [#26]: https://github.com/marcy-terui/lamvery/issues/26
 [#27]: https://github.com/marcy-terui/lamvery/issues/27
+[#28]: https://github.com/marcy-terui/lamvery/issues/28
+[#29]: https://github.com/marcy-terui/lamvery/issues/29
 [@ijin]: https://github.com/ijin
