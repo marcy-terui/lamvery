@@ -14,7 +14,8 @@ Function based deploy and management tool for AWS Lambda.
 - pip
 
 # Recommends
-- **virtualenv**  
+
+### virtualenv
   **Automatically collect the lightweighted and compiled libraries in the virtualenv environment.**
 
 # Installation
@@ -68,8 +69,8 @@ exclude:
 
 ### archive
 
--   Archive your code and libraries to `<your-function-name>.zip`
--   Store secret informations to the archive
+- Archive your code and libraries to `<your-function-name>.zip`
+- Store the secret informations to the archive
 
 ```sh
 lamvery archive
@@ -78,12 +79,22 @@ lamvery archive
 ### deploy
 
 - Archive and deploy your code and libraries
-- Store secret informations to the archive
+- Store the secret informations to the archive
 - Update configuration of the function
 - Set alias to a version of the function
 
 ```sh
 lamvery deploy
+```
+
+### rollback
+
+*You have to turn on(true) `versioning` and set a value to `default_alias` in the configuration file.*
+
+- Rollback to the previous version of the function  
+
+```
+lamvery rollback
 ```
 
 ### set-alias
@@ -99,12 +110,12 @@ lamvery set-alias -a <alias> -v <alias-version>
 - Encrypt a text value using KMS
 
 ```sh
-lamvery encrypt -n <secret-name> <secret-value> [-s]
+lamvery encrypt [-s] -n <secret-name> <secret-value>
 ```
 
 ### decrypt
 
-- Decrypt the secret value using KMS
+- Decrypt the secret information using KMS
 
 ```sh
 lamvery decrypt -n <secret-name>
@@ -112,7 +123,7 @@ lamvery decrypt -n <secret-name>
 
 ### events
 
-- Apply CloudWatch Events settings
+- Apply CloudWatch Events setting
 
 ```sh
 lamvery events [-k]
@@ -133,7 +144,7 @@ lamvery invoke [-a <alias>] [-v <version>] path/to/input.json
 ## Options
 
 - `-a` or `--alias`  
-This option is needed by the `deploy` and `set-alias` and `invoke` commands.  
+This option is needed by the `deploy`,`set-alias`,`invoke`,`rollback` commands.  
 Alias for a version of the function.
 
 - `-c` or `--conf-file`  
@@ -170,8 +181,12 @@ This option is only needed by the `encrypt` command.
 Store encripted value to configuration file (default: `.lamvery.yml`).  
 Requires the `-n` or `--secret-name` option.
 
+- `-s` or `--single-file`  
+This option is only needed by the `deploy` command.  
+Only use the main lambda function file.  
+
 - `-v` or `--version`  
-This option is needed by the `set-alias` and `invoke` commands.  
+This option is needed by the `set-alias`,`invoke`,`rollback` commands.  
 Version of the function.
 
 # Configuration file (.lamvery.yml)
@@ -182,6 +197,12 @@ The name of a profile to use. If not given, this depends on `boto3`.
 ### region
 The region name of your environment.  
 If you doesn't set this option, this depends on `boto3`.
+
+### versioning
+Enable the function versioning.
+
+### deafult_alias
+The alias when it has not been specified in the `-a` or `--alias` option.
 
 ### configuration
 
@@ -250,6 +271,7 @@ Exclude files or directories using regular expression.
 
 #### 1. Create key on KMS  
 See: https://docs.aws.amazon.com/kms/latest/developerguide/create-keys.html
+
 #### 2. Create IAM role for lambda function  
 Policy example:  
 ```json
@@ -268,6 +290,7 @@ Policy example:
     ]
 }
 ```
+
 #### 3. Set the key-id to your configuration file.  
 Configuration example:  
 ```yml
@@ -285,11 +308,13 @@ Configuration example:
     key_id: xxxx-yyyy-zzzz # <-here!
     cipher_texts: {}
 ```
+
 #### 4. Encrypt and store the confidential information to your configuration file.  
 Command example:  
 ```sh
 lamvery encrypt -s -n foo "This is a secret"
 ```
+
 #### 5. Write your function.  
 Code example:  
 ```py
@@ -298,11 +323,13 @@ Code example:
   def lambda_handler(event, context):
       print(lamvery.secret.get('foo'))
 ```
+
 #### 6. Deploy your function  
 Command example:  
 ```sh
 lamvery deploy
 ```
+
 #### 7. Invoke your function  
 Command example:  
 ```sh

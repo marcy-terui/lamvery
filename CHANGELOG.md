@@ -1,3 +1,12 @@
+## 0.9.0
+
+- Pull request [#28][]: Single file upload support ([@ijin][])
+- Adjust some outputs
+- Add `rollback` command [#29][]
+  - Remove `configuration.alias` from the configuration file
+  - Add `default_alias` to the configuration file
+  - Add `versioning` to the configuration file
+
 ## 0.8.2
 
 - Pull request [#27][]: Adjust final capacity depending on publishing lambda function or not ([@ijin][])
