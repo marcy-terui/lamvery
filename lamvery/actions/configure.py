@@ -17,7 +17,6 @@ class ConfigureAction(BaseAction):
         super(ConfigureAction, self).__init__(args)
 
     def action(self):
-        self._logger.info('Start configuring...')
         func_name   = self._config.get_function_name()
         local_conf  = self._config.get_configuration()
         client      = self.get_client()
@@ -25,11 +24,9 @@ class ConfigureAction(BaseAction):
 
         if len(remote_conf) > 0:
             self._print_diff(
-                name='Function - Configuration',
+                prefix='[Function]',
                 remote=remote_conf, local=local_conf, keys=CONF_DIFF_KEYS)
             client.update_function_conf(local_conf)
         else:
             msg = '"{}" function is not exists. Please `deploy` at first.'.format(func_name)
             raise Exception(msg)
-
-        self._logger.info('Finish configuring.')

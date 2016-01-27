@@ -41,7 +41,10 @@ class ClientTestCase(TestCase):
         self.client.create_function(Mock(), TEST_CONF, True)
 
     def test_update_function_code(self):
-        self.client.update_function_code(Mock(), TEST_CONF, True)
+        self.client._lambda.update_function_code = Mock(return_value={'Version': '$LATEST'})
+        eq_(self.client.update_function_code(Mock(), TEST_CONF, True), '$LATEST')
+        self.client._dry_run = True
+        eq_(self.client.update_function_code(Mock(), TEST_CONF, True), None)
 
     def test_update_function_conf(self):
         self.client.update_function_conf(TEST_CONF)
@@ -68,17 +71,17 @@ class ClientTestCase(TestCase):
         eq_(self.client.decrypt(base64.b64encode('secret')), 'bar')
 
     def test_calculate_capacity(self):
-        ret = {'Functions': [{'FunctionName':'foo'}, {'FunctionName':'bar'}]}
-        self.client._lambda.list_functions = Mock(return_value=ret)
+        ret1 = {'Functions': [{'FunctionName':'foo'}, {'FunctionName':'bar'}], 'NextMarker': 'foo'}
+        ret2 = {'Functions': [{'FunctionName':'foo'}, {'FunctionName':'bar'}]}
+        self.client._lambda.list_functions = Mock(side_effect=[ret1, ret2])
         self.client._calculate_versions_capacity = Mock(return_value=10)
-        eq_(self.client.calculate_capacity(), 20)
-        eq_(self.client.calculate_capacity(next_marker='foo'), 20)
+        eq_(self.client.calculate_capacity(), 40)
 
     def test_calculate_versions_capacity(self):
-        ret = {'Versions': [{'CodeSize':20}, {'CodeSize':20}]}
-        self.client._lambda.list_versions_by_function = Mock(return_value=ret)
-        eq_(self.client._calculate_versions_capacity('foo'), 40)
-        eq_(self.client._calculate_versions_capacity('foo', next_marker='bar'), 40)
+        ret1 = {'Versions': [{'CodeSize':20}, {'CodeSize':20}], 'NextMarker': 'foo'}
+        ret2 = {'Versions': [{'CodeSize':20}, {'CodeSize':20}]}
+        self.client._lambda.list_versions_by_function = Mock(side_effect=[ret1, ret2])
+        eq_(self.client._calculate_versions_capacity('foo'), 80)
 
     def test_get_rules_by_target(self):
         self.client._get_rule_names_by_tagert = Mock(return_value=['foo', 'bar'])
@@ -88,15 +91,22 @@ class ClientTestCase(TestCase):
             {'foo': 'bar'}])
 
     def test_get_rule_names_by_tagert(self):
-        self.client._events.list_rule_names_by_target = Mock(return_value={'RuleNames': ['foo', 'bar']})
-        eq_(self.client._get_rule_names_by_tagert('foo'), ['foo', 'bar'])
+        ret1 = {'RuleNames': ['foo', 'bar'], 'NextToken': 'foo'}
+        ret2 = {'RuleNames': ['baz', 'qux']}
+        self.client._events.list_rule_names_by_target = Mock(side_effect=[ret1, ret2])
+        eq_(self.client._get_rule_names_by_tagert('foo'), ['foo', 'bar', 'baz', 'qux'])
 
         self.client._events.list_rule_names_by_target = Mock(
             side_effect=botocore.exceptions.ClientError({'Error': {}}, 'bar'))
         eq_(self.client._get_rule_names_by_tagert('foo', 'bar'), [])
 
     def test_put_rule(self):
-        ok_(self.client.put_rule({'rule': 'foo'}) != {})
+        rule = {
+            'rule': 'foo',
+            'description': 'bar',
+            'pattern': 'baz',
+            'schedule': 'qux'}
+        ok_(self.client.put_rule(rule) != {})
         client = Client(region='us-east-1', profile=None, dry_run=True)
         eq_(client.put_rule({'rule': 'foo'}), {})
 
@@ -105,8 +115,10 @@ class ClientTestCase(TestCase):
             'foo', [{'id': 'foo', 'input': 'bar', 'input_path': 'baz'}], 'baz')
 
     def test_get_targets_by_rule(self):
-        self.client._events.list_targets_by_rule = Mock(return_value={'Targets': [{'foo': 'bar'}]})
-        eq_(self.client.get_targets_by_rule('foo'), [{'foo': 'bar'}])
+        ret1 = {'Targets': [{'foo': 'bar'}], 'NextToken': 'foo'}
+        ret2 = {'Targets': [{'baz': 'qux'}]}
+        self.client._events.list_targets_by_rule = Mock(side_effect=[ret1, ret2])
+        eq_(self.client.get_targets_by_rule('foo'), [{'foo': 'bar'}, {'baz': 'qux'}])
 
         self.client._events.list_targets_by_rule = Mock(
             side_effect=botocore.exceptions.ClientError({'Error': {}}, 'bar'))
@@ -120,6 +132,9 @@ class ClientTestCase(TestCase):
 
     def test_add_permission(self):
         self.client.add_permission('foo', 'bar', 'baz')
+        self.client._lambda.add_permission = Mock(
+            side_effect=botocore.exceptions.ClientError({'Error': {}}, 'bar'))
+        self.client.add_permission('foo', 'bar', 'baz')
 
     def test_remove_permission(self):
         self.client.remove_permission('foo', 'bar')
@@ -129,3 +144,7 @@ class ClientTestCase(TestCase):
 
     def test_invoke(self):
         self.client.invoke('foo', 'bar', 'baz')
+
+    def test_get_previous_version(self):
+        self.client.get_alias = Mock(return_value={'FunctionVersion': 'foo'})
+        eq_(self.client.get_previous_version('foo', 'bar'), 'foo')

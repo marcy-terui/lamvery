@@ -7,8 +7,11 @@ import shutil
 import re
 import yaml
 import lamvery.secret
+import warnings
 from zipfile import PyZipFile, ZIP_DEFLATED
 from lamvery.log import get_logger
+
+warnings.simplefilter("ignore", UserWarning)
 
 EXCLUDE_DIR = [
     '.git',

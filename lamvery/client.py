@@ -6,6 +6,8 @@ import base64
 import hashlib
 import json
 
+from lamvery.utils import previous_alias
+
 class Client:
 
     def __init__(self, region=None, profile=None, dry_run=False):
@@ -42,11 +44,12 @@ class Client:
 
     def update_function_code(self, zipfile, conf, publish):
         if not self._dry_run:
-            self._lambda.update_function_code(
+            ret = self._lambda.update_function_code(
                 FunctionName=conf['name'],
                 ZipFile=zipfile.read(),
-                Publish=publish,
-            )
+                Publish=publish)
+            return ret['Version']
+        return None
 
     def update_function_conf(self, conf):
         if not self._dry_run:
@@ -56,8 +59,7 @@ class Client:
                 Handler=conf['handler'],
                 Description=conf['description'],
                 Timeout=conf['timeout'],
-                MemorySize=conf['memory_size'],
-            )
+                MemorySize=conf['memory_size'])
 
     def get_alias(self, function, alias):
         try:
@@ -142,11 +144,10 @@ class Client:
 
         ret = names['RuleNames']
         if 'NextToken' in names:
-            return ret.extend(
+            ret.extend(
                 self._get_rule_names_by_tagert(
                     arn=arn, next_token=names['NextToken']))
-        else:
-            return ret
+        return ret
 
     def put_rule(self, rule):
         if self._dry_run:
@@ -192,11 +193,10 @@ class Client:
 
         ret = rules['Targets']
         if 'NextToken' in rules:
-            return ret.extend(
+            ret.extend(
                 self.get_targets_by_rule(
                     rule=rule, next_token=rules['NextToken']))
-        else:
-            return ret
+        return ret
 
     def remove_targets(self, rule, targets):
         if not self._dry_run:
@@ -240,3 +240,7 @@ class Client:
             kwargs['Qualifier'] = qualifier
 
         return self._lambda.invoke(**kwargs)
+
+    def get_previous_version(self, function, alias):
+        ver = self.get_alias(function, previous_alias(alias))
+        return ver.get('FunctionVersion')

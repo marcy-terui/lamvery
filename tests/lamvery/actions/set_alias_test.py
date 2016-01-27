@@ -18,6 +18,13 @@ def default_args():
 class SetAliasActionTestCase(TestCase):
 
     @patch('lamvery.actions.base.Client')
+    @raises(Exception)
+    def test_action_not_exists(self, c):
+        action = SetAliasAction(default_args())
+        action.get_alias_name = Mock(return_value=None)
+        action.action()
+
+    @patch('lamvery.actions.base.Client')
     def test_action(self, c):
         # No alias
         action = SetAliasAction(default_args())
@@ -33,14 +40,18 @@ class SetAliasActionTestCase(TestCase):
         args = default_args()
         args.alias = 'foo'
         args.dry_run = False
+
         # New
-        c.get_alias = Mock(return_value={})
-        action = SetAliasAction(args)
-        action.action()
+        with patch('lamvery.actions.base.Client') as c:
+            c.get_alias = Mock(return_value={})
+            action = SetAliasAction(args)
+            action.action()
+
         # Update
-        c.get_alias.return_value = {'FunctionVersion': '1'}
-        action = SetAliasAction(args)
-        action.action()
+        with patch('lamvery.actions.base.Client') as c:
+            c.get_alias = Mock(return_value={'FunctionVersion': '1'})
+            action = SetAliasAction(args)
+            action.action()
 
     def test_print_alias_diff(self):
         action = SetAliasAction(default_args())
@@ -48,16 +59,16 @@ class SetAliasActionTestCase(TestCase):
 
     def test_get_alias_name(self):
         action = SetAliasAction(default_args())
-        eq_(action._get_alias_name(), None)
+        eq_(action.get_alias_name(), 'test')
         args = default_args()
         args.alias = 'foo'
         action = SetAliasAction(args)
-        eq_(action._get_alias_name(), 'foo')
+        eq_(action.get_alias_name(), 'foo')
 
-    def test_get_alias_version(self):
+    def test_get_version(self):
         action = SetAliasAction(default_args())
-        eq_(action._get_alias_version(), '$LATEST')
+        eq_(action.get_version(), '$LATEST')
         args = default_args()
         args.version = '1'
         action = SetAliasAction(args)
-        eq_(action._get_alias_version(), '1')
+        eq_(action.get_version(), '1')

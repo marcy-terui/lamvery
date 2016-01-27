@@ -10,7 +10,6 @@ class InitAction(BaseAction):
         self._conf_file = args.conf_file
 
     def action(self):
-        self._logger.info('Start initialization...')
         if self._needs_write_conf():
             self._config.write_default()
             self._logger.info(

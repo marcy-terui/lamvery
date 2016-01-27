@@ -11,7 +11,6 @@ class ArchiveAction(BaseAction):
         self._no_libs = args.no_libs
 
     def action(self):
-        self._logger.info('Start archiving...')
         archive_name = self._config.get_archive_name()
         function_filename = self._config.get_function_filename()
         secret = self._config.generate_lambda_secret()
