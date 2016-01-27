@@ -22,17 +22,18 @@ class DeployActionTestCase(TestCase):
     @patch('lamvery.actions.deploy.SetAliasAction')
     def test_action(self, a):
         # Dry run
-        action = DeployAction(default_args())
-        action._print_conf_diff = Mock()
-        action._print_capacity = Mock()
-        action.action()
+        with patch('lamvery.actions.base.Client') as c:
+            action = DeployAction(default_args())
+            action._print_conf_diff = Mock()
+            action._print_capacity = Mock()
+            action.action()
 
-        # No dry run
-        args = default_args()
-        args.dry_run = False
-        action = DeployAction(args)
-        action._print_conf_diff = Mock()
-        action._print_capacity = Mock()
+            # No dry run
+            args = default_args()
+            args.dry_run = False
+            action = DeployAction(args)
+            action._print_conf_diff = Mock()
+            action._print_capacity = Mock()
         # New
         with patch('lamvery.actions.base.Client') as c:
             action._enable_versioning = Mock(return_value=False)
@@ -53,12 +54,13 @@ class DeployActionTestCase(TestCase):
             action.action()
 
         # Single File
-        args = default_args()
-        args.single_file = True
-        action = DeployAction(args)
-        action._print_conf_diff = Mock()
-        action._print_capacity = Mock()
-        action.action()
+        with patch('lamvery.actions.base.Client') as c:
+            args = default_args()
+            args.single_file = True
+            action = DeployAction(args)
+            action._print_conf_diff = Mock()
+            action._print_capacity = Mock()
+            action.action()
 
     def test_print_capacity(self):
         action = DeployAction(default_args())
