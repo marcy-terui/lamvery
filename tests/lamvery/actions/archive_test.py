@@ -12,6 +12,7 @@ def default_args():
     args.conf_file = '.lamvery.yml'
     args.dry_run = True
     args.no_libs = False
+    args.single_file = False
     return args
 
 class ArchiveActionTestCase(TestCase):
@@ -24,6 +25,7 @@ class ArchiveActionTestCase(TestCase):
         action = ArchiveAction(default_args())
         action._config = Mock()
         action._config.get_archive_name = Mock(return_value='test.zip')
+        action._config.get_function_filename = Mock(return_value='test.py')
         action._config.generate_lambda_secret = Mock(return_value={})
         action._config.get_exclude = Mock(return_value=[])
         action.action()

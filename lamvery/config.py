@@ -88,6 +88,11 @@ class Config:
         else:
             return os.path.basename(os.getcwd())
 
+    def get_function_filename(self):
+        runtimes = { "python2.7": "py", "nodejs": "js" }
+        ext = runtimes.get(self.get_configuration().get('runtime'), "py")
+        return '{}.{}'.format(self.get_configuration().get('handler').split('.')[0], ext)
+
     def get_archive_name(self):
         return '{}.zip'.format(self.get_function_name())
 

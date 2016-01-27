@@ -19,12 +19,14 @@ PYFILE_PATTERN = re.compile('.+\.py.?$')
 
 class Archive:
 
-    def __init__(self, filename, no_libs=False, secret={}, exclude=[]):
+    def __init__(self, filename, function_filename=None, single_file=False, no_libs=False, secret={}, exclude=[]):
         self._filename = filename
+        self._function_filename = function_filename
         self._tmpdir = tempfile.mkdtemp(suffix='lamvery')
         self._zippath = os.path.join(self._tmpdir, self._filename)
         self._secretpath = os.path.join(self._tmpdir, lamvery.secret.SECRET_FILE_NAME)
         self._secret = secret
+        self._single_file = single_file
         self._no_libs = no_libs
         self._exclude = exclude
 
@@ -39,7 +41,8 @@ class Archive:
                     self._archive_dir(zipfile, p)
                 else:
                     self._archive_file(zipfile, p)
-            self._archive_file(zipfile, self._secretpath)
+            if not self._single_file:
+                self._archive_file(zipfile, self._secretpath)
         return open(self._zippath, 'rb')
 
     def _archive_dir(self, zipfile, path):
@@ -69,7 +72,10 @@ class Archive:
                     zipfile.getinfo('{}c'.format(filename))
                     zipfile.getinfo('{}o'.format(filename))
                 except KeyError:
-                    zipfile.writepy(path)
+                    if self._single_file:
+                        zipfile.write(path, filename)
+                    else:
+                        zipfile.writepy(path)
 
     def is_exclude(self, name):
         for ex in self._exclude:
@@ -115,6 +121,9 @@ class Archive:
             f_path = os.path.join(os.getcwd() ,f)
             if not f_path == venv:
                 paths.append(f_path)
+        if self._single_file:
+            f = self._function_filename
+            paths = [os.path.join(os.getcwd(), f)]
         return paths
 
     def get_size(self):
