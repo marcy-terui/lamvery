@@ -60,6 +60,12 @@ def main():
         'action': 'store_true',
         'default': False
     }
+    sf_args = ('-s', '--single-file',)
+    sf_kwargs = {
+        'help': 'Only use the main lambda function file',
+        'action': 'store_true',
+        'default': False
+    }
     l_args = ('-l', '--no-libs',)
     l_kwargs = {
         'help': 'Archiving without all libraries',
@@ -104,6 +110,7 @@ def main():
         'archive',
         help='Archive your code and libraries to <your-function-name>.zip')
     archive_parser.add_argument(*c_args, **c_kwargs)
+    archive_parser.add_argument(*sf_args, **sf_kwargs)
     archive_parser.add_argument(*l_args, **l_kwargs)
     archive_parser.set_defaults(func=archive)
 
@@ -129,6 +136,7 @@ def main():
     deploy_parser.add_argument(*a_args, **a_kwargs)
     deploy_parser.add_argument(*c_args, **c_kwargs)
     deploy_parser.add_argument(*d_args, **d_kwargs)
+    deploy_parser.add_argument(*sf_args, **sf_kwargs)
     deploy_parser.add_argument(*l_args, **l_kwargs)
     deploy_parser.add_argument(*p_args, **p_kwargs)
     deploy_parser.set_defaults(func=deploy)

@@ -12,6 +12,7 @@ def default_args():
     args.dry_run = True
     args.publish = True
     args.no_libs = False
+    args.single_file = False
 
     return args
 
@@ -50,6 +51,14 @@ class DeployActionTestCase(TestCase):
             c.get_function_conf = Mock(return_value={'CodeSize': 100})
             action.get_client = Mock(return_value=c)
             action.action()
+
+        # Single File
+        args = default_args()
+        args.single_file = True
+        action = DeployAction(args)
+        action._print_conf_diff = Mock()
+        action._print_capacity = Mock()
+        action.action()
 
     def test_print_capacity(self):
         action = DeployAction(default_args())
