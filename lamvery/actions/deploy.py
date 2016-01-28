@@ -80,9 +80,10 @@ class DeployAction(BaseAction):
             self._set_alias._version = cur_version
             self._set_alias.action()
 
-        self._set_alias._alias = alias_name
-        self._set_alias._version = new_version
-        self._set_alias.action()
+        if alias_name is not None:
+            self._set_alias._alias = alias_name
+            self._set_alias._version = new_version
+            self._set_alias.action()
 
     def _enable_versioning(self):
         if self._publish:
