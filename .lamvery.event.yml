@@ -1,0 +1,10 @@
+- rule: sample-rule-name
+  description: This is a sample CloudWatchEvent
+  schedule: rate(5 minutes)
+  targets:
+  - id: <unique-target-id>
+    input:
+      this:
+      - is: a
+      - sample: input
+    input_path: json.path.format

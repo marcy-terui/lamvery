@@ -17,15 +17,14 @@ class InitActionTestCase(TestCase):
     def test_action(self):
         action = InitAction(default_args())
         action._config = Mock()
-        action._needs_write_conf = Mock(return_value=True)
+        action._needs_write = Mock(return_value=True)
         action.action()
 
     def test_needs_write_conf(self):
         # New
         args = default_args()
-        args.conf_file = '/foo/bar'
         action = InitAction(args)
-        eq_(action._needs_write_conf(), True)
+        eq_(action._needs_write('bar'), True)
         # Overwrite
         action = InitAction(default_args())
         def dummy_y(txt):
@@ -34,7 +33,7 @@ class InitActionTestCase(TestCase):
             return 'n'
         # Overwrite yes
         lamvery.actions.init.raw_input = dummy_y
-        eq_(action._needs_write_conf(), True)
+        eq_(action._needs_write('.lamvery.yml'), True)
         # Overwrite no
         lamvery.actions.init.raw_input = dummy_n
-        eq_(action._needs_write_conf(), False)
+        eq_(action._needs_write('.lamvery.yml'), False)

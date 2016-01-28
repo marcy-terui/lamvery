@@ -26,9 +26,6 @@ class SetAliasActionTestCase(TestCase):
 
     @patch('lamvery.actions.base.Client')
     def test_action(self, c):
-        # No alias
-        action = SetAliasAction(default_args())
-        action.action()
 
         # Dry run
         args = default_args()
