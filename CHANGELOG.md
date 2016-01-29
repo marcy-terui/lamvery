@@ -1,3 +1,8 @@
+## 0.10.0
+
+- Split the configuration file [#33][]
+- Bugfix
+
 ## 0.9.0
 
 - Pull request [#28][]: Single file upload support ([@ijin][])

@@ -24,7 +24,7 @@ Function based deploy and management tool for AWS Lambda.
 pip install lamvery
 ```
 
-# Setup
+# Setup and configuration
 
 First,
 
@@ -36,9 +36,13 @@ And then edit your `.lamvery.yml` like so.
 The configuration is written in YAML syntax with `jinja2` template.  
 Environment variables are stored in the `env` variable.
 
+## General settings (deafult: `.lamvery.yml`)
+
 ```yml
-profile: default
+profile: private
 region: us-east-1
+versioning: true
+default_alias: test
 configuration:
   name: lamvery-test
   runtime: python2.7
@@ -47,23 +51,107 @@ configuration:
   description: This is sample lambda function.
   timeout: 10
   memory_size: 128
-events:
-  - rule: foo
-    description: bar
-    schedule: 'rate(5 minutes)'
-    targets:
-    - id: test-target-id
-      input:
-        this:
-        - is: a
-        - sample: input
-secret:
-  key_id: {{ env['AWS_KMS_KEY_ID'] }}
-  cipher_texts:
-    foo: CiC4xW9lg7HaxaueeN+d9yJMyY1uw1i7tYVvQz9I8+e2UBKVAQEBAgB4uMVvZYOx2sWrnnjfnfciTMmNbsNYu7WFb0M/SPPntlAAAABsMGoGCSqGSIb3DQEHBqBdMFsCAQAwVgYJKoZIhvcNAQcBMB4GCWCGSAFlAwQBLjARBAwN5YM9tDwY/TItbG8CARCAKW1+6MfloCrykA+gT1roV1IoZPt3dsfoJQEJNWPQ83/Cj1b7Om22Pboz
-exclude:
-- ^\.lamvery\.yml$
 ```
+
+### profile
+The name of a profile to use. If not given, this depends on `boto3`.
+
+### region
+The region name of your environment.  
+If you doesn't set this option, this depends on `boto3`.
+
+### versioning
+Enable the function versioning.
+
+### deafult_alias
+The alias when it has not been specified in the `-a` or `--alias` option.
+
+### configuration
+
+- name  
+The name of your function.
+
+- runtime  
+The runtime environment for the Lambda function you are uploading.  
+Currently, `lamvery` supports `python2.7` and `nodejs`.
+
+- role  
+The Amazon Resource Name (ARN) of the IAM role for your function.
+
+- handler  
+The function within your code that Lambda calls to begin execution.
+
+- description
+The description of your function.
+
+- timeout  
+The function execution time(seconds) at which Lambda should terminate the function.
+
+- memory_size  
+The amount of memory for your function environment.
+
+## CloudWatch Events settings (deafult: `.lamvery.event.yml`)
+
+```yml
+- rule: foo
+  description: bar
+  schedule: 'rate(5 minutes)'
+  targets:
+  - id: test-target-id
+    input:
+      this:
+      - is: a
+      - sample: input
+```
+
+### rule  
+The name of CloudWatch Event Rule.
+
+### description  
+The description of CloudWatch Event Rule.
+
+### schedule  
+The schedule expression of CloudWatch Event Rule.
+
+### disabled  
+When this setting is true, change the state of CloudWatch Event Rule to `DISABLED`.  
+default: `false`
+
+### targets  
+The targets of CloudWatch Event Rule.
+
+- id  
+The unique target assignment ID.
+- input  
+Arguments passed to the target.
+- input_path  
+The value of the JSONPath that is used for extracting part of the matched event when passing it to the target.  
+*`input` and `input_path` are mutually-exclusive and optional parameters of a target.*
+
+## Secret informations (deafult: `.lamvery.secret.yml`)
+
+```yml
+key_id: {{ env['AWS_KMS_KEY_ID'] }}
+cipher_texts:
+  foo: CiC4xW9lg7HaxaueeN+d9yJMyY1uw1i7tYVvQz9I8+e2UBKXAQEBAgB4uMVvZYOx2sWrnnjfnfciTMmNbsNYu7WFb0M/SPPntlAAAABuMGwGCSqGSIb3DQEHBqBfMF0CAQAwWAYJKoZIhvcNAQcBMB4GCWCGSAFlAwQBLjARBAzWTJWk/69T8NTBquoCARCAK2Hg2de71hzwjiMKkfMSG2G1Olj1EjxajS+3PsFVTPZ91Oi/AjR1aMqAI8U=
+```
+
+### key_id  
+The ID of your encryption key on KMS.
+
+### cipher_texts  
+The name and cipher texts for passing to lambda function.
+
+## Excluded patterns from the archive (deafult: `.lamvery.exclude.yml`)
+
+```yml
+- ^\.lamvery\.yml$
+- ^\.lamvery\.event\.yml$
+- ^\.lamvery\.secret\.yml$
+- ^\.lamvery\.exclude\.yml$
+```
+
+Exclude files or directories using regular expression.
 
 # Commands
 
@@ -188,84 +276,6 @@ Only use the main lambda function file.
 - `-v` or `--version`  
 This option is needed by the `set-alias`,`invoke`,`rollback` commands.  
 Version of the function.
-
-# Configuration file (.lamvery.yml)
-
-### profile
-The name of a profile to use. If not given, this depends on `boto3`.
-
-### region
-The region name of your environment.  
-If you doesn't set this option, this depends on `boto3`.
-
-### versioning
-Enable the function versioning.
-
-### deafult_alias
-The alias when it has not been specified in the `-a` or `--alias` option.
-
-### configuration
-
-- name  
-The name of your function.
-
-- runtime  
-The runtime environment for the Lambda function you are uploading.  
-Currently, `lamvery` supports `python2.7` and `nodejs`.
-
-- role  
-The Amazon Resource Name (ARN) of the IAM role for your function.
-
-- handler  
-The function within your code that Lambda calls to begin execution.
-
-- description
-The description of your function.
-
-- timeout  
-The function execution time(seconds) at which Lambda should terminate the function.
-
-- memory_size  
-The amount of memory for your function environment.
-
-- alias  
-The default alias when not given `-a` or `--alias` argument.
-
-### secret
-
-- key_id  
-The ID of your encryption key on KMS.
-
-- cipher_texts  
-The name and cipher texts for passing to lambda function.
-
-### events
-
-- rule  
-The name of CloudWatch Event Rule.
-
-- description  
-The description of CloudWatch Event Rule.
-
-- schedule  
-The schedule expression of CloudWatch Event Rule.
-
-- disabled  
-When this setting is true, change the state of CloudWatch Event Rule to `DISABLED`.  
-default: `false`
-
-- targets  
-The targets of CloudWatch Event Rule.
-  - id  
-  The unique target assignment ID.
-  - input  
-  Arguments passed to the target.
-  - input_path  
-  The value of the JSONPath that is used for extracting part of the matched event when passing it to the target.  
-  *`input` and `input_path` are mutually-exclusive and optional parameters of a target.*
-
-### exclude
-Exclude files or directories using regular expression.
 
 # Using confidential information in lambda function
 
