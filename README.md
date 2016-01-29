@@ -303,20 +303,29 @@ Policy example:
 
 #### 3. Set the key-id to your configuration file.  
 Configuration example:  
+
+- .lamvery.yml
+
 ```yml
-  profile: default
-  region: us-east-1
-  configuration:
-    name: sample_lambda_function
-    runtime: python2.7
-    role: arn:aws:iam::000000000000:role/lambda_basic_execution
-    handler: lambda_function.lambda_handler
-    description: This is sample lambda function.
-    timeout: 10
-    memory_size: 128
-  secret:
-    key_id: xxxx-yyyy-zzzz # <-here!
-    cipher_texts: {}
+profile: default
+region: us-east-1
+versioning: false
+default_alias: null
+configuration:
+  name: sample_lambda_function
+  runtime: python2.7
+  role: arn:aws:iam::000000000000:role/lambda_basic_execution
+  handler: lambda_function.lambda_handler
+  description: This is sample lambda function.
+  timeout: 10
+  memory_size: 128
+```
+
+- .lamvery.secret.yml
+
+```yml
+key_id: xxxx-yyyy-zzzz # <-here!
+cipher_texts: {}
 ```
 
 #### 4. Encrypt and store the confidential information to your configuration file.  
