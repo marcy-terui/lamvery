@@ -23,15 +23,25 @@ configuration:
   timeout: 10
   memory_size: 128
   test_env: {{ env['PATH'] }}
-events:
-- name: foo
+event_file: .test.event.yml
+secret_file: .test.secret.yml
+exclude_file: .test.exclude.yml
+"""
+
+DEFAULT_EVENTS = """
+- rule: foo
   description: This is a sample CloudWatchEvent
   schedule: rate(5 minutes)
-secret:
-  key_id: arn:aws:kms:<region>:<account-number>:key/<key-id>
-  cipher_texts:
-    foo: bar
-exclude:
+"""
+
+DEFAULT_SECRET = """
+key_id: <key-id>
+cipher_texts:
+  foo: bar
+test_env: {{ env['PATH'] }}
+"""
+
+DEFAULT_EXCLUDE = """
 - ^bar
 """
 
@@ -48,18 +58,55 @@ class ConfigTestCase(TestCase):
 
     def setUp(self):
         self.conf_file = '.test.lamvery.yml'
+        self.event_file = '.test.event.yml'
+        self.secret_file = '.test.secret.yml'
+        self.exclude_file = '.test.exclude.yml'
         open(self.conf_file, 'w').write(DEFAULT_CONF)
+        open(self.event_file, 'w').write(DEFAULT_EVENTS)
+        open(self.secret_file, 'w').write(DEFAULT_SECRET)
+        open(self.exclude_file, 'w').write(DEFAULT_EXCLUDE)
 
     def tearDown(self):
         os.remove(self.conf_file)
+        os.remove(self.event_file)
+        os.remove(self.secret_file)
+        os.remove(self.exclude_file)
+
+    def test_load(self):
+        config = Config(self.conf_file)
+        eq_(config.load(self.conf_file).get('profile'), 'default')
 
     def test_load_conf(self):
         config = Config(self.conf_file)
         eq_(config.load_conf().get('profile'), 'default')
 
-    def test_raw_conf(self):
+    def test_load_events(self):
         config = Config(self.conf_file)
-        eq_(config.load_raw_conf().get('configuration').get('test_env'), "{{ env['PATH'] }}")
+        eq_(config.load_events().pop().get('rule'), 'foo')
+
+    def test_get_event_file(self):
+        config = Config(self.conf_file)
+        eq_(config.get_event_file(), '.test.event.yml')
+
+    def test_load_secret(self):
+        config = Config(self.conf_file)
+        eq_(config.load_secret().get('cipher_texts'), {'foo': 'bar'})
+
+    def test_get_secret_file(self):
+        config = Config(self.conf_file)
+        eq_(config.get_secret_file(), '.test.secret.yml')
+
+    def test_load_exclude(self):
+        config = Config(self.conf_file)
+        eq_(config.load_exclude().pop(), '^bar')
+
+    def test_get_exclude_file(self):
+        config = Config(self.conf_file)
+        eq_(config.get_exclude_file(), '.test.exclude.yml')
+
+    def test_raw_secret(self):
+        config = Config(self.conf_file)
+        eq_(config.load_raw_secret().get('test_env'), "{{ env['PATH'] }}")
 
     def test_escape(self):
         config = Config(self.conf_file)
@@ -109,10 +156,26 @@ class ConfigTestCase(TestCase):
         runtime = config.get_default().get('configuration').get('runtime')
         eq_(runtime, 'python2.7')
 
+    def test_get_default_events(self):
+        config = Config(self.conf_file)
+        eq_(
+            config.get_default_events().pop().get('rule'),
+            'sample-rule-name')
+
+    def get_default_secret(self):
+        config = Config(self.conf_file)
+        eq_(
+            config.get_default_secret().get('key_id').get('<key-id>'),
+            'sample-rule-name')
+
+    def test_get_default_exclude(self):
+        config = Config(self.conf_file)
+        eq_(config.get_default_exclude().pop(), '^\\.test\\.exclude\\.yml$')
+
     def test_get_secret(self):
         config = Config(self.conf_file)
         key = config.get_secret().get('key_id')
-        eq_(key, 'arn:aws:kms:<region>:<account-number>:key/<key-id>')
+        eq_(key, '<key-id>')
 
     def test_generate_lambda_secret(self):
         config = Config(self.conf_file)
@@ -124,24 +187,14 @@ class ConfigTestCase(TestCase):
             }
         })
 
-    def test_write_default(self):
-        config = Config(self.conf_file)
-        config.write_default()
-
-    def test_file_exists(self):
-        config = Config(self.conf_file)
-        eq_(config.file_exists(), True)
-        config = Config('/foo/bar')
-        eq_(config.file_exists(), False)
-
     def test_store_secret(self):
         config = Config(self.conf_file)
         config.store_secret('foo', 'bar')
-        runtime = config.get_default().get('configuration').get('runtime')
+        eq_(config.get_secret().get('key_id'), '<key-id>')
         eq_(config.get_secret().get('cipher_texts').get('foo'), 'bar')
 
     def test_get_events(self):
         config = Config(self.conf_file)
         eq_(config.get_events().pop().get('schedule'), 'rate(5 minutes)')
-        config.load_conf = Mock(return_value={'events': None})
+        config.load_events = Mock(return_value=None)
         eq_(config.get_events(), [])
