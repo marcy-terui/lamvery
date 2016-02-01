@@ -63,7 +63,7 @@ If you doesn't set this option, this depends on `boto3`.
 ### versioning
 Enable the function versioning.
 
-### deafult_alias
+### default_alias
 The alias when it has not been specified in the `-a` or `--alias` option.
 
 ### configuration
@@ -268,10 +268,6 @@ Keep the empty CloudWatch Event Rule that does not have CloudWatch Event Target.
 This option is only needed by the `encrypt` command.  
 Store encripted value to configuration file (default: `.lamvery.yml`).  
 Requires the `-n` or `--secret-name` option.
-
-- `-s` or `--single-file`  
-This option is only needed by the `deploy` command.  
-Only use the main lambda function file.  
 
 - `-v` or `--version`  
 This option is needed by the `set-alias`,`invoke`,`rollback` commands.  
