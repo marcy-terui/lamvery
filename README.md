@@ -81,7 +81,7 @@ The Amazon Resource Name (ARN) of the IAM role for your function.
 - handler  
 The function within your code that Lambda calls to begin execution.
 
-- description
+- description  
 The description of your function.
 
 - timeout  
@@ -125,7 +125,8 @@ The unique target assignment ID.
 - input  
 Arguments passed to the target.
 - input_path  
-The value of the JSONPath that is used for extracting part of the matched event when passing it to the target.  
+The value of the JSONPath that is used for extracting part of the matched event when passing it to the target.
+
 *`input` and `input_path` are mutually-exclusive and optional parameters of a target.*
 
 ## Secret informations (deafult: `.lamvery.secret.yml`)
