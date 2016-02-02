@@ -102,6 +102,10 @@ class ConfigTestCase(TestCase):
         config = Config(self.conf_file)
         eq_(config.get_exclude_file(), '.test.exclude.yml')
 
+    def test_get_runtime(self):
+        config = Config(self.conf_file)
+        eq_(config.get_runtime(), 'python2.7')
+
     def test_raw_secret(self):
         config = Config(self.conf_file)
         eq_(config.load_raw_secret().get('test_env'), "{{ env['PATH'] }}")
