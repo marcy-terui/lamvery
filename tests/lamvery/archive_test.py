@@ -2,14 +2,14 @@
 
 import tempfile
 import os
-import sys
 import zipfile
 
 from unittest import TestCase
 from nose.tools import ok_, eq_, raises
-from mock import Mock,MagicMock,patch
-from lamvery.archive import *
+from mock import Mock
+from lamvery.archive import Archive
 from zipfile import PyZipFile
+
 
 class ArchiveTestCase(TestCase):
 
@@ -33,7 +33,6 @@ class ArchiveTestCase(TestCase):
     def test_create_zipfile_with_single_file(self):
         archive = Archive('test.zip', function_filename='lambda_function.py', single_file=True)
         archive.create_zipfile()
-        print()
         with PyZipFile(archive._zippath, 'r', compression=ZIP_DEFLATED) as zipfile:
             ok_('lambda_function.py' in zipfile.namelist())
             ok_(not ('.lamvery_secret.json' in zipfile.namelist()))
@@ -119,4 +118,3 @@ class ArchiveTestCase(TestCase):
         archive = Archive('test.zip')
         archive.create_zipfile()
         ok_(isinstance(archive.get_size(), int))
-

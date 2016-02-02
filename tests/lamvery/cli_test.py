@@ -1,13 +1,21 @@
 # -*- coding: utf-8 -*-
 
-import os
-import sys
-import botocore
-
 from unittest import TestCase
-from nose.tools import ok_, eq_, raises
-from mock import Mock,MagicMock,patch
-from lamvery.cli import *
+from mock import Mock, patch
+from lamvery.cli import (
+    main,
+    init,
+    archive,
+    configure,
+    deploy,
+    encrypt,
+    events,
+    decrypt,
+    set_alias,
+    invoke,
+    rollback
+)
+
 
 class FunctionsTestCase(TestCase):
 

@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 
-import os
-import sys
 import botocore
 import base64
 
 from unittest import TestCase
-from nose.tools import ok_, eq_, raises
-from mock import Mock,MagicMock,patch
-from lamvery.client import *
+from nose.tools import ok_, eq_
+from mock import Mock
+from lamvery.client import Client
 
 TEST_CONF = {
   'runtime': 'python2.7',
@@ -43,6 +41,7 @@ class ClientTestCase(TestCase):
     def test_update_function_code(self):
         self.client._lambda.update_function_code = Mock(return_value={'Version': '$LATEST'})
         eq_(self.client.update_function_code(Mock(), TEST_CONF, True), '$LATEST')
+
         self.client._dry_run = True
         eq_(self.client.update_function_code(Mock(), TEST_CONF, True), None)
 
@@ -71,24 +70,23 @@ class ClientTestCase(TestCase):
         eq_(self.client.decrypt(base64.b64encode('secret')), 'bar')
 
     def test_calculate_capacity(self):
-        ret1 = {'Functions': [{'FunctionName':'foo'}, {'FunctionName':'bar'}], 'NextMarker': 'foo'}
-        ret2 = {'Functions': [{'FunctionName':'foo'}, {'FunctionName':'bar'}]}
+        ret1 = {'Functions': [{'FunctionName': 'foo'}, {'FunctionName': 'bar'}], 'NextMarker': 'foo'}
+        ret2 = {'Functions': [{'FunctionName': 'foo'}, {'FunctionName': 'bar'}]}
         self.client._lambda.list_functions = Mock(side_effect=[ret1, ret2])
         self.client._calculate_versions_capacity = Mock(return_value=10)
         eq_(self.client.calculate_capacity(), 40)
 
     def test_calculate_versions_capacity(self):
-        ret1 = {'Versions': [{'CodeSize':20}, {'CodeSize':20}], 'NextMarker': 'foo'}
-        ret2 = {'Versions': [{'CodeSize':20}, {'CodeSize':20}]}
-        self.client._lambda.list_versions_by_function = Mock(side_effect=[ret1, ret2])
+        ret1 = {'Versions': [{'CodeSize': 20}, {'CodeSize': 20}], 'NextMarker': 'foo'}
+        ret2 = {'Versions': [{'CodeSize': 20}, {'CodeSize': 20}]}
+        self.client._lambda.list_versions_by_function = Mock(
+            side_effect=[ret1, ret2])
         eq_(self.client._calculate_versions_capacity('foo'), 80)
 
     def test_get_rules_by_target(self):
         self.client._get_rule_names_by_tagert = Mock(return_value=['foo', 'bar'])
         self.client._events.describe_rule = Mock(return_value={'foo': 'bar'})
-        eq_(self.client.get_rules_by_target('foo'), [
-            {'foo': 'bar'},
-            {'foo': 'bar'}])
+        eq_(self.client.get_rules_by_target('foo'), [{'foo': 'bar'}, {'foo': 'bar'}])
 
     def test_get_rule_names_by_tagert(self):
         ret1 = {'RuleNames': ['foo', 'bar'], 'NextToken': 'foo'}

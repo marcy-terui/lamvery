@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import sys
 import os
 
 from setuptools import setup, find_packages
@@ -19,8 +18,7 @@ setup_options = dict(
     packages=find_packages(exclude=['tests*', 'lambda_function', 'register']),
     install_requires=open('requirements.txt').read().splitlines(),
     entry_points={
-    'console_scripts':
-        'lamvery = lamvery.cli:main'
+        'console_scripts': 'lamvery = lamvery.cli:main'
     },
     license="MIT License",
     classifiers=(
