@@ -30,15 +30,10 @@ class InitActionTestCase(TestCase):
         # Overwrite
         action = InitAction(default_args())
 
-        def dummy_y(txt):
-            return 'y'
-
-        def dummy_n(txt):
-            return 'n'
-            
-        # Overwrite yes
-        lamvery.actions.init.raw_input = dummy_y
-        eq_(action._needs_write('.lamvery.yml'), True)
-        # Overwrite no
-        lamvery.actions.init.raw_input = dummy_n
-        eq_(action._needs_write('.lamvery.yml'), False)
+        with patch('sys.stdin') as r:
+            # Overwrite yes
+            r.readline = Mock(return_value='y')
+            eq_(action._needs_write('.lamvery.yml'), True)
+            # Overwrite no
+            r.readline = Mock(return_value='n')
+            eq_(action._needs_write('.lamvery.yml'), False)

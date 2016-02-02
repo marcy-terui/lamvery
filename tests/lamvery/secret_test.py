@@ -17,6 +17,7 @@ SECRET_JSON = '''
 }
 '''
 
+
 class FunctionsTestCase(TestCase):
 
     def setUp(self):

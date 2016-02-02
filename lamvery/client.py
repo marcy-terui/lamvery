@@ -4,9 +4,9 @@ import boto3
 import botocore
 import base64
 import hashlib
-import json
 
 from lamvery.utils import previous_alias
+
 
 class Client:
 

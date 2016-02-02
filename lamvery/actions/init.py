@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import os
-from termcolor import colored
+import sys
+from termcolor import cprint
 from lamvery.actions.base import BaseAction
 
 
@@ -27,8 +28,9 @@ class InitAction(BaseAction):
     def _needs_write(self, path):
         ret = True
         if os.path.exists(path):
-            y_n = raw_input(
-                colored('Overwrite {}? [y/n]: '.format(path), 'yellow'))
-            if y_n != 'y':
+            cprint('Overwrite {}? [y/n]: '.format(path), 'yellow', file=sys.stderr, end="")
+            y_n = sys.stdin.readline()
+            print(y_n)
+            if not y_n.startswith('y'):
                 ret = False
         return ret

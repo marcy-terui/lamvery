@@ -6,12 +6,14 @@ from mock import Mock, patch
 
 from lamvery.actions.rollback import RollbackAction
 
+
 def default_args():
     args = Mock()
     args.conf_file = '.lamvery.yml'
     args.dry_run = True
 
     return args
+
 
 class RollbackActionTestCase(TestCase):
 
