@@ -353,7 +353,7 @@ exports.lambda_handler = function(event, context) {
         console.log(data);
     });
 }
-
+```
 
 #### 6. Deploy your function  
 Command example:  
