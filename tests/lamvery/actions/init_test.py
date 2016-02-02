@@ -5,7 +5,6 @@ from nose.tools import eq_
 from mock import Mock, patch
 
 from lamvery.actions.init import InitAction
-import lamvery.actions.init
 
 
 def default_args():
