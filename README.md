@@ -310,7 +310,7 @@ versioning: false
 default_alias: null
 configuration:
   name: sample_lambda_function
-  runtime: python2.7
+  runtime: python2.7 # or nodejs
   role: arn:aws:iam::000000000000:role/lambda_basic_execution
   handler: lambda_function.lambda_handler
   description: This is sample lambda function.
@@ -333,12 +333,27 @@ lamvery encrypt -s -n foo "This is a secret"
 
 #### 5. Write your function.  
 Code example:  
+
+- Python
+
 ```py
   import lamvery
 
   def lambda_handler(event, context):
       print(lamvery.secret.get('foo'))
 ```
+
+- Node.js
+
+```js
+var lamvery = require('./lamvery.js');
+
+exports.lambda_handler = function(event, context) {
+    lamvery.secret.get('foo', function(err, data) {
+        console.log(data);
+    });
+}
+
 
 #### 6. Deploy your function  
 Command example:  

@@ -1,3 +1,7 @@
+## 0.10.1
+
+- Add KMS support for Node.js [#35][]
+
 ## 0.10.0
 
 - Split the configuration file [#33][]
@@ -133,4 +137,6 @@
 [#27]: https://github.com/marcy-terui/lamvery/issues/27
 [#28]: https://github.com/marcy-terui/lamvery/issues/28
 [#29]: https://github.com/marcy-terui/lamvery/issues/29
+[#33]: https://github.com/marcy-terui/lamvery/issues/33
+[#35]: https://github.com/marcy-terui/lamvery/issues/35
 [@ijin]: https://github.com/ijin
