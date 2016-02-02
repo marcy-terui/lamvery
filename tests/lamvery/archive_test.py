@@ -8,7 +8,7 @@ from unittest import TestCase
 from nose.tools import ok_, eq_, raises
 from mock import Mock
 from lamvery.archive import Archive
-from zipfile import PyZipFile
+from zipfile import PyZipFile, ZIP_DEFLATED
 
 
 class ArchiveTestCase(TestCase):

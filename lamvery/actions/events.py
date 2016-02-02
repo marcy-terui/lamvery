@@ -16,6 +16,7 @@ EVENT_TARGET_DIFF_KEYS = [
     ('InputPath', 'input_path',),
 ]
 
+
 class EventsAction(BaseAction):
 
     def __init__(self, args):
@@ -24,7 +25,7 @@ class EventsAction(BaseAction):
 
     def action(self):
         client = self.get_client()
-        func_name  = self._config.get_function_name()
+        func_name = self._config.get_function_name()
         conf = client.get_function_conf(func_name)
 
         if len(conf) == 0:
@@ -115,7 +116,8 @@ class EventsAction(BaseAction):
             l = self._search_rule(local, r['Name'])
 
             for rt in targets:
-                msg = '[EventRule] {}: Remove undifined event target "{}"'.format(r['Name'], rt['Id'])
+                msg = '[EventRule] {}: Remove undifined event target "{}"'.format(
+                    r['Name'], rt['Id'])
                 if len(l) > 0:
                     if not self._exist_target(l['targets'], rt['Id']):
                         self._logger.warn(msg)
@@ -128,6 +130,8 @@ class EventsAction(BaseAction):
                 client.remove_targets(r['Name'], target_ids)
 
             if len(targets) == len(target_ids) and not self._keep_empty:
-                self._logger.warn('[EventRule] Delete the event rule "{}" that does not have any targets'.format(r['Name']))
+                self._logger.warn(
+                    '[EventRule] Delete the event rule "{}" that does not have any targets'.format(
+                        r['Name']))
                 client.delete_rule(r['Name'])
                 client.remove_permission(function, r['Name'])

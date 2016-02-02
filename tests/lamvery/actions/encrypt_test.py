@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase
-from nose.tools import ok_, eq_, raises
-from mock import Mock,MagicMock,patch
+from mock import Mock, patch
 
 from lamvery.actions.encrypt import EncryptAction
+
 
 def default_args():
     args = Mock()
@@ -13,6 +13,7 @@ def default_args():
     args.secret_name = 'bar'
     args.store = False
     return args
+
 
 class EncryptActionTestCase(TestCase):
 

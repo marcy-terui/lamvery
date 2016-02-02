@@ -72,16 +72,16 @@ class Client:
     def create_alias(self, function, alias, version):
         if not self._dry_run:
             self._lambda.create_alias(
-                    FunctionName=function,
-                    Name=alias,
-                    FunctionVersion=version)
+                FunctionName=function,
+                Name=alias,
+                FunctionVersion=version)
 
     def update_alias(self, function, alias, version):
         if not self._dry_run:
             self._lambda.update_alias(
-                    FunctionName=function,
-                    Name=alias,
-                    FunctionVersion=version)
+                FunctionName=function,
+                Name=alias,
+                FunctionVersion=version)
 
     def encrypt(self, key_id, text):
         res = self._kms.encrypt(KeyId=key_id, Plaintext=text)

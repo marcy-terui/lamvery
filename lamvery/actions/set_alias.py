@@ -2,6 +2,7 @@
 
 from lamvery.actions.base import BaseAction
 
+
 class SetAliasAction(BaseAction):
 
     def __init__(self, args):
@@ -14,13 +15,13 @@ class SetAliasAction(BaseAction):
 
     def action(self):
         alias_name = self.get_alias_name()
-        version    = self.get_version()
-        func_name  = self._config.get_function_name()
-        client     = self.get_client()
+        version = self.get_version()
+        func_name = self._config.get_function_name()
+        client = self.get_client()
 
         if alias_name is None:
             raise Exception(
-                'Please specify an alias by `-a` option or `default_alias` configuration.'.format(func_name))
+                'Please specify an alias by `-a` option or `default_alias` configuration.')
 
         current_alias = client.get_alias(func_name, alias_name)
         self._print_alias_diff(alias_name, current_alias, version)

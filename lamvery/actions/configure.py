@@ -11,15 +11,16 @@ CONF_DIFF_KEYS = [
     ('MemorySize', 'memory_size',),
 ]
 
+
 class ConfigureAction(BaseAction):
 
     def __init__(self, args):
         super(ConfigureAction, self).__init__(args)
 
     def action(self):
-        func_name   = self._config.get_function_name()
-        local_conf  = self._config.get_configuration()
-        client      = self.get_client()
+        func_name = self._config.get_function_name()
+        local_conf = self._config.get_configuration()
+        client = self.get_client()
         remote_conf = client.get_function_conf(func_name)
 
         if len(remote_conf) > 0:

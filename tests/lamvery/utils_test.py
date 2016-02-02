@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase
-from nose.tools import ok_, eq_, raises
-from mock import Mock,MagicMock,patch
+from nose.tools import eq_
 
-from lamvery.utils import *
+from lamvery.utils import previous_alias
+
 
 class UtilsActionTestCase(TestCase):
 

@@ -1,21 +1,20 @@
 # -*- coding: utf-8 -*-
 
-from lamvery.actions.configure import (
-    ConfigureAction, CONF_DIFF_KEYS)
+from lamvery.actions.base import BaseAction
 from lamvery.actions.set_alias import SetAliasAction
-from lamvery.archive import Archive
 
-class RollbackAction(ConfigureAction):
+
+class RollbackAction(BaseAction):
 
     def __init__(self, args):
         super(RollbackAction, self).__init__(args)
         self._set_alias = SetAliasAction(args)
 
     def action(self):
-        func_name   = self._config.get_function_name()
-        client      = self.get_client()
+        func_name = self._config.get_function_name()
+        client = self.get_client()
         remote_conf = client.get_function_conf(func_name)
-        alias_name  = self._set_alias.get_alias_name()
+        alias_name = self._set_alias.get_alias_name()
 
         if len(remote_conf) == 0:
             raise Exception(
@@ -24,7 +23,8 @@ class RollbackAction(ConfigureAction):
         pre_version = client.get_previous_version(func_name, alias_name)
         if pre_version is None:
             raise Exception(
-                'There is no previous version. Please `deploy` with `publish` option or `versioning` configuration.'.format(func_name))
+                'There is no previous version. ' +
+                'Please `deploy` with `publish` option or `versioning` configuration.')
 
         self._logger.info(
             '[Function] Previous version: {}'.format(pre_version))

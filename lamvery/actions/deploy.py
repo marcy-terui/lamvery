@@ -6,6 +6,7 @@ from lamvery.actions.set_alias import SetAliasAction
 from lamvery.archive import Archive
 from lamvery.utils import previous_alias
 
+
 class DeployAction(BaseAction):
 
     def __init__(self, args):
@@ -26,14 +27,14 @@ class DeployAction(BaseAction):
                           single_file=self._single_file,
                           no_libs=self._no_libs,
                           exclude=exclude)
-        func_name   = self._config.get_function_name()
-        local_conf  = self._config.get_configuration()
-        zipfile     = archive.create_zipfile()
-        client      = self.get_client()
+        func_name = self._config.get_function_name()
+        local_conf = self._config.get_configuration()
+        zipfile = archive.create_zipfile()
+        client = self.get_client()
         remote_conf = client.get_function_conf(func_name)
-        alias_name  = self._set_alias.get_alias_name()
+        alias_name = self._set_alias.get_alias_name()
         remote_size = client.calculate_capacity()
-        local_size  = archive.get_size()
+        local_size = archive.get_size()
         new_version = None
         cur_version = None
 

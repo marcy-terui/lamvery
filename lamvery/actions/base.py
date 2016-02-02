@@ -5,6 +5,7 @@ from lamvery.client import Client
 from lamvery.config import Config
 from lamvery.log import get_logger
 
+
 class BaseAction:
 
     __metaclass__ = ABCMeta
@@ -46,7 +47,7 @@ class BaseAction:
 
     def _print_diff(self, prefix, remote, local, keys):
         diff = self._get_diff(remote, local, keys)
-        for k,v in diff.items():
+        for k, v in diff.items():
             if v is not None:
                 self._logger.warn(
                     '{p} {k}: {r} -> {l}'.format(p=prefix, k=k, r=v[0], l=v[1]))

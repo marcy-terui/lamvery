@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase
-from nose.tools import ok_, eq_, raises
-from mock import Mock,MagicMock,patch
+from nose.tools import eq_
+from mock import Mock, patch
 
 from lamvery.actions.init import InitAction
 import lamvery.actions.init
+
 
 def default_args():
     args = Mock()
     args.conf_file = '.lamvery.yml'
     return args
+
 
 class InitActionTestCase(TestCase):
 
@@ -27,10 +29,13 @@ class InitActionTestCase(TestCase):
         eq_(action._needs_write('bar'), True)
         # Overwrite
         action = InitAction(default_args())
+
         def dummy_y(txt):
             return 'y'
+
         def dummy_n(txt):
             return 'n'
+            
         # Overwrite yes
         lamvery.actions.init.raw_input = dummy_y
         eq_(action._needs_write('.lamvery.yml'), True)

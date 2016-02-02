@@ -6,6 +6,7 @@ from termcolor import colored
 
 logger = None
 
+
 class ColoredStreamHandler(logging.StreamHandler):
 
     def format(self, record):
@@ -17,6 +18,7 @@ class ColoredStreamHandler(logging.StreamHandler):
         elif record.levelno == logging.ERROR:
             message = colored(message, 'red')
         return message
+
 
 def get_logger(name):
     global logger

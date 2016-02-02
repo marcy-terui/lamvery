@@ -5,7 +5,6 @@ import sys
 import tempfile
 import shutil
 import re
-import yaml
 import lamvery.secret
 import warnings
 from zipfile import PyZipFile, ZIP_DEFLATED
@@ -20,9 +19,18 @@ EXCLUDE_DIR = [
 
 PYFILE_PATTERN = re.compile('.+\.py.?$')
 
+
 class Archive:
 
-    def __init__(self, filename, function_filename=None, single_file=False, no_libs=False, secret={}, exclude=[]):
+    def __init__(
+        self,
+        filename,
+        function_filename=None,
+        single_file=False,
+        no_libs=False,
+        secret={},
+        exclude=[]
+    ):
         self._filename = filename
         self._function_filename = function_filename
         self._tmpdir = tempfile.mkdtemp(suffix='lamvery')
@@ -110,7 +118,8 @@ class Archive:
             venv = os.environ['VIRTUAL_ENV']
         except:
             logger.warn(
-                'VIRTUAL_ENV environment variable can not be found. Python libraries are not included in the archive.')
+                'VIRTUAL_ENV environment variable can not be found. ' +
+                'Python libraries are not included in the archive.')
             venv = None
         paths = []
         if not self._no_libs and venv is not None:
@@ -118,10 +127,10 @@ class Archive:
                 if os.path.isdir(p) and os.path.exists(p):
                     if p.startswith(venv) and p.find('site-packages') != -1:
                         for f in os.listdir(p):
-                            f_path = os.path.join(p ,f)
+                            f_path = os.path.join(p, f)
                             paths.append(f_path)
         for f in os.listdir(os.getcwd()):
-            f_path = os.path.join(os.getcwd() ,f)
+            f_path = os.path.join(os.getcwd(), f)
             if not f_path == venv:
                 paths.append(f_path)
         if self._single_file:

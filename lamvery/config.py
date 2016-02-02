@@ -2,21 +2,20 @@
 
 import yaml
 import os
-import uuid
-import json
 import re
-from termcolor import cprint, colored
+
 from collections import OrderedDict
-from lamvery.archive import Archive
-from lamvery.client import Client
 from jinja2 import Environment, FileSystemLoader
 
+
 def represent_odict(dumper, instance):
-     return dumper.represent_mapping(u'tag:yaml.org,2002:map', instance.items())
+    return dumper.represent_mapping(u'tag:yaml.org,2002:map', instance.items())
 
 yaml.add_representer(OrderedDict, represent_odict)
-yaml.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
+yaml.add_constructor(
+    yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
     lambda loader, node: OrderedDict(loader.construct_pairs(node)))
+
 
 class Config:
 
@@ -116,7 +115,7 @@ class Config:
             return os.path.basename(os.getcwd())
 
     def get_function_filename(self):
-        runtimes = { "python2.7": "py", "nodejs": "js" }
+        runtimes = {"python2.7": "py", "nodejs": "js"}
         ext = runtimes.get(self.get_configuration().get('runtime'), "py")
         return '{}.{}'.format(
             self.get_configuration().get('handler').split('.')[0], ext)
@@ -141,33 +140,34 @@ class Config:
 
     def get_default(self):
         init_config = OrderedDict()
-        init_config['name']          = self.get_function_name()
-        init_config['runtime']       = 'python2.7'
-        init_config['role']          = 'arn:aws:iam::<account-number>:role/<role>'
-        init_config['handler']       = 'lambda_function.lambda_handler'
-        init_config['description']   = 'This is a sample lambda function.'
-        init_config['timeout']       = 10
-        init_config['memory_size']   = 128
+        init_config['name'] = self.get_function_name()
+        init_config['runtime'] = 'python2.7'
+        init_config['role'] = 'arn:aws:iam::<account-number>:role/<role>'
+        init_config['handler'] = 'lambda_function.lambda_handler'
+        init_config['description'] = 'This is a sample lambda function.'
+        init_config['timeout'] = 10
+        init_config['memory_size'] = 128
 
         init_yaml = OrderedDict()
         init_yaml['profile'] = None
-        init_yaml['region']  = 'us-east-1'
-        init_yaml['versioning']    = False
+        init_yaml['region'] = 'us-east-1'
+        init_yaml['versioning'] = False
         init_yaml['default_alias'] = None
         init_yaml['configuration'] = init_config
 
         return init_yaml
 
     def get_default_events(self):
-        targets = [OrderedDict(
-            [('id', '<unique-target-id>',),
-            ('input', {'this': [{'is': 'a'}, {'sample': 'input'}]},),
-            ('input_path', 'json.path.format',)])]
+        targets = [
+            OrderedDict([
+                ('id', '<unique-target-id>',),
+                ('input', {'this': [{'is': 'a'}, {'sample': 'input'}]},),
+                ('input_path', 'json.path.format',)])]
         event = OrderedDict()
-        event['rule']        = 'sample-rule-name'
+        event['rule'] = 'sample-rule-name'
         event['description'] = 'This is a sample CloudWatchEvent'
-        event['schedule']    = 'rate(5 minutes)'
-        event['targets']     = targets
+        event['schedule'] = 'rate(5 minutes)'
+        event['targets'] = targets
         init_events = [event]
 
         return init_events
@@ -195,7 +195,6 @@ class Config:
 
     def store_secret(self, key, value):
         conf = self.load_raw_secret()
-        default = self.get_default_secret()
 
         if 'cipher_texts' not in conf:
             conf['cipher_texts'] = {}

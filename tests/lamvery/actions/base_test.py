@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase
-from nose.tools import ok_, eq_, raises
-from mock import Mock,MagicMock,patch
+from nose.tools import eq_, raises
+from mock import Mock
 
 from lamvery.actions.base import BaseAction
 from lamvery.actions.configure import CONF_DIFF_KEYS
+
 
 def default_args():
     args = Mock()
@@ -13,9 +14,11 @@ def default_args():
     args.dry_run = True
     return args
 
+
 class TestAction(BaseAction):
     def action(self):
         pass
+
 
 class BaseActionTestCase(TestCase):
 

@@ -4,6 +4,7 @@ import os
 from termcolor import colored
 from lamvery.actions.base import BaseAction
 
+
 class InitAction(BaseAction):
 
     def __init__(self, args):
@@ -17,7 +18,7 @@ class InitAction(BaseAction):
             self._config.get_secret_file(): self._config.get_default_secret(),
             self._config.get_exclude_file(): self._config.get_default_exclude(),
         }
-        for f,c in files.items():
+        for f, c in files.items():
             if self._needs_write(f):
                 self._config.write(c, f)
                 self._logger.info(

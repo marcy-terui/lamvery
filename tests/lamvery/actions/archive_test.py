@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
 import os
+
 from unittest import TestCase
-from nose.tools import ok_, eq_, raises
-from mock import Mock,MagicMock,patch
+from nose.tools import ok_
+from mock import Mock
 
 from lamvery.actions.archive import ArchiveAction
+
 
 def default_args():
     args = Mock()
@@ -14,6 +16,7 @@ def default_args():
     args.no_libs = False
     args.single_file = False
     return args
+
 
 class ArchiveActionTestCase(TestCase):
 

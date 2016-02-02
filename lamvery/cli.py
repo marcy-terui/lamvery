@@ -4,38 +4,60 @@ import sys
 import argparse
 import lamvery
 import logging
-from termcolor import cprint, colored
-from lamvery.actions import *
+from termcolor import colored
+from lamvery.actions import (
+    InitAction,
+    ArchiveAction,
+    ConfigureAction,
+    DeployAction,
+    DecryptAction,
+    EncryptAction,
+    EventsAction,
+    InvokeAction,
+    RollbackAction,
+    SetAliasAction
+)
+
 
 def init(args):
     InitAction(args).action()
 
+
 def archive(args):
     ArchiveAction(args).action()
+
 
 def configure(args):
     ConfigureAction(args).action()
 
+
 def deploy(args):
     DeployAction(args).action()
+
 
 def decrypt(args):
     DecryptAction(args).action()
 
+
 def encrypt(args):
     EncryptAction(args).action()
+
 
 def events(args):
     EventsAction(args).action()
 
+
 def invoke(args):
     InvokeAction(args).action()
+
 
 def rollback(args):
     RollbackAction(args).action()
 
+
 def set_alias(args):
     SetAliasAction(args).action()
+
 
 def main():
     a_args = ('-a', '--alias',)
@@ -132,7 +154,8 @@ def main():
 
     deploy_parser = subparsers.add_parser(
         'deploy',
-        help='Deploy your code and libraries, Update the remote configuration, Set alias (optional)')
+        help='Deploy your code and libraries,' +
+             'Update the remote configuration, Set alias (optional)')
     deploy_parser.add_argument(*a_args, **a_kwargs)
     deploy_parser.add_argument(*c_args, **c_kwargs)
     deploy_parser.add_argument(*d_args, **d_kwargs)

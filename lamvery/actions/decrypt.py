@@ -2,6 +2,7 @@
 
 from lamvery.actions.base import BaseAction
 
+
 class DecryptAction(BaseAction):
 
     def __init__(self, args):

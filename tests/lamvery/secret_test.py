@@ -2,11 +2,10 @@
 
 import os
 import yaml
-import tempfile
 
 from unittest import TestCase
-from nose.tools import ok_, eq_, raises
-from mock import Mock,MagicMock,patch
+from nose.tools import eq_
+from mock import patch
 import lamvery.secret
 
 SECRET_JSON = '''

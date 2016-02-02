@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase
-from nose.tools import ok_, eq_, raises
-from mock import Mock,MagicMock,patch
+from nose.tools import eq_, raises
+from mock import Mock, patch
 
 from lamvery.actions.set_alias import SetAliasAction
+
 
 def default_args():
     args = Mock()
@@ -14,6 +15,7 @@ def default_args():
     args.alias = None
     args.version = None
     return args
+
 
 class SetAliasActionTestCase(TestCase):
 

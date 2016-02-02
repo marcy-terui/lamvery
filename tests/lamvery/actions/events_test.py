@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase
-from nose.tools import ok_, eq_, raises
-from mock import Mock,MagicMock,patch
+from nose.tools import eq_, raises
+from mock import Mock, patch
 
 from lamvery.actions.events import EventsAction
+
 
 def default_args():
     args = Mock()
     args.conf_file = '.lamvery.yml'
     args.keep_empty_events = False
     return args
+
 
 class EventsActionTestCase(TestCase):
 
@@ -20,7 +22,7 @@ class EventsActionTestCase(TestCase):
             c.get_function_conf = Mock(return_value={})
             action = EventsAction(default_args())
             action.get_client = Mock(return_value=c)
-            actin.action()
+            action.action()
 
     def test_action(self):
         with patch('lamvery.actions.base.Client') as c:
@@ -75,7 +77,7 @@ class EventsActionTestCase(TestCase):
 
     def test_clean(self):
         with patch('lamvery.actions.base.Client') as c:
-            c.get_targets_by_rule = Mock(return_value=[{'Id': 'foo','Arn': 'baz'}])
+            c.get_targets_by_rule = Mock(return_value=[{'Id': 'foo', 'Arn': 'baz'}])
             action = EventsAction(default_args())
             action.get_client = Mock(return_value=c)
             action._clean(

@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase
-from nose.tools import ok_, eq_, raises
-from mock import Mock,MagicMock,patch
+from nose.tools import eq_
+from mock import Mock, patch
 
 from lamvery.actions.deploy import DeployAction
+
 
 def default_args():
     args = Mock()
@@ -13,7 +14,6 @@ def default_args():
     args.publish = True
     args.no_libs = False
     args.single_file = False
-
     return args
 
 

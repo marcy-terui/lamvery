@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase
-from nose.tools import ok_, eq_, raises
-from mock import Mock,MagicMock,patch
+from mock import Mock, patch
 
 from lamvery.actions.invoke import InvokeAction
 
 import base64
+
 
 def default_args():
     args = Mock()
@@ -15,6 +15,7 @@ def default_args():
     args.version = '1'
     args.json = '{"foo": "bar"}'
     return args
+
 
 class InvokeActionTestCase(TestCase):
 

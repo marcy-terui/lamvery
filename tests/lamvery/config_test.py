@@ -1,15 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import tempfile
-import yaml
 import os
 
 from unittest import TestCase
-from nose.tools import ok_, eq_, raises
-from mock import Mock,MagicMock,patch
-from lamvery.config import *
-
-import lamvery.config
+from nose.tools import eq_
+from mock import Mock
+from lamvery.config import Config, represent_odict
 
 DEFAULT_CONF = """
 profile: default
@@ -47,12 +43,14 @@ DEFAULT_EXCLUDE = """
 
 NODE_CONF = DEFAULT_CONF.replace('python2.7', 'nodejs')
 
+
 class FunctionsTestCase(TestCase):
 
     def test_represent_odict(self):
         dumper = Mock()
         dumper.represent_mapping = Mock(return_value='test')
         eq_(represent_odict(dumper, {'foo': 'bar'}), 'test')
+
 
 class ConfigTestCase(TestCase):
 

@@ -5,6 +5,7 @@ import os
 from lamvery.actions.base import BaseAction
 from termcolor import cprint
 
+
 class InvokeAction(BaseAction):
 
     def __init__(self, args):
@@ -14,12 +15,13 @@ class InvokeAction(BaseAction):
             self._json = open(args.json, 'r').read()
         else:
             self._json = args.json
-        self._version = args.version
-        
+
         if args.alias is None:
             self._alias = self._config.get_default_alias()
         else:
             self._alias = args.alias
+
+        self._version = args.version
 
     def action(self):
         qualifier = self._alias
