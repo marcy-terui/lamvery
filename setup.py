@@ -16,6 +16,9 @@ setup_options = dict(
     author_email='marcy9114+pypi@gmail.com',
     url='https://github.com/marcy-terui/lamvery',
     packages=find_packages(exclude=['tests*', 'lambda_function', 'register']),
+    package_data={
+        'lamvery': ['dists/lamvery.js']
+    },
     install_requires=open('requirements.txt').read().splitlines(),
     entry_points={
         'console_scripts': 'lamvery = lamvery.cli:main'

@@ -26,7 +26,8 @@ class DeployAction(BaseAction):
                           secret=secret,
                           single_file=self._single_file,
                           no_libs=self._no_libs,
-                          exclude=exclude)
+                          exclude=exclude,
+                          runtime=self._config.get_runtime())
         func_name = self._config.get_function_name()
         local_conf = self._config.get_configuration()
         zipfile = archive.create_zipfile()

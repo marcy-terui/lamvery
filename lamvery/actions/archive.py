@@ -21,7 +21,8 @@ class ArchiveAction(BaseAction):
                           secret=secret,
                           single_file=self._single_file,
                           no_libs=self._no_libs,
-                          exclude=exclude)
+                          exclude=exclude,
+                          runtime=self._config.get_runtime())
         zipfile = archive.create_zipfile()
         with open(archive_name, 'w') as f:
             f.write(zipfile.read())

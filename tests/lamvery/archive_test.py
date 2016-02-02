@@ -9,7 +9,7 @@ from nose.tools import ok_, eq_, raises
 from mock import Mock
 from lamvery.archive import Archive
 from zipfile import PyZipFile, ZIP_DEFLATED
-
+from lamvery.config import RUNTIME_NODE_JS
 
 class ArchiveTestCase(TestCase):
 
@@ -25,6 +25,7 @@ class ArchiveTestCase(TestCase):
 
     def test_create_zipfile(self):
         archive = Archive('test.zip')
+        archive._runtime = RUNTIME_NODE_JS
         ok_(hasattr(archive.create_zipfile(), 'read'))
         with PyZipFile(archive._zippath, 'r', compression=ZIP_DEFLATED) as zipfile:
             ok_('lambda_function.pyc' in zipfile.namelist())
@@ -50,6 +51,11 @@ class ArchiveTestCase(TestCase):
         archive._archive_file(
             self.zipfile, os.path.join(self.pj_root, 'README.md'))
         ok_(isinstance(self.zipfile.getinfo('README.md'), zipfile.ZipInfo))
+
+    def test_archive_dist(self):
+        archive = Archive('test.zip')
+        archive._archive_dist(self.zipfile, 'lamvery.js')
+        ok_(isinstance(self.zipfile.getinfo('lamvery.js'), zipfile.ZipInfo))
 
     @raises(KeyError)
     def test_archive_single_file_key_error(self):

@@ -5,8 +5,10 @@ import sys
 import tempfile
 import shutil
 import re
-import lamvery.secret
 import warnings
+import lamvery.secret
+import lamvery.config
+
 from zipfile import PyZipFile, ZIP_DEFLATED
 from lamvery.log import get_logger
 
@@ -29,23 +31,24 @@ class Archive:
         single_file=False,
         no_libs=False,
         secret={},
-        exclude=[]
+        exclude=[],
+        runtime=lamvery.config.RUNTIME_PY_27
     ):
         self._filename = filename
         self._function_filename = function_filename
         self._tmpdir = tempfile.mkdtemp(suffix='lamvery')
         self._zippath = os.path.join(self._tmpdir, self._filename)
-        self._secretpath = os.path.join(self._tmpdir, lamvery.secret.SECRET_FILE_NAME)
         self._secret = secret
         self._single_file = single_file
         self._no_libs = no_libs
         self._exclude = exclude
+        self._runtime = runtime
 
     def __del__(self):
         shutil.rmtree(self._tmpdir)
 
     def create_zipfile(self):
-        lamvery.secret.generate(self._secretpath, self._secret)
+
         with PyZipFile(self._zippath, 'w', compression=ZIP_DEFLATED) as zipfile:
             for p in self._get_paths():
                 if os.path.isdir(p):
@@ -53,8 +56,18 @@ class Archive:
                 else:
                     self._archive_file(zipfile, p)
             if not self._single_file:
-                self._archive_file(zipfile, self._secretpath)
+                secret_path = os.path.join(self._tmpdir, lamvery.secret.SECRET_FILE_NAME)
+                lamvery.secret.generate(secret_path, self._secret)
+                self._archive_file(zipfile, secret_path)
+
+                if self._runtime == lamvery.config.RUNTIME_NODE_JS:
+                    self._archive_dist(zipfile, 'lamvery.js')
+
         return open(self._zippath, 'rb')
+
+    def _archive_dist(self, zipfile, dist):
+        self._archive_file(
+            zipfile, os.path.join(os.path.dirname(__file__), 'dists', dist))
 
     def _archive_dir(self, zipfile, path):
         dirname = os.path.basename(path)

@@ -2,3 +2,7 @@
 - ^\.lamvery\.event\.yml$
 - ^\.lamvery\.secret\.yml$
 - ^\.lamvery\.exclude\.yml$
+- ^pypandoc$
+- ^nose.*$
+- ^tqdm$
+- ^cov.+$

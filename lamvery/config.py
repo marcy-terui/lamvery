@@ -7,6 +7,14 @@ import re
 from collections import OrderedDict
 from jinja2 import Environment, FileSystemLoader
 
+RUNTIME_PY_27 = 'python2.7'
+RUNTIME_NODE_JS = 'nodejs'
+
+RUNTIME_AND_EXTENSION = {
+    RUNTIME_PY_27: 'py',
+    RUNTIME_NODE_JS: 'js'
+}
+
 
 def represent_odict(dumper, instance):
     return dumper.represent_mapping(u'tag:yaml.org,2002:map', instance.items())
@@ -115,10 +123,12 @@ class Config:
             return os.path.basename(os.getcwd())
 
     def get_function_filename(self):
-        runtimes = {"python2.7": "py", "nodejs": "js"}
-        ext = runtimes.get(self.get_configuration().get('runtime'), "py")
+        ext = RUNTIME_AND_EXTENSION.get(self.get_runtime(), "py")
         return '{}.{}'.format(
             self.get_configuration().get('handler').split('.')[0], ext)
+
+    def get_runtime(self):
+        return self.get_configuration().get('runtime')
 
     def get_archive_name(self):
         return '{}.zip'.format(self.get_function_name())
@@ -141,7 +151,7 @@ class Config:
     def get_default(self):
         init_config = OrderedDict()
         init_config['name'] = self.get_function_name()
-        init_config['runtime'] = 'python2.7'
+        init_config['runtime'] = RUNTIME_PY_27
         init_config['role'] = 'arn:aws:iam::<account-number>:role/<role>'
         init_config['handler'] = 'lambda_function.lambda_handler'
         init_config['description'] = 'This is a sample lambda function.'
