@@ -18,7 +18,7 @@ class ConfigureActionTestCase(TestCase):
 
     @raises(Exception)
     def test_action_not_exists(self):
-        with patch('lamvery.actions.base.Client') as c:
+        with patch('lamvery.actions.base.LambdaClient') as c:
             action = ConfigureAction(default_args())
             action._print_conf_diff = Mock()
             c.get_function_conf = Mock(return_value={})
@@ -30,7 +30,7 @@ class ConfigureActionTestCase(TestCase):
 
         # Dry run
         action = ConfigureAction(default_args())
-        action.get_client = Mock(return_value=c)
+        action._get_client = Mock(return_value=c)
         action._print_conf_diff = Mock()
         action.action()
 
@@ -38,6 +38,6 @@ class ConfigureActionTestCase(TestCase):
         args = default_args()
         args.dry_run = False
         action = ConfigureAction(args)
-        action.get_client = Mock(return_value=c)
+        action._get_client = Mock(return_value=c)
         action._print_conf_diff = Mock()
         action.action()

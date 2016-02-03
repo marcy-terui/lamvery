@@ -8,3 +8,4 @@ from lamvery.actions.init import InitAction
 from lamvery.actions.set_alias import SetAliasAction
 from lamvery.actions.invoke import InvokeAction
 from lamvery.actions.rollback import RollbackAction
+from lamvery.actions.logs import LogsAction

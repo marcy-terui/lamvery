@@ -25,7 +25,7 @@ class InvokeAction(BaseAction):
 
     def action(self):
         qualifier = self._alias
-        client = self.get_client()
+        client = self.get_lambda_client()
 
         if self._version is not None:
             qualifier = self._version

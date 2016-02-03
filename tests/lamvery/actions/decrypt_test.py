@@ -16,7 +16,7 @@ def default_args():
 class DecryptActionTestCase(TestCase):
 
     def test_action(self):
-        with patch('lamvery.actions.base.Client'):
+        with patch('lamvery.actions.base.KmsClient'):
             action = DecryptAction(default_args())
             action._config = Mock()
             action.action()

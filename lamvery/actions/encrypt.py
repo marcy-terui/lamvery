@@ -12,7 +12,7 @@ class EncryptAction(BaseAction):
         self._store = args.store
 
     def action(self):
-        cipher_text = self.get_client().encrypt(
+        cipher_text = self.get_kms_client().encrypt(
             self._config.get_secret().get('key_id'), self._text)
 
         if self._store:

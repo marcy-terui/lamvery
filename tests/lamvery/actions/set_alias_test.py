@@ -19,14 +19,14 @@ def default_args():
 
 class SetAliasActionTestCase(TestCase):
 
-    @patch('lamvery.actions.base.Client')
+    @patch('lamvery.actions.base.LambdaClient')
     @raises(Exception)
     def test_action_not_exists(self, c):
         action = SetAliasAction(default_args())
         action.get_alias_name = Mock(return_value=None)
         action.action()
 
-    @patch('lamvery.actions.base.Client')
+    @patch('lamvery.actions.base.LambdaClient')
     def test_action(self, c):
 
         # Dry run
@@ -41,13 +41,13 @@ class SetAliasActionTestCase(TestCase):
         args.dry_run = False
 
         # New
-        with patch('lamvery.actions.base.Client') as c:
+        with patch('lamvery.actions.base.LambdaClient') as c:
             c.get_alias = Mock(return_value={})
             action = SetAliasAction(args)
             action.action()
 
         # Update
-        with patch('lamvery.actions.base.Client') as c:
+        with patch('lamvery.actions.base.LambdaClient') as c:
             c.get_alias = Mock(return_value={'FunctionVersion': '1'})
             action = SetAliasAction(args)
             action.action()

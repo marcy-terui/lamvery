@@ -6,7 +6,7 @@ import base64
 from unittest import TestCase
 from nose.tools import ok_, eq_
 from mock import Mock
-from lamvery.client import Client
+from lamvery.clients.function import LambdaClient
 
 TEST_CONF = {
     'runtime': 'python2.7',
@@ -20,13 +20,11 @@ TEST_CONF = {
 }
 
 
-class ClientTestCase(TestCase):
+class LambdaClientTestCase(TestCase):
 
     def setUp(self):
-        self.client = Client(region='us-east-1')
+        self.client = LambdaClient(region='us-east-1')
         self.client._lambda = Mock()
-        self.client._kms = Mock()
-        self.client._events = Mock()
 
     def test_get_function_conf(self):
         self.client._lambda.get_function = Mock(
@@ -62,14 +60,6 @@ class ClientTestCase(TestCase):
     def test_update_alias(self):
         self.client.update_alias('function', 'alias', 'version')
 
-    def test_encrypt(self):
-        self.client._kms.encrypt = Mock(return_value={'CiphertextBlob': 'foo'})
-        eq_(self.client.encrypt('key', 'val'), base64.b64encode('foo'))
-
-    def test_decrypt(self):
-        self.client._kms.decrypt = Mock(return_value={'Plaintext': 'bar'})
-        eq_(self.client.decrypt(base64.b64encode('secret')), 'bar')
-
     def test_calculate_capacity(self):
         ret1 = {
             'Functions': [{'FunctionName': 'foo'}, {'FunctionName': 'bar'}], 'NextMarker': 'foo'}
@@ -86,51 +76,6 @@ class ClientTestCase(TestCase):
             side_effect=[ret1, ret2])
         eq_(self.client._calculate_versions_capacity('foo'), 80)
 
-    def test_get_rules_by_target(self):
-        self.client._get_rule_names_by_tagert = Mock(return_value=['foo', 'bar'])
-        self.client._events.describe_rule = Mock(return_value={'foo': 'bar'})
-        eq_(self.client.get_rules_by_target('foo'), [{'foo': 'bar'}, {'foo': 'bar'}])
-
-    def test_get_rule_names_by_tagert(self):
-        ret1 = {'RuleNames': ['foo', 'bar'], 'NextToken': 'foo'}
-        ret2 = {'RuleNames': ['baz', 'qux']}
-        self.client._events.list_rule_names_by_target = Mock(side_effect=[ret1, ret2])
-        eq_(self.client._get_rule_names_by_tagert('foo'), ['foo', 'bar', 'baz', 'qux'])
-
-        self.client._events.list_rule_names_by_target = Mock(
-            side_effect=botocore.exceptions.ClientError({'Error': {}}, 'bar'))
-        eq_(self.client._get_rule_names_by_tagert('foo', 'bar'), [])
-
-    def test_put_rule(self):
-        rule = {
-            'rule': 'foo',
-            'description': 'bar',
-            'pattern': 'baz',
-            'schedule': 'qux'}
-        ok_(self.client.put_rule(rule) != {})
-        client = Client(region='us-east-1', profile=None, dry_run=True)
-        eq_(client.put_rule({'rule': 'foo'}), {})
-
-    def test_put_targets(self):
-        self.client.put_targets(
-            'foo', [{'id': 'foo', 'input': 'bar', 'input_path': 'baz'}], 'baz')
-
-    def test_get_targets_by_rule(self):
-        ret1 = {'Targets': [{'foo': 'bar'}], 'NextToken': 'foo'}
-        ret2 = {'Targets': [{'baz': 'qux'}]}
-        self.client._events.list_targets_by_rule = Mock(side_effect=[ret1, ret2])
-        eq_(self.client.get_targets_by_rule('foo'), [{'foo': 'bar'}, {'baz': 'qux'}])
-
-        self.client._events.list_targets_by_rule = Mock(
-            side_effect=botocore.exceptions.ClientError({'Error': {}}, 'bar'))
-        eq_(self.client.get_targets_by_rule('foo', 'bar'), [])
-
-    def test_remove_targets(self):
-        self.client.remove_targets('foo', ['bar', 'baz'])
-
-    def test_delete_rule(self):
-        self.client.delete_rule('foo')
-
     def test_add_permission(self):
         self.client.add_permission('foo', 'bar', 'baz')
         self.client._lambda.add_permission = Mock(
@@ -140,12 +85,12 @@ class ClientTestCase(TestCase):
     def test_remove_permission(self):
         self.client.remove_permission('foo', 'bar')
 
-    def test_generate_statement_id(self):
-        self.client._generate_statement_id('foo', 'bar')
-
     def test_invoke(self):
         self.client.invoke('foo', 'bar', 'baz')
 
     def test_get_previous_version(self):
         self.client.get_alias = Mock(return_value={'FunctionVersion': 'foo'})
         eq_(self.client.get_previous_version('foo', 'bar'), 'foo')
+
+    def test_generate_statement_id(self):
+        self.client._generate_statement_id('foo', 'bar')

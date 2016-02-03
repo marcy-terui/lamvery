@@ -12,7 +12,7 @@ class RollbackAction(BaseAction):
 
     def action(self):
         func_name = self._config.get_function_name()
-        client = self.get_client()
+        client = self.get_lambda_client()
         remote_conf = client.get_function_conf(func_name)
         alias_name = self._set_alias.get_alias_name()
 

@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from abc import ABCMeta, abstractmethod
-from lamvery.client import Client
 from lamvery.config import Config
 from lamvery.log import get_logger
+from lamvery.clients import (
+    LambdaClient,
+    KmsClient,
+    EventsClient,
+    LogsClient
+)
 
 
 class BaseAction:
@@ -28,11 +33,23 @@ class BaseAction:
     def action(self):
         raise NotImplementedError
 
-    def get_client(self):
-        return Client(
+    def _get_client(self, cls):
+        return cls(
             region=self._config.get_region(),
             profile=self._config.get_profile(),
             dry_run=self._dry_run)
+
+    def get_lambda_client(self):
+        return self._get_client(LambdaClient)
+
+    def get_kms_client(self):
+        return self._get_client(KmsClient)
+
+    def get_events_client(self):
+        return self._get_client(EventsClient)
+
+    def get_logs_client(self):
+        return self._get_client(LogsClient)
 
     def _get_diff(self, remote, local, keys):
         diff = {}
