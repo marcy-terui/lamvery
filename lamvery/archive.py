@@ -76,7 +76,7 @@ class Archive:
             for dirpath, dirnames, filenames in os.walk(path):
                 for filename in filenames:
                     f_path = os.path.join(dirpath, filename)
-                    if not self.is_source_file(filename) and not self.is_exclude_file(filename):
+                    if self.is_source_file(filename) and not self.is_exclude_file(filename):
                         f_name = f_path.replace(os.path.dirname(path) + os.sep, '')
                         try:
                             zipfile.getinfo(f_name)
