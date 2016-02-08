@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import botocore
-import base64
 
 from unittest import TestCase
-from nose.tools import ok_, eq_
+from nose.tools import eq_
 from mock import Mock
 from lamvery.clients.function import LambdaClient
 

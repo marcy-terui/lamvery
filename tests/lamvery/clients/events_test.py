@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import botocore
-import base64
 
 from unittest import TestCase
 from nose.tools import ok_, eq_

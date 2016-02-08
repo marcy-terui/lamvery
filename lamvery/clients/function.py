@@ -109,7 +109,6 @@ class LambdaClient(BaseClient):
         else:
             return size
 
-
     def add_permission(self, function, rule_name, rule_arn):
         if not self._dry_run:
             try:

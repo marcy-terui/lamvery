@@ -18,7 +18,6 @@ class LogsAction(BaseAction):
         self._exit = False
         self._start = args.start
 
-
     def action(self):
         self._logger.info('Start viewing the log events...')
 
@@ -40,7 +39,7 @@ class LogsAction(BaseAction):
         function = self._config.get_function_name()
         event_ids = {}
 
-        while self._exit == False:
+        while self._exit is False:
             events = client.get_log_events(function, start, self._filter)
 
             for e in events:
