@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import json
-from lamvery.client import Client
+from lamvery.clients.kms import KmsClient
 
 SECRET_FILE_NAME = '.lamvery_secret.json'
 
@@ -18,5 +18,5 @@ def get(name):
         return None
     if name not in data['cipher_texts']:
         return None
-    client = Client(region=data.get('region'))
+    client = KmsClient(region=data.get('region'))
     return client.decrypt(data['cipher_texts'].get(name))

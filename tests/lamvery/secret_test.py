@@ -33,7 +33,7 @@ class FunctionsTestCase(TestCase):
         eq_(data.get('foo'), 2)
 
     def test_get(self):
-        with patch('lamvery.secret.Client') as c:
+        with patch('lamvery.secret.KmsClient') as c:
             class Dummy:
                 def decrypt(self, foo):
                     return 'test'
