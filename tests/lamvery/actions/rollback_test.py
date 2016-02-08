@@ -19,26 +19,26 @@ class RollbackActionTestCase(TestCase):
 
     @raises(Exception)
     def test_action_function_not_exists(self):
-        with patch('lamvery.actions.base.Client') as c:
+        with patch('lamvery.actions.base.LambdaClient') as c:
             c.get_function_conf = Mock(return_value={})
             c.get_function_conf = Mock(return_value=None)
             action = RollbackAction(default_args())
-            action.get_client = Mock(return_value=c)
+            action._get_client = Mock(return_value=c)
             action.action()
 
     @raises(Exception)
     def test_action_previous_version_not_exists(self):
-        with patch('lamvery.actions.base.Client') as c:
+        with patch('lamvery.actions.base.LambdaClient') as c:
             c.get_function_conf = Mock(return_value={'foo': 'bar'})
             c.get_previous_version = Mock(return_value=None)
             action = RollbackAction(default_args())
-            action.get_client = Mock(return_value=c)
+            action._get_client = Mock(return_value=c)
             action.action()
 
     def test_action(self):
-        with patch('lamvery.actions.base.Client') as c:
+        with patch('lamvery.actions.base.LambdaClient') as c:
             c.get_function_conf = Mock(return_value={'foo': 'bar'})
             c.get_previous_version = Mock(return_value='1')
             action = RollbackAction(default_args())
-            action.get_client = Mock(return_value=c)
+            action._get_client = Mock(return_value=c)
             action.action()

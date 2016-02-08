@@ -24,9 +24,10 @@ class EventsAction(BaseAction):
         self._keep_empty = args.keep_empty_events
 
     def action(self):
-        client = self.get_client()
+        lambda_client = self.get_lambda_client()
+        events_client = self.get_events_client()
         func_name = self._config.get_function_name()
-        conf = client.get_function_conf(func_name)
+        conf = lambda_client.get_function_conf(func_name)
 
         if len(conf) == 0:
             msg = '"{}" function is not exists. Please `deploy` at first.'.format(func_name)
@@ -34,14 +35,15 @@ class EventsAction(BaseAction):
 
         arn = conf['FunctionArn']
         local_rules = self._config.get_events()
-        remote_rules = client.get_rules_by_target(arn)
+        remote_rules = events_client.get_rules_by_target(arn)
 
         self._clean(remote_rules, local_rules, arn, func_name)
         self._put_rules(remote_rules, local_rules, func_name)
         self._put_targets(local_rules, arn)
 
     def _put_rules(self, remote, local, function):
-        client = self.get_client()
+        lambda_client = self.get_lambda_client()
+        events_client = self.get_events_client()
 
         for l in local:
             l['state'] = self._convert_state(l.get('disabled'))
@@ -56,8 +58,8 @@ class EventsAction(BaseAction):
                 keys=EVENT_RULE_DIFF_KEYS,
                 remote=r, local=l)
 
-            ret = client.put_rule(l)
-            client.add_permission(function, l['rule'], ret.get('RuleArn'))
+            ret = events_client.put_rule(l)
+            lambda_client.add_permission(function, l['rule'], ret.get('RuleArn'))
 
     def _convert_state(self, disabled):
         if disabled:
@@ -75,7 +77,7 @@ class EventsAction(BaseAction):
         return len(self._search_rule(rules, name)) > 0
 
     def _put_targets(self, local, arn):
-        client = self.get_client()
+        client = self.get_events_client()
 
         for l in local:
             targets = client.get_targets_by_rule(l['rule'])
@@ -107,10 +109,11 @@ class EventsAction(BaseAction):
         return False
 
     def _clean(self, remote, local, arn, function):
-        client = self.get_client()
+        lambda_client = self.get_lambda_client()
+        events_client = self.get_events_client()
 
         for r in remote:
-            targets = client.get_targets_by_rule(r['Name'])
+            targets = events_client.get_targets_by_rule(r['Name'])
             target_ids = []
 
             l = self._search_rule(local, r['Name'])
@@ -127,11 +130,11 @@ class EventsAction(BaseAction):
                     target_ids.append(rt['Id'])
 
             if len(target_ids) > 0:
-                client.remove_targets(r['Name'], target_ids)
+                events_client.remove_targets(r['Name'], target_ids)
 
             if len(targets) == len(target_ids) and not self._keep_empty:
                 self._logger.warn(
                     '[EventRule] Delete the event rule "{}" that does not have any targets'.format(
                         r['Name']))
-                client.delete_rule(r['Name'])
-                client.remove_permission(function, r['Name'])
+                events_client.delete_rule(r['Name'])
+                lambda_client.remove_permission(function, r['Name'])

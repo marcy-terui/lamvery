@@ -20,7 +20,7 @@ def default_args():
 class InvokeActionTestCase(TestCase):
 
     def test_action(self):
-        with patch('lamvery.actions.base.Client') as c:
+        with patch('lamvery.actions.base.LambdaClient') as c:
             m = Mock()
             m.invoke = Mock(return_value={'LogResult': base64.b64encode('foo')})
             c.return_value = m
@@ -33,5 +33,5 @@ class InvokeActionTestCase(TestCase):
             m.invoke = Mock(
                 return_value={'FunctionError': 'unhandled', 'LogResult': base64.b64encode('foo')})
             c.return_value = m
-            action.get_client = c
+            action._get_client = c
             action.action()

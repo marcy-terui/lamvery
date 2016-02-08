@@ -22,7 +22,7 @@ class DeployActionTestCase(TestCase):
     @patch('lamvery.actions.deploy.SetAliasAction')
     def test_action(self, a):
         # Dry run
-        with patch('lamvery.actions.base.Client') as c:
+        with patch('lamvery.actions.base.LambdaClient') as c:
             action = DeployAction(default_args())
             action._print_conf_diff = Mock()
             action._print_capacity = Mock()
@@ -35,26 +35,26 @@ class DeployActionTestCase(TestCase):
             action._print_conf_diff = Mock()
             action._print_capacity = Mock()
         # New
-        with patch('lamvery.actions.base.Client') as c:
+        with patch('lamvery.actions.base.LambdaClient') as c:
             action._enable_versioning = Mock(return_value=False)
             c.get_function_conf = Mock(return_value={})
-            action.get_client = Mock(return_value=c)
+            action._get_client = Mock(return_value=c)
             action.action()
         # Update
-        with patch('lamvery.actions.base.Client') as c:
+        with patch('lamvery.actions.base.LambdaClient') as c:
             action._enable_versioning = Mock(return_value=False)
             c.get_function_conf = Mock(return_value={'CodeSize': 100})
-            action.get_client = Mock(return_value=c)
+            action._get_client = Mock(return_value=c)
             action.action()
         # Update (versioning)
-        with patch('lamvery.actions.base.Client') as c:
+        with patch('lamvery.actions.base.LambdaClient') as c:
             action._enable_versioning = Mock(return_value=True)
             c.get_function_conf = Mock(return_value={'CodeSize': 100})
-            action.get_client = Mock(return_value=c)
+            action._get_client = Mock(return_value=c)
             action.action()
 
         # Single File
-        with patch('lamvery.actions.base.Client') as c:
+        with patch('lamvery.actions.base.LambdaClient') as c:
             args = default_args()
             args.single_file = True
             action = DeployAction(args)

@@ -27,7 +27,7 @@ class BaseActionTestCase(TestCase):
         BaseAction(default_args())
 
     def test_get_client(self):
-        TestAction(default_args()).get_client()
+        TestAction(default_args())._get_client(Mock)
 
     def test_get_diff(self):
         remote = {

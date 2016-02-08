@@ -17,7 +17,7 @@ class SetAliasAction(BaseAction):
         alias_name = self.get_alias_name()
         version = self.get_version()
         func_name = self._config.get_function_name()
-        client = self.get_client()
+        client = self.get_lambda_client()
 
         if alias_name is None:
             raise Exception(

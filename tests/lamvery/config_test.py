@@ -164,11 +164,9 @@ class ConfigTestCase(TestCase):
             config.get_default_events().pop().get('rule'),
             'sample-rule-name')
 
-    def get_default_secret(self):
+    def test_get_default_secret(self):
         config = Config(self.conf_file)
-        eq_(
-            config.get_default_secret().get('key_id').get('<key-id>'),
-            'sample-rule-name')
+        eq_(config.get_default_secret().get('key_id'), '<key-id>')
 
     def test_get_default_exclude(self):
         config = Config(self.conf_file)
