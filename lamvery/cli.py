@@ -123,23 +123,23 @@ def main():
     }
     follow_args = ('-f', '--follow',)
     follow_kwargs = {
-        'help': 'Watch the log events and  updates the display (like `tail -f`)',
+        'help': 'Watch the log events and updates the display (like `tail -f`)',
         'action': 'store_true',
         'default': False
     }
     filter_args = ('-F', '--filter',)
     filter_kwargs = {
-        'help': 'Logs filtering pattern',
+        'help': 'Filtering pattern for the log messages',
         'default': None
     }
     interval_args = ('-i', '--interval',)
     interval_kwargs = {
-        'help': 'The interval(seconds) of watch the log events',
+        'help': 'Intervals(seconds) to watch the log events',
         'default': 1
     }
     start_args = ('-s', '--start',)
     start_kwargs = {
-        'help': 'The start time of the log events',
+        'help': 'Time to start the log events watching',
         'default': None
     }
 

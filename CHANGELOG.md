@@ -1,3 +1,7 @@
+## 0.11.0
+
+- Add `logs` commnad [#39][]
+
 ## 0.10.2
 
 - Bugfix: `init` command fail in the case that the configuration file does not exist. [#37][]
@@ -144,4 +148,5 @@
 [#33]: https://github.com/marcy-terui/lamvery/issues/33
 [#35]: https://github.com/marcy-terui/lamvery/issues/35
 [#37]: https://github.com/marcy-terui/lamvery/issues/37
+[#39]: https://github.com/marcy-terui/lamvery/issues/39
 [@ijin]: https://github.com/ijin

@@ -230,51 +230,76 @@ or
 lamvery invoke [-a <alias>] [-v <version>] path/to/input.json
 ```
 
+### logs
+
+- Watch the function's log events on CloudWatch Logs
+
+```sh
+lamvery logs [-f] [-F <filter>] [-s <start-time-string>] [-i <interval-seconds>]
+```
+
 ## Options
 
-- `-a` or `--alias`  
+### `-a` or `--alias`  
 This option is needed by the `deploy`,`set-alias`,`invoke`,`rollback` commands.  
 Alias for a version of the function.
 
-- `-c` or `--conf-file`  
+### `-c` or `--conf-file`  
 This option needed by all commands.  
 Specify the configuration file.  
 default: `.lamvery.yml`
 
-- `-d` or `--dry-run`  
+### `-d` or `--dry-run`  
 This option is needed by the `deploy` and `alias` commands.  
 Output the difference of configuration and the alias without updating.
 
-- `-s` or `--single-file`  
+### `-s` or `--single-file`  
 This option is needed by the `archive` and `deploy` command.  
 Archive only the lambda function file, so you can inline edit in the AWS Management Console.
 
-- `-l` or `--no-libs`  
+### `-l` or `--no-libs`  
 This option is needed by the `archive` and `deploy` command.  
 Archive without all libraries.
 
-- `-n` or `--secret-name`  
+### `-n` or `--secret-name`  
 This option is needed by the `encrypt` and `decrypt` commands.  
 The name of the secret value.
 
-- `-p` or `--publish`  
+### `-p` or `--publish`  
 This option is only needed by the `deploy` command.
 Publish the version as an atomic operation.
 
-- `-k` or `--keep-empty-events`  
+### `-k` or `--keep-empty-events`  
 This option is only needed by the `events` command.
 Keep the empty CloudWatch Event Rule that does not have CloudWatch Event Target.
 
-- `-s` or `--store`  
+### `-s` or `--store`  
 This option is only needed by the `encrypt` command.  
 Store encripted value to configuration file (default: `.lamvery.yml`).  
 Requires the `-n` or `--secret-name` option.
 
-- `-v` or `--version`  
+### `-v` or `--version`  
 This option is needed by the `set-alias`,`invoke`,`rollback` commands.  
 Version of the function.
 
-# Using confidential information in lambda function
+### `-f` or `--follow`  
+This option is only needed by the `logs` command.  
+Watch the log events and updates the display (like `tail -f`).
+
+### `-F` or `--filter`  
+This option is only needed by the `logs` command.  
+Filtering pattern for the log messages.
+
+### `-i` or `--interval`  
+This option is only needed by the `logs` command.  
+Intervals(seconds) to watch the log events.
+
+### `-s` or `--start`  
+This option is only needed by the `logs` command.  
+Time to start the log events watching.  
+Examples: `yesterday`,`"-1 h"`, `"2016-01-01"`, `"2016-01-01 10:20:30"`
+
+# Using a confidential information in the lambda function
 
 #### 1. Create key on KMS  
 See: https://docs.aws.amazon.com/kms/latest/developerguide/create-keys.html
