@@ -299,6 +299,10 @@ This option is only needed by the `logs` command.
 Time to start the log events watching.  
 Examples: `yesterday`,`"-1 h"`, `"2016-01-01"`, `"2016-01-01 10:20:30"`
 
+### `-t` or `--target`  
+This option is only needed by the `set-alias` command.  
+The alias of the version that is targeted for setting alias.
+
 # Using a confidential information in the lambda function
 
 #### 1. Create key on KMS  

@@ -1,3 +1,8 @@
+## 0.11.1
+
+- Add `-t`, `--target` option to `set-alias` commnad [#40][]  
+  - The alias of the version that is targeted for setting alias
+
 ## 0.11.0
 
 - Add `logs` commnad [#39][]
@@ -149,4 +154,5 @@
 [#35]: https://github.com/marcy-terui/lamvery/issues/35
 [#37]: https://github.com/marcy-terui/lamvery/issues/37
 [#39]: https://github.com/marcy-terui/lamvery/issues/39
+[#40]: https://github.com/marcy-terui/lamvery/issues/40
 [@ijin]: https://github.com/ijin
