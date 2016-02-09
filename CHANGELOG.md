@@ -1,3 +1,7 @@
+## 0.11.2
+
+- Bugfix [#41][]
+
 ## 0.11.1
 
 - Add `-t`, `--target` option to `set-alias` commnad [#40][]  
@@ -155,4 +159,5 @@
 [#37]: https://github.com/marcy-terui/lamvery/issues/37
 [#39]: https://github.com/marcy-terui/lamvery/issues/39
 [#40]: https://github.com/marcy-terui/lamvery/issues/40
+[#41]: https://github.com/marcy-terui/lamvery/issues/41
 [@ijin]: https://github.com/ijin
