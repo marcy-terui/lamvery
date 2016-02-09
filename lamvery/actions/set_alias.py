@@ -8,7 +8,12 @@ class SetAliasAction(BaseAction):
     def __init__(self, args):
         super(SetAliasAction, self).__init__(args)
         self._alias = args.alias
-        self._target = args.target
+        
+        if hasattr(args, 'target'):
+            self._target = args.target
+        else:
+            self._target = None
+
         if hasattr(args, 'version'):
             self._version = args.version
         else:
