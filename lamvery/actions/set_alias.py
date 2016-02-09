@@ -8,6 +8,7 @@ class SetAliasAction(BaseAction):
     def __init__(self, args):
         super(SetAliasAction, self).__init__(args)
         self._alias = args.alias
+        self._target = args.target
         if hasattr(args, 'version'):
             self._version = args.version
         else:
@@ -15,8 +16,8 @@ class SetAliasAction(BaseAction):
 
     def action(self):
         alias_name = self.get_alias_name()
-        version = self.get_version()
         func_name = self._config.get_function_name()
+        version = self.get_version(func_name)
         client = self.get_lambda_client()
 
         if alias_name is None:
@@ -41,7 +42,19 @@ class SetAliasAction(BaseAction):
             return self._alias
         return self._config.get_default_alias()
 
-    def get_version(self):
-        if self._version is None:
-            return '$LATEST'
-        return self._version
+    def get_version(self, function):
+        version = '$LATEST'
+
+        if self._version is not None:
+            version = self._version
+
+        elif self._target is not None:
+            target_alias = self.get_lambda_client().get_alias(function, self._target)
+            version = target_alias.get('FunctionVersion')
+
+            if version is None:
+                raise Exception(
+                    'Target alias "{}" is not exists in "{}" function.'.format(
+                        self._target, function))
+
+        return version
