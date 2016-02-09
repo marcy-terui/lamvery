@@ -14,6 +14,7 @@ def default_args():
     args.publish = True
     args.alias = None
     args.version = None
+    args.target = None
     return args
 
 
@@ -66,8 +67,27 @@ class SetAliasActionTestCase(TestCase):
 
     def test_get_version(self):
         action = SetAliasAction(default_args())
-        eq_(action.get_version(), '$LATEST')
+        eq_(action.get_version('foo'), '$LATEST')
+
         args = default_args()
         args.version = '1'
         action = SetAliasAction(args)
-        eq_(action.get_version(), '1')
+        eq_(action.get_version('foo'), '1')
+
+        c = Mock()
+        c.get_alias = Mock(return_value={'FunctionVersion': '2'})
+        args = default_args()
+        args.target = 'foo'
+        action = SetAliasAction(args)
+        action.get_lambda_client = Mock(return_value=c)
+        eq_(action.get_version('foo'), '2')
+
+    @raises(Exception)
+    def test_get_version_target_not_exists(self):
+        c = Mock()
+        c.get_alias = Mock(return_value={})
+        args = default_args()
+        args.target = 'foo'
+        action = SetAliasAction(args)
+        action.get_lambda_client = Mock(return_value=c)
+        action.get_version('foo')

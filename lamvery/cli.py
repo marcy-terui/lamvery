@@ -142,6 +142,11 @@ def main():
         'help': 'Time to start the log events watching',
         'default': None
     }
+    target_args = ('-t', '--target',)
+    target_kwargs = {
+        'help': 'The alias of the version that is targeted for setting alias',
+        'default': None
+    }
 
     parser = argparse.ArgumentParser(
         description='Yet another deploy tool for AWS Lambda in the virtualenv environment.',
@@ -169,6 +174,7 @@ def main():
     set_alias_parser.add_argument(*conf_file_args, **conf_file_kwargs)
     set_alias_parser.add_argument(*dry_run_args, **dry_run_kwargs)
     set_alias_parser.add_argument(*version_args, **version_kwargs)
+    set_alias_parser.add_argument(*target_args, **target_kwargs)
     set_alias_parser.set_defaults(func=set_alias)
 
     configure_parser = subparsers.add_parser(
