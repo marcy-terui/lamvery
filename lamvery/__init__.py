@@ -4,7 +4,7 @@ lamvery
 Function based deploy and management tool for AWS Lambda.
 """
 
-__version__ = '0.11.2'
+__version__ = '0.12.0'
 
 import importlib
 

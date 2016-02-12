@@ -1,3 +1,9 @@
+## 0.12.0
+
+- Add VPC configuration [#42][]
+  - You can now configure a Lambda function to access resources in your VPC!!  
+    http://aws.amazon.com/releasenotes/8144743194161467
+
 ## 0.11.2
 
 - Bugfix [#41][]
@@ -160,4 +166,5 @@
 [#39]: https://github.com/marcy-terui/lamvery/issues/39
 [#40]: https://github.com/marcy-terui/lamvery/issues/40
 [#41]: https://github.com/marcy-terui/lamvery/issues/41
+[#42]: https://github.com/marcy-terui/lamvery/issues/42
 [@ijin]: https://github.com/ijin

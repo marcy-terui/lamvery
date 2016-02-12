@@ -9,7 +9,7 @@ if os.path.exists('README.txt'):
 
 setup_options = dict(
     name='lamvery',
-    version='0.11.2',
+    version='0.12.0',
     description='Function based deploy and management tool for AWS Lambda.',
     long_description=long_description,
     author='Masashi Terui',

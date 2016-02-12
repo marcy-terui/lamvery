@@ -51,6 +51,11 @@ configuration:
   description: This is sample lambda function.
   timeout: 10
   memory_size: 128
+  vpc_config:
+    subnets:
+    - subnet-cadf2993
+    security_groups:
+    - sg-4d095028
 ```
 
 ### profile
@@ -89,6 +94,13 @@ The function execution time(seconds) at which Lambda should terminate the functi
 
 - memory_size  
 The amount of memory for your function environment.
+
+- vpc_config  
+The VPC configurations for the function to access resources in your VPC.  
+  - subnets  
+    The Subnet ids in your VPC.  
+  - security_groups  
+    The SecurityGroup ids in your VPC.  
 
 ## CloudWatch Events settings (deafult: `.lamvery.event.yml`)
 
