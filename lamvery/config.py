@@ -103,12 +103,11 @@ class Config:
 
         subnets = vpc_config.get('subnets', [])
         security_groups = vpc_config.get('security_groups', [])
-        
+
         return {
             'subnets': subnets,
             'security_groups': security_groups
         }
-
 
     def get_secret(self):
         return self.load_secret()

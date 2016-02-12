@@ -27,7 +27,7 @@ class LambdaClient(BaseClient):
         kwargs['Runtime'] = conf['runtime']
         kwargs['Role'] = conf['role']
         kwargs['Handler'] = conf['handler']
-        kwargs['Code'] ={'ZipFile': zipfile.read()}
+        kwargs['Code'] = {'ZipFile': zipfile.read()}
         kwargs['Description'] = conf['description']
         kwargs['Timeout'] = conf['timeout']
         kwargs['MemorySize'] = conf['memory_size']
