@@ -15,7 +15,10 @@ TEST_CONF = {
     'description': 'This is sample lambda function.',
     'timeout': 10,
     'memory_size': 128,
-    'publish': True
+    'vpc_config': {
+        'subnets': ['subnet-xxxxxxxx'],
+        'security_groups': ['sg-xxxxxxxx']
+    }
 }
 
 

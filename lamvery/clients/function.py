@@ -22,20 +22,28 @@ class LambdaClient(BaseClient):
             return {}
 
     def create_function(self, zipfile, conf, publish):
+        kwargs = {}
+        kwargs['FunctionName'] = conf['name']
+        kwargs['Runtime'] = conf['runtime']
+        kwargs['Role'] = conf['role']
+        kwargs['Handler'] = conf['handler']
+        kwargs['Code'] ={'ZipFile': zipfile.read()}
+        kwargs['Description'] = conf['description']
+        kwargs['Timeout'] = conf['timeout']
+        kwargs['MemorySize'] = conf['memory_size']
+        kwargs['Publish'] = publish
+
+        vpc_config = conf.get('vpc_config')
+        if vpc_config is not None:
+            kwargs['VpcConfig'] = self._build_vpc_config(vpc_config)
+
         if not self._dry_run:
-            self._lambda.create_function(
-                FunctionName=conf['name'],
-                Runtime=conf['runtime'],
-                Role=conf['role'],
-                Handler=conf['handler'],
-                Code={
-                    'ZipFile': zipfile.read(),
-                },
-                Description=conf['description'],
-                Timeout=conf['timeout'],
-                MemorySize=conf['memory_size'],
-                Publish=publish,
-            )
+            self._lambda.create_function(**kwargs)
+
+    def _build_vpc_config(self, vpc_config):
+        return {
+            'SubnetIds': vpc_config['subnets'],
+            'SecurityGroupIds': vpc_config['security_groups']}
 
     def update_function_code(self, zipfile, conf, publish):
         if not self._dry_run:
@@ -47,14 +55,20 @@ class LambdaClient(BaseClient):
         return None
 
     def update_function_conf(self, conf):
+        kwargs = {}
+        kwargs['FunctionName'] = conf['name']
+        kwargs['Role'] = conf['role']
+        kwargs['Handler'] = conf['handler']
+        kwargs['Description'] = conf['description']
+        kwargs['Timeout'] = conf['timeout']
+        kwargs['MemorySize'] = conf['memory_size']
+
+        vpc_config = conf.get('vpc_config')
+        if vpc_config is not None:
+            kwargs['VpcConfig'] = self._build_vpc_config(vpc_config)
+
         if not self._dry_run:
-            self._lambda.update_function_configuration(
-                FunctionName=conf['name'],
-                Role=conf['role'],
-                Handler=conf['handler'],
-                Description=conf['description'],
-                Timeout=conf['timeout'],
-                MemorySize=conf['memory_size'])
+            self._lambda.update_function_configuration(**kwargs)
 
     def get_alias(self, function, alias):
         try:

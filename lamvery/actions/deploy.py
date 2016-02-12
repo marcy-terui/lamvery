@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from lamvery.actions.base import BaseAction
-from lamvery.actions.configure import CONF_DIFF_KEYS
+from lamvery.actions.configure import CONF_DIFF_KEYS, VPC_DIFF_KEYS
 from lamvery.actions.set_alias import SetAliasAction
 from lamvery.archive import Archive
 from lamvery.utils import previous_alias
@@ -38,6 +38,7 @@ class DeployAction(BaseAction):
         local_size = archive.get_size()
         new_version = None
         cur_version = None
+        vpc_config = self._config.get_vpc_configuration()
 
         if len(remote_conf) == 0:
             self._logger.warn(
@@ -46,6 +47,10 @@ class DeployAction(BaseAction):
         self._print_diff(
             prefix='[Function]',
             remote=remote_conf, local=local_conf, keys=CONF_DIFF_KEYS)
+
+        self._print_diff(
+            prefix='[Function-VPC]',
+            remote=remote_conf.get('VpcConfig', {}), local=vpc_config, keys=VPC_DIFF_KEYS)
 
         if len(remote_conf) > 0:
 

@@ -8,3 +8,8 @@ configuration:
   description: This is sample lambda function.
   timeout: 10
   memory_size: 128
+  vpc_config:
+    subnets:
+    - subnet-cadf2993
+    security_groups:
+    - sg-4d095028

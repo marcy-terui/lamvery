@@ -18,6 +18,11 @@ configuration:
   description: This is sample lambda function.
   timeout: 10
   memory_size: 128
+  vpc_config:
+    subnets:
+    - subnet-xxxxxxxx
+    security_groups:
+    - sg-xxxxxxxx
   test_env: {{ env['PATH'] }}
 event_file: .test.event.yml
 secret_file: .test.secret.yml
@@ -119,6 +124,12 @@ class ConfigTestCase(TestCase):
         config = Config(self.conf_file)
         eq_(config.get_configuration().get('test_env'), os.environ.get('PATH'))
 
+    def test_get_vpc_configuration(self):
+        config = Config(self.conf_file)
+        eq_(config.get_vpc_configuration().get('subnets'), ['subnet-xxxxxxxx'])
+        config.get_configuration = Mock(return_value={})
+        eq_(config.get_vpc_configuration().get('subnets'), [])
+
     def test_get_function_name(self):
         config = Config(self.conf_file)
         eq_(config.get_function_name(), 'test_lambda_function')
@@ -157,6 +168,8 @@ class ConfigTestCase(TestCase):
         config = Config(self.conf_file)
         runtime = config.get_default().get('configuration').get('runtime')
         eq_(runtime, 'python2.7')
+        subnets = config.get_default().get('configuration').get('vpc_config').get('subnets')
+        eq_(subnets, ['subnet-xxxxxxxx'])
 
     def test_get_default_events(self):
         config = Config(self.conf_file)
