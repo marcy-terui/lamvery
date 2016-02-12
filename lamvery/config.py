@@ -95,6 +95,20 @@ class Config:
     def get_configuration(self):
         return self.load_conf().get('configuration')
 
+    def get_vpc_configuration(self):
+        vpc_config = self.get_configuration().get('vpc_config')
+
+        if vpc_config is None:
+            vpc_config = {}
+
+        subnets = vpc_config.get('subnets', [])
+        security_groups = vpc_config.get('security_groups', [])
+
+        return {
+            'subnets': subnets,
+            'security_groups': security_groups
+        }
+
     def get_secret(self):
         return self.load_secret()
 
@@ -149,6 +163,10 @@ class Config:
         return exclude
 
     def get_default(self):
+        init_vpc = OrderedDict()
+        init_vpc['subnets'] = ['subnet-xxxxxxxx']
+        init_vpc['security_groups'] = ['sg-xxxxxxxx']
+
         init_config = OrderedDict()
         init_config['name'] = self.get_function_name()
         init_config['runtime'] = RUNTIME_PY_27
@@ -157,6 +175,7 @@ class Config:
         init_config['description'] = 'This is a sample lambda function.'
         init_config['timeout'] = 10
         init_config['memory_size'] = 128
+        init_config['vpc_config'] = init_vpc
 
         init_yaml = OrderedDict()
         init_yaml['profile'] = None
