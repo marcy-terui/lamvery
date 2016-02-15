@@ -24,14 +24,14 @@ setup_options = dict(
         'console_scripts': 'lamvery = lamvery.cli:main'
     },
     license="MIT License",
-    classifiers=(
+    classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'Intended Audience :: System Administrators',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
-    ),
+    ],
     keywords='aws lambda',
 )
 
