@@ -1,3 +1,8 @@
+## 0.12.1
+
+- Allow empty setting to `description`,`timeout`,`mamory_size` [#44][]
+  - Bugfix: deploy fails on empty description [#43][]
+
 ## 0.12.0
 
 - Add VPC configuration [#42][]
@@ -167,4 +172,6 @@
 [#40]: https://github.com/marcy-terui/lamvery/issues/40
 [#41]: https://github.com/marcy-terui/lamvery/issues/41
 [#42]: https://github.com/marcy-terui/lamvery/issues/42
+[#43]: https://github.com/marcy-terui/lamvery/issues/43
+[#44]: https://github.com/marcy-terui/lamvery/issues/44
 [@ijin]: https://github.com/ijin
