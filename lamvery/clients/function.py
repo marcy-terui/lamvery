@@ -28,10 +28,19 @@ class LambdaClient(BaseClient):
         kwargs['Role'] = conf['role']
         kwargs['Handler'] = conf['handler']
         kwargs['Code'] = {'ZipFile': zipfile.read()}
-        kwargs['Description'] = conf['description']
-        kwargs['Timeout'] = conf['timeout']
-        kwargs['MemorySize'] = conf['memory_size']
         kwargs['Publish'] = publish
+
+        description = conf.get('description')
+        if description is not None:
+            kwargs['Description'] = description
+
+        timeout = conf.get('timeout')
+        if timeout is not None:
+            kwargs['Timeout'] = timeout
+
+        memory_size = conf.get('memory_size')
+        if memory_size is not None:
+            kwargs['MemorySize'] = memory_size
 
         vpc_config = conf.get('vpc_config')
         if vpc_config is not None:
@@ -59,9 +68,18 @@ class LambdaClient(BaseClient):
         kwargs['FunctionName'] = conf['name']
         kwargs['Role'] = conf['role']
         kwargs['Handler'] = conf['handler']
-        kwargs['Description'] = conf['description']
-        kwargs['Timeout'] = conf['timeout']
-        kwargs['MemorySize'] = conf['memory_size']
+
+        description = conf.get('description')
+        if description is not None:
+            kwargs['Description'] = description
+
+        timeout = conf.get('timeout')
+        if timeout is not None:
+            kwargs['Timeout'] = timeout
+
+        memory_size = conf.get('memory_size')
+        if memory_size is not None:
+            kwargs['MemorySize'] = memory_size
 
         vpc_config = conf.get('vpc_config')
         if vpc_config is not None:
