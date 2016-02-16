@@ -122,7 +122,7 @@ class Config:
             for e in events:
                 e['name'] = e['rule']
                 rules.append(e)
-                
+
             return {'rules': rules}
 
         return events
