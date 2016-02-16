@@ -211,6 +211,7 @@ def main():
     events_parser = subparsers.add_parser(
         'events',
         help='Configure all events of CloudWatchEvents using the function')
+    events_parser.add_argument(*alias_args, **alias_kwargs)
     events_parser.add_argument(*conf_file_args, **conf_file_kwargs)
     events_parser.add_argument(*dry_run_args, **dry_run_kwargs)
     events_parser.add_argument(*keep_empty_args, **keep_empty_kwargs)

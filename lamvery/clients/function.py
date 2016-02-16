@@ -13,10 +13,15 @@ class LambdaClient(BaseClient):
         super(LambdaClient, self).__init__(*args, **kwargs)
         self._lambda = self._session.client('lambda')
 
-    def get_function_conf(self, name):
+    def get_function_conf(self, name, alias=None):
         try:
-            res = self._lambda.get_function(
-                FunctionName=name)
+            kwargs = {}
+            kwargs['FunctionName'] = name
+
+            if alias is not None:
+                kwargs['Qualifier'] = alias
+
+            res = self._lambda.get_function(**kwargs)
             return res['Configuration']
         except botocore.exceptions.ClientError:
             return {}

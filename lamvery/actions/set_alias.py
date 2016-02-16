@@ -7,8 +7,7 @@ class SetAliasAction(BaseAction):
 
     def __init__(self, args):
         super(SetAliasAction, self).__init__(args)
-        self._alias = args.alias
-        
+
         if hasattr(args, 'target'):
             self._target = args.target
         else:
@@ -41,11 +40,6 @@ class SetAliasAction(BaseAction):
         self._logger.warn(
             '[Alias] {name}: {cur} -> {new}'.format(
                 name=name, cur=current.get('FunctionVersion'), new=version))
-
-    def get_alias_name(self):
-        if self._alias is not None:
-            return self._alias
-        return self._config.get_default_alias()
 
     def get_version(self, function):
         version = '$LATEST'

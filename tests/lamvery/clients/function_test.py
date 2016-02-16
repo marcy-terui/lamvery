@@ -31,7 +31,7 @@ class LambdaClientTestCase(TestCase):
     def test_get_function_conf(self):
         self.client._lambda.get_function = Mock(
             return_value={'Configuration': 'foo'})
-        eq_(self.client.get_function_conf('test'), 'foo')
+        eq_(self.client.get_function_conf('test', 'alias'), 'foo')
         self.client._lambda.get_function = Mock(
             side_effect=botocore.exceptions.ClientError({'Error': {}}, 'bar'))
         eq_(self.client.get_function_conf('test'), {})

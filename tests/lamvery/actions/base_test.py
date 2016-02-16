@@ -12,6 +12,7 @@ def default_args():
     args = Mock()
     args.conf_file = '.lamvery.yml'
     args.dry_run = True
+    args.alias = None
     return args
 
 
@@ -62,3 +63,11 @@ class BaseActionTestCase(TestCase):
         }
         action = TestAction(default_args())
         action._print_diff('test', remote, local, CONF_DIFF_KEYS)
+
+    def test_get_alias_name(self):
+        action = TestAction(default_args())
+        eq_(action.get_alias_name(), 'test')
+        args = default_args()
+        args.alias = 'foo'
+        action = TestAction(args)
+        eq_(action.get_alias_name(), 'foo')

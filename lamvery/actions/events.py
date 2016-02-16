@@ -27,7 +27,7 @@ class EventsAction(BaseAction):
         lambda_client = self.get_lambda_client()
         events_client = self.get_events_client()
         func_name = self._config.get_function_name()
-        conf = lambda_client.get_function_conf(func_name)
+        conf = lambda_client.get_function_conf(func_name, self.get_alias_name())
 
         if len(conf) == 0:
             msg = '"{}" function is not exists. Please `deploy` at first.'.format(func_name)

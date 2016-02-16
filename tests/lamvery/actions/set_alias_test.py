@@ -57,14 +57,6 @@ class SetAliasActionTestCase(TestCase):
         action = SetAliasAction(default_args())
         action._print_alias_diff('name', {'FunctionVersion': 1}, 2)
 
-    def test_get_alias_name(self):
-        action = SetAliasAction(default_args())
-        eq_(action.get_alias_name(), 'test')
-        args = default_args()
-        args.alias = 'foo'
-        action = SetAliasAction(args)
-        eq_(action.get_alias_name(), 'foo')
-
     def test_get_version(self):
         action = SetAliasAction(default_args())
         eq_(action.get_version('foo'), '$LATEST')
