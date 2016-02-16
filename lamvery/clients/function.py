@@ -146,27 +146,37 @@ class LambdaClient(BaseClient):
         else:
             return size
 
-    def add_permission(self, function, rule_name, rule_arn):
+    def add_permission(self, function, alias, rule_name, rule_arn):
+        kwargs = {}
+        kwargs['FunctionName'] = function
+        kwargs['Action'] = 'lambda:InvokeFunction'
+        kwargs['Principal'] = 'events.amazonaws.com'
+        kwargs['SourceArn'] = rule_arn
+        kwargs['StatementId'] = self._generate_statement_id(function, rule_name, alias)
+
+        if alias is not None:
+            kwargs['Qualifier'] = alias
+
         if not self._dry_run:
             try:
-                self._lambda.add_permission(
-                    FunctionName=function,
-                    Action='lambda:InvokeFunction',
-                    Principal='events.amazonaws.com',
-                    SourceArn=rule_arn,
-                    StatementId=self._generate_statement_id(function, rule_name))
+                self._lambda.add_permission(**kwargs)
             except botocore.exceptions.ClientError:
                 pass
 
-    def remove_permission(self, function, rule):
-        if not self._dry_run:
-            self._lambda.remove_permission(
-                FunctionName=function,
-                StatementId=self._generate_statement_id(function, rule))
+    def remove_permission(self, function, alias, rule):
+        kwargs = {}
+        kwargs['FunctionName'] = function
+        kwargs['StatementId'] = self._generate_statement_id(function, rule, alias)
 
-    def _generate_statement_id(self, function, rule):
+        if alias is not None:
+            kwargs['Qualifier'] = alias
+
+        if not self._dry_run:
+            self._lambda.remove_permission(**kwargs)
+
+    def _generate_statement_id(self, function, rule, alias):
         return hashlib.sha256(
-            'lamvery-{}-{}'.format(function, rule)).hexdigest()
+            'lamvery-{}-{}-{}'.format(function, rule, alias)).hexdigest()
 
     def invoke(self, name, qualifier=None, payload=None):
         kwargs = {}

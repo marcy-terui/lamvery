@@ -27,7 +27,8 @@ class EventsAction(BaseAction):
         lambda_client = self.get_lambda_client()
         events_client = self.get_events_client()
         func_name = self._config.get_function_name()
-        conf = lambda_client.get_function_conf(func_name, self.get_alias_name())
+        alias_name = self.get_alias_name()
+        conf = lambda_client.get_function_conf(func_name, alias_name)
 
         if len(conf) == 0:
             msg = '"{}" function is not exists. Please `deploy` at first.'.format(func_name)
@@ -37,11 +38,11 @@ class EventsAction(BaseAction):
         local_rules = self._config.get_events().get('rules')
         remote_rules = events_client.get_rules_by_target(arn)
 
-        self._clean(remote_rules, local_rules, arn, func_name)
-        self._put_rules(remote_rules, local_rules, func_name)
+        self._clean(remote_rules, local_rules, arn, func_name, alias_name)
+        self._put_rules(remote_rules, local_rules, func_name, alias_name)
         self._put_targets(local_rules, arn)
 
-    def _put_rules(self, remote, local, function):
+    def _put_rules(self, remote, local, function, alias):
         lambda_client = self.get_lambda_client()
         events_client = self.get_events_client()
 
@@ -59,7 +60,7 @@ class EventsAction(BaseAction):
                 remote=r, local=l)
 
             ret = events_client.put_rule(l)
-            lambda_client.add_permission(function, l['name'], ret.get('RuleArn'))
+            lambda_client.add_permission(function, alias, l['name'], ret.get('RuleArn'))
 
     def _convert_state(self, disabled):
         if disabled:
@@ -108,7 +109,7 @@ class EventsAction(BaseAction):
                 return True
         return False
 
-    def _clean(self, remote, local, arn, function):
+    def _clean(self, remote, local, arn, function, alias):
         lambda_client = self.get_lambda_client()
         events_client = self.get_events_client()
 
@@ -137,4 +138,4 @@ class EventsAction(BaseAction):
                     '[EventRule] Delete the event rule "{}" that does not have any targets'.format(
                         r['Name']))
                 events_client.delete_rule(r['Name'])
-                lambda_client.remove_permission(function, r['Name'])
+                lambda_client.remove_permission(function, alias, r['Name'])

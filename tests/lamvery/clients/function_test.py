@@ -79,13 +79,13 @@ class LambdaClientTestCase(TestCase):
         eq_(self.client._calculate_versions_capacity('foo'), 80)
 
     def test_add_permission(self):
-        self.client.add_permission('foo', 'bar', 'baz')
+        self.client.add_permission('foo', 'bar', 'baz', 'qux')
         self.client._lambda.add_permission = Mock(
             side_effect=botocore.exceptions.ClientError({'Error': {}}, 'bar'))
-        self.client.add_permission('foo', 'bar', 'baz')
+        self.client.add_permission('foo', 'bar', 'baz', 'qux')
 
     def test_remove_permission(self):
-        self.client.remove_permission('foo', 'bar')
+        self.client.remove_permission('foo', 'bar', 'baz')
 
     def test_invoke(self):
         self.client.invoke('foo', 'bar', 'baz')
@@ -95,4 +95,4 @@ class LambdaClientTestCase(TestCase):
         eq_(self.client.get_previous_version('foo', 'bar'), 'foo')
 
     def test_generate_statement_id(self):
-        self.client._generate_statement_id('foo', 'bar')
+        self.client._generate_statement_id('foo', 'bar', 'baz')

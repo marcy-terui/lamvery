@@ -42,7 +42,8 @@ class EventsActionTestCase(TestCase):
             action._put_rules(
                 remote=[{'Name': 'bar'}],
                 local=[{'name': 'foo'}, {'name': 'bar'}],
-                function='baz')
+                function='baz',
+                alias=None)
 
     def test_convert_state(self):
         action = EventsAction(default_args())
@@ -84,9 +85,11 @@ class EventsActionTestCase(TestCase):
                 remote=[{'Name': 'bar'}],
                 local=[{'name': 'foo', 'targets': []}, {'name': 'bar', 'targets': []}],
                 arn='baz',
-                function='qux')
+                function='qux',
+                alias=None)
             action._clean(
                 remote=[{'Name': 'bar'}],
                 local=[{'name': 'foo', 'targets': []}],
                 arn='baz',
-                function='qux')
+                function='qux',
+                alias='foobar')
