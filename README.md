@@ -105,7 +105,8 @@ The VPC configurations for the function to access resources in your VPC.
 ## CloudWatch Events settings (deafult: `.lamvery.event.yml`)
 
 ```yml
-- rule: foo
+rules:
+- name: foo
   description: bar
   schedule: 'rate(5 minutes)'
   targets:
@@ -116,28 +117,30 @@ The VPC configurations for the function to access resources in your VPC.
       - sample: input
 ```
 
-### rule  
+### rules
+CloudWatch Event Rules.
+
+- NAME  
 The name of CloudWatch Event Rule.
 
-### description  
+- description  
 The description of CloudWatch Event Rule.
 
-### schedule  
+- schedule  
 The schedule expression of CloudWatch Event Rule.
 
-### disabled  
+- disabled  
 When this setting is true, change the state of CloudWatch Event Rule to `DISABLED`.  
 default: `false`
 
-### targets  
+- targets  
 The targets of CloudWatch Event Rule.
-
-- id  
-The unique target assignment ID.
-- input  
-Arguments passed to the target.
-- input_path  
-The value of the JSONPath that is used for extracting part of the matched event when passing it to the target.
+  - id  
+  The unique target assignment ID.
+  - input  
+  Arguments passed to the target.
+  - input_path  
+  The value of the JSONPath that is used for extracting part of the matched event when passing it to the target.
 
 *`input` and `input_path` are mutually-exclusive and optional parameters of a target.*
 
@@ -227,7 +230,7 @@ lamvery decrypt -n <secret-name>
 - Apply CloudWatch Events setting
 
 ```sh
-lamvery events [-k]
+lamvery events [-k] [-a <alias>]
 ```
 
 ### invoke
@@ -253,7 +256,7 @@ lamvery logs [-f] [-F <filter>] [-s <start-time-string>] [-i <interval-seconds>]
 ## Options
 
 ### `-a` or `--alias`  
-This option is needed by the `deploy`,`set-alias`,`invoke`,`rollback` commands.  
+This option is needed by the `deploy`,`set-alias`,`invoke`,`rollback`,`events` commands.  
 Alias for a version of the function.
 
 ### `-c` or `--conf-file`  

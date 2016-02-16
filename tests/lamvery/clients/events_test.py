@@ -31,13 +31,13 @@ class EventsClientTestCase(TestCase):
 
     def test_put_rule(self):
         rule = {
-            'rule': 'foo',
+            'name': 'foo',
             'description': 'bar',
             'pattern': 'baz',
             'schedule': 'qux'}
         ok_(self.client.put_rule(rule) != {})
         client = EventsClient(region='us-east-1', profile=None, dry_run=True)
-        eq_(client.put_rule({'rule': 'foo'}), {})
+        eq_(client.put_rule({'name': 'foo'}), {})
 
     def test_put_targets(self):
         self.client.put_targets(

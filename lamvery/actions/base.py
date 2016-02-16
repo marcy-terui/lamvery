@@ -20,6 +20,7 @@ class BaseAction:
     def __init__(self, args):
         self._config = Config(args.conf_file)
         self._dry_run = False
+        self._alias = args.alias
 
         logger_name = 'lamvery'
         if hasattr(args, 'dry_run'):
@@ -50,6 +51,11 @@ class BaseAction:
 
     def get_logs_client(self):
         return self._get_client(LogsClient)
+
+    def get_alias_name(self):
+        if self._alias is not None:
+            return self._alias
+        return self._config.get_default_alias()
 
     def _get_diff(self, remote, local, keys):
         diff = {}

@@ -115,7 +115,16 @@ class Config:
     def get_events(self):
         events = self.load_events()
         if events is None:
-            return []
+            return {'rules': []}
+
+        if isinstance(events, list):
+            rules = []
+            for e in events:
+                e['name'] = e['rule']
+                rules.append(e)
+
+            return {'rules': rules}
+
         return events
 
     def get_default_alias(self):
@@ -193,11 +202,11 @@ class Config:
                 ('input', {'this': [{'is': 'a'}, {'sample': 'input'}]},),
                 ('input_path', 'json.path.format',)])]
         event = OrderedDict()
-        event['rule'] = 'sample-rule-name'
+        event['name'] = 'sample-rule-name'
         event['description'] = 'This is a sample CloudWatchEvent'
         event['schedule'] = 'rate(5 minutes)'
         event['targets'] = targets
-        init_events = [event]
+        init_events = {'rules': [event]}
 
         return init_events
 
