@@ -1,3 +1,9 @@
+## 0.12.2
+
+- Improvement and bugfix for the feature of CloudWatch Events [#48][]
+  - Change the format of the event configuration file (Backward compatible)
+  - Use ARN of the alias to the event targets (Previously, It was used `$LATEST` by default)
+
 ## 0.12.1
 
 - Allow empty setting to `description`,`timeout`,`mamory_size` [#44][]
