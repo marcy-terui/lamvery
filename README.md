@@ -230,7 +230,7 @@ lamvery decrypt -n <secret-name>
 - Apply CloudWatch Events setting
 
 ```sh
-lamvery events [-k]
+lamvery events [-k] [-a <alias>]
 ```
 
 ### invoke
@@ -256,7 +256,7 @@ lamvery logs [-f] [-F <filter>] [-s <start-time-string>] [-i <interval-seconds>]
 ## Options
 
 ### `-a` or `--alias`  
-This option is needed by the `deploy`,`set-alias`,`invoke`,`rollback` commands.  
+This option is needed by the `deploy`,`set-alias`,`invoke`,`rollback`,`events` commands.  
 Alias for a version of the function.
 
 ### `-c` or `--conf-file`  
