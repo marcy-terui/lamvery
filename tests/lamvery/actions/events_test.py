@@ -41,7 +41,7 @@ class EventsActionTestCase(TestCase):
             action._get_client = Mock(return_value=c)
             action._put_rules(
                 remote=[{'Name': 'bar'}],
-                local=[{'rule': 'foo'}, {'rule': 'bar'}],
+                local=[{'name': 'foo'}, {'name': 'bar'}],
                 function='baz')
 
     def test_convert_state(self):
@@ -51,13 +51,13 @@ class EventsActionTestCase(TestCase):
 
     def test_search_rule(self):
         action = EventsAction(default_args())
-        eq_(action._search_rule([{'Name': 'foo'}, {'rule': 'bar'}], 'bar'), {'rule': 'bar'})
-        eq_(action._search_rule([{'Name': 'foo'}, {'rule': 'bar'}], 'baz'), {})
+        eq_(action._search_rule([{'Name': 'foo'}, {'name': 'bar'}], 'bar'), {'name': 'bar'})
+        eq_(action._search_rule([{'Name': 'foo'}, {'name': 'bar'}], 'baz'), {})
 
     def test_exist_rule(self):
         action = EventsAction(default_args())
-        eq_(action._exist_rule([{'Name': 'foo'}, {'rule': 'bar'}], 'bar'), True)
-        eq_(action._exist_rule([{'Name': 'foo'}, {'rule': 'bar'}], 'baz'), False)
+        eq_(action._exist_rule([{'Name': 'foo'}, {'name': 'bar'}], 'bar'), True)
+        eq_(action._exist_rule([{'Name': 'foo'}, {'name': 'bar'}], 'baz'), False)
 
     def test_exist_target(self):
         action = EventsAction(default_args())
@@ -69,8 +69,8 @@ class EventsActionTestCase(TestCase):
             c.get_targets_by_rule = Mock(return_value=[{'Id': 'baz'}])
             action = EventsAction(default_args())
             local = [
-                {'rule': 'foo', 'targets': [{'id': 'baz'}]},
-                {'rule': 'bar', 'targets': [{'id': 'qux'}]}
+                {'name': 'foo', 'targets': [{'id': 'baz'}]},
+                {'name': 'bar', 'targets': [{'id': 'qux'}]}
             ]
             action._get_client = Mock(return_value=c)
             action._put_targets(local=local, arn='baz')
@@ -82,11 +82,11 @@ class EventsActionTestCase(TestCase):
             action._get_client = Mock(return_value=c)
             action._clean(
                 remote=[{'Name': 'bar'}],
-                local=[{'rule': 'foo', 'targets': []}, {'rule': 'bar', 'targets': []}],
+                local=[{'name': 'foo', 'targets': []}, {'name': 'bar', 'targets': []}],
                 arn='baz',
                 function='qux')
             action._clean(
                 remote=[{'Name': 'bar'}],
-                local=[{'rule': 'foo', 'targets': []}],
+                local=[{'name': 'foo', 'targets': []}],
                 arn='baz',
                 function='qux')

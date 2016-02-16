@@ -34,7 +34,7 @@ class EventsAction(BaseAction):
             raise Exception(msg)
 
         arn = conf['FunctionArn']
-        local_rules = self._config.get_events()
+        local_rules = self._config.get_events().get('rules')
         remote_rules = events_client.get_rules_by_target(arn)
 
         self._clean(remote_rules, local_rules, arn, func_name)
@@ -48,18 +48,18 @@ class EventsAction(BaseAction):
         for l in local:
             l['state'] = self._convert_state(l.get('disabled'))
 
-            r = self._search_rule(remote, l['rule'])
+            r = self._search_rule(remote, l['name'])
             if len(r) == 0:
                 self._logger.warn(
-                    '[EventRule] Create new event rule "{}"'.format(l['rule']))
+                    '[EventRule] Create new event rule "{}"'.format(l['name']))
 
             self._print_diff(
-                prefix='[EventRule] {}:'.format(l['rule']),
+                prefix='[EventRule] {}:'.format(l['name']),
                 keys=EVENT_RULE_DIFF_KEYS,
                 remote=r, local=l)
 
             ret = events_client.put_rule(l)
-            lambda_client.add_permission(function, l['rule'], ret.get('RuleArn'))
+            lambda_client.add_permission(function, l['name'], ret.get('RuleArn'))
 
     def _convert_state(self, disabled):
         if disabled:
@@ -69,7 +69,7 @@ class EventsAction(BaseAction):
 
     def _search_rule(self, rules, name):
         for r in rules:
-            if name in [r.get('Name'), r.get('rule')]:
+            if name in [r.get('Name'), r.get('name')]:
                 return r
         return {}
 
@@ -80,7 +80,7 @@ class EventsAction(BaseAction):
         client = self.get_events_client()
 
         for l in local:
-            targets = client.get_targets_by_rule(l['rule'])
+            targets = client.get_targets_by_rule(l['name'])
 
             for lt in l['targets']:
                 if 'input' in lt:
@@ -92,7 +92,7 @@ class EventsAction(BaseAction):
                         diff_r = rt
                         break
                     self._logger.warn(
-                        '[EventRule] {}: Add "{}" to targets'.format(l['rule'], lt['id']))
+                        '[EventRule] {}: Add "{}" to targets'.format(l['name'], lt['id']))
 
                 self._print_diff(
                     prefix='[EventTarget] {}:'.format(lt['id']),
@@ -100,7 +100,7 @@ class EventsAction(BaseAction):
                     remote=diff_r, local=lt)
 
             client.put_targets(
-                rule=l['rule'], targets=l['targets'], arn=arn)
+                rule=l['name'], targets=l['targets'], arn=arn)
 
     def _exist_target(self, targets, target_id):
         for t in targets:

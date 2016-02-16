@@ -43,7 +43,7 @@ class EventsClient(BaseClient):
             return {}
         else:
             kwargs = {}
-            kwargs['Name'] = rule['rule']
+            kwargs['Name'] = rule['name']
             kwargs['State'] = rule.get('state', 'ENABLED')
 
             if rule.get('description') is not None:

@@ -1,4 +1,5 @@
-- rule: sample-rule-name
+rules:
+- name: sample-rule-name
   description: This is a sample CloudWatchEvent
   schedule: rate(5 minutes)
   targets:

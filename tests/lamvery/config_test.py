@@ -174,7 +174,7 @@ class ConfigTestCase(TestCase):
     def test_get_default_events(self):
         config = Config(self.conf_file)
         eq_(
-            config.get_default_events().pop().get('rule'),
+            config.get_default_events().get('rules').pop().get('name'),
             'sample-rule-name')
 
     def test_get_default_secret(self):
@@ -208,6 +208,8 @@ class ConfigTestCase(TestCase):
 
     def test_get_events(self):
         config = Config(self.conf_file)
-        eq_(config.get_events().pop().get('schedule'), 'rate(5 minutes)')
+        eq_(config.get_events().get('rules').pop().get('schedule'), 'rate(5 minutes)')
         config.load_events = Mock(return_value=None)
-        eq_(config.get_events(), [])
+        eq_(config.get_events(), {'rules': []})
+        config.load_events = Mock(return_value=[{'rule': 'foo'}])
+        eq_(config.get_events(), {'rules': [{'rule': 'foo', 'name': 'foo'}]})
