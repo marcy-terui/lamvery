@@ -1,3 +1,7 @@
+## 0.12.3
+
+- Bugfix: The permission is not given to the alias [#48][]
+
 ## 0.12.2
 
 - Improvement and bugfix for the feature of CloudWatch Events [#48][]
