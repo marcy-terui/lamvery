@@ -1,3 +1,7 @@
+## 0.12.4
+
+- Bugfix: `init` command failure [#51][]
+
 ## 0.12.3
 
 - Bugfix: The permission is not given to the alias [#48][]
@@ -184,4 +188,6 @@
 [#42]: https://github.com/marcy-terui/lamvery/issues/42
 [#43]: https://github.com/marcy-terui/lamvery/issues/43
 [#44]: https://github.com/marcy-terui/lamvery/issues/44
+[#48]: https://github.com/marcy-terui/lamvery/issues/48
+[#51]: https://github.com/marcy-terui/lamvery/issues/51
 [@ijin]: https://github.com/ijin
