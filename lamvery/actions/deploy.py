@@ -4,7 +4,10 @@ from lamvery.actions.base import BaseAction
 from lamvery.actions.configure import CONF_DIFF_KEYS, VPC_DIFF_KEYS
 from lamvery.actions.set_alias import SetAliasAction
 from lamvery.archive import Archive
-from lamvery.utils import previous_alias
+from lamvery.utils import (
+    previous_alias,
+    parse_env_args
+)
 
 
 class DeployAction(BaseAction):
@@ -15,6 +18,7 @@ class DeployAction(BaseAction):
         self._set_alias = SetAliasAction(args)
         self._single_file = args.single_file
         self._no_libs = args.no_libs
+        self._env = parse_env_args(args.env)
 
     def action(self):
         archive_name = self._config.get_archive_name()
@@ -27,7 +31,8 @@ class DeployAction(BaseAction):
                           single_file=self._single_file,
                           no_libs=self._no_libs,
                           exclude=exclude,
-                          runtime=self._config.get_runtime())
+                          runtime=self._config.get_runtime(),
+                          env=self._env)
         func_name = self._config.get_function_name()
         local_conf = self._config.get_configuration()
         zipfile = archive.create_zipfile()

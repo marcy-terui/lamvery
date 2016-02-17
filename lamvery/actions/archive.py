@@ -2,6 +2,7 @@
 
 from lamvery.actions.base import BaseAction
 from lamvery.archive import Archive
+from lamvery.utils import parse_env_args
 
 
 class ArchiveAction(BaseAction):
@@ -10,6 +11,7 @@ class ArchiveAction(BaseAction):
         super(ArchiveAction, self).__init__(args)
         self._single_file = args.single_file
         self._no_libs = args.no_libs
+        self._env = parse_env_args(args.env)
 
     def action(self):
         archive_name = self._config.get_archive_name()
@@ -22,7 +24,8 @@ class ArchiveAction(BaseAction):
                           single_file=self._single_file,
                           no_libs=self._no_libs,
                           exclude=exclude,
-                          runtime=self._config.get_runtime())
+                          runtime=self._config.get_runtime(),
+                          env=self._env)
         zipfile = archive.create_zipfile()
         with open(archive_name, 'w') as f:
             f.write(zipfile.read())

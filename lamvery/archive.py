@@ -6,6 +6,7 @@ import tempfile
 import shutil
 import re
 import warnings
+import json
 import lamvery.secret
 import lamvery.config
 
@@ -32,7 +33,8 @@ class Archive:
         no_libs=False,
         secret={},
         exclude=[],
-        runtime=lamvery.config.RUNTIME_PY_27
+        runtime=lamvery.config.RUNTIME_PY_27,
+        env=None
     ):
         self._filename = filename
         self._function_filename = function_filename
@@ -43,6 +45,7 @@ class Archive:
         self._no_libs = no_libs
         self._exclude = exclude
         self._runtime = runtime
+        self._env = env
 
     def __del__(self):
         shutil.rmtree(self._tmpdir)
@@ -57,13 +60,26 @@ class Archive:
                     self._archive_file(zipfile, p)
             if not self._single_file:
                 secret_path = os.path.join(self._tmpdir, lamvery.secret.SECRET_FILE_NAME)
-                lamvery.secret.generate(secret_path, self._secret)
+                env_path = os.path.join(self._tmpdir, lamvery.env.ENV_FILE_NAME)
+                self._generate_json(secret_path, self._secret)
+                self._generate_json(env_path, self._env)
                 self._archive_file(zipfile, secret_path)
+                self._archive_file(zipfile, env_path)
 
                 if self._runtime == lamvery.config.RUNTIME_NODE_JS:
                     self._archive_dist(zipfile, 'lamvery.js')
 
         return open(self._zippath, 'rb')
+
+    def _generate_json(self, path, data):
+        if isinstance(data, dict):
+            json.dump(
+                data,
+                open(path, 'w'))
+        else:
+            json.dump(
+                {},
+                open(path, 'w'))
 
     def _archive_dist(self, zipfile, dist):
         self._archive_file(

@@ -147,6 +147,12 @@ def main():
         'help': 'The alias of the version that is targeted for setting alias',
         'default': None
     }
+    env_args = ('-e', '--env',)
+    env_kwargs = {
+        'help': 'Environment variables',
+        'action': 'append',
+        'default': None
+    }
 
     parser = argparse.ArgumentParser(
         description='Yet another deploy tool for AWS Lambda in the virtualenv environment.',
@@ -165,6 +171,7 @@ def main():
     archive_parser.add_argument(*conf_file_args, **conf_file_kwargs)
     archive_parser.add_argument(*single_file_args, **single_file_kwargs)
     archive_parser.add_argument(*no_libs_args, **no_libs_kwargs)
+    archive_parser.add_argument(*env_args, **env_kwargs)
     archive_parser.set_defaults(func=archive)
 
     set_alias_parser = subparsers.add_parser(
@@ -194,6 +201,7 @@ def main():
     deploy_parser.add_argument(*single_file_args, **single_file_kwargs)
     deploy_parser.add_argument(*no_libs_args, **no_libs_kwargs)
     deploy_parser.add_argument(*publish_args, **publish_kwargs)
+    deploy_parser.add_argument(*env_args, **env_kwargs)
     deploy_parser.set_defaults(func=deploy)
 
     encrypt_parser = subparsers.add_parser('encrypt', help='Encrypt a text value using KMS')
