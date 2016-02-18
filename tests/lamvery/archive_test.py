@@ -3,6 +3,7 @@
 import tempfile
 import os
 import zipfile
+import json
 
 from unittest import TestCase
 from nose.tools import ok_, eq_, raises
@@ -10,6 +11,9 @@ from mock import Mock
 from lamvery.archive import Archive
 from zipfile import PyZipFile, ZIP_DEFLATED
 from lamvery.config import RUNTIME_NODE_JS
+
+JSON_FILE_NAME = 'test.json'
+
 
 class ArchiveTestCase(TestCase):
 
@@ -22,6 +26,10 @@ class ArchiveTestCase(TestCase):
 
     def tearDown(self):
         os.remove(self.zipfile_path)
+        try:
+            os.remove('test.json')
+        except:
+            pass
 
     def test_create_zipfile(self):
         archive = Archive('test.zip')
@@ -37,6 +45,13 @@ class ArchiveTestCase(TestCase):
         with PyZipFile(archive._zippath, 'r', compression=ZIP_DEFLATED) as zipfile:
             ok_('lambda_function.py' in zipfile.namelist())
             ok_(not ('.lamvery_secret.json' in zipfile.namelist()))
+
+    def test_generate_json(self):
+        archive = Archive('test.zip')
+        archive._generate_json(
+            JSON_FILE_NAME, {'foo': 2, 'bar': 3})
+        data = json.load(open(JSON_FILE_NAME, 'r'))
+        eq_(data.get('foo'), 2)
 
     def test_archive_dir(self):
         archive = Archive('test.zip')

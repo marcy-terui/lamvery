@@ -9,3 +9,4 @@ __version__ = '0.12.4'
 import importlib
 
 secret = importlib.import_module('lamvery.secret')
+env = importlib.import_module('lamvery.env')

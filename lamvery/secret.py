@@ -6,12 +6,6 @@ from lamvery.clients.kms import KmsClient
 SECRET_FILE_NAME = '.lamvery_secret.json'
 
 
-def generate(path, secret):
-    json.dump(
-        secret,
-        open(path, 'w'))
-
-
 def get(name):
     data = json.load(open(SECRET_FILE_NAME, 'r'))
     if 'cipher_texts' not in data:

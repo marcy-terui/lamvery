@@ -26,12 +26,6 @@ class FunctionsTestCase(TestCase):
     def tearDown(self):
         os.remove(lamvery.secret.SECRET_FILE_NAME)
 
-    def test_generate(self):
-        lamvery.secret.generate(
-            lamvery.secret.SECRET_FILE_NAME, {'foo': 2, 'bar': 3})
-        data = yaml.load(open(lamvery.secret.SECRET_FILE_NAME, 'r').read())
-        eq_(data.get('foo'), 2)
-
     def test_get(self):
         with patch('lamvery.secret.KmsClient') as c:
             class Dummy:

@@ -2,12 +2,13 @@ var fs = require('fs');
 var AWS = require('aws-sdk');
 
 SECRET_FILE_NAME = '.lamvery_secret.json';
+ENV_FILE_NAME = '.lamvery_env.json';
 
 module.exports = {
     secret: {
         get: function(name, func) {
             fs.readFile(SECRET_FILE_NAME, 'utf-8', function(err, txt) {
-                var secret = JSON.parse(txt)
+                var secret = JSON.parse(txt);
                 var kms = new AWS.KMS({region: secret['region']});
 
                 if (!('cipher_texts' in secret)) {
@@ -26,6 +27,16 @@ module.exports = {
                     func(err, data['Plaintext'].toString('utf-8'))
                 });
             });
+        }
+    },
+    env: {
+        load: function() {
+            try {
+                var env = require('./' + ENV_FILE_NAME)
+                for (var k in env) {
+                    process.env[k] = env[k]
+                }
+          } catch (err) {}
         }
     }
 };

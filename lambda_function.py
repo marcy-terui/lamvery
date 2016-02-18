@@ -1,7 +1,9 @@
 import lamvery
+import os
 
 
 def lambda_handler(event, context):
-    print(lamvery.secret.get('foo'))
-    print(event)
+    lamvery.env.load()
+#    print(lamvery.secret.get('foo'))
+    print(os.environ)
     print(context)
