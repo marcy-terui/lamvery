@@ -9,6 +9,7 @@ ENV_PATTERN = re.compile('^(?P<name>[^\s]+)\s*=\s*(?P<value>.+)$')
 def previous_alias(alias):
     return '{}-pre'.format(alias)
 
+
 def parse_env_args(env):
     if not isinstance(env, list):
         return None

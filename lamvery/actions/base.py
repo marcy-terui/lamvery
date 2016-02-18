@@ -21,7 +21,7 @@ class BaseAction:
         self._config = Config(args.conf_file)
         self._dry_run = False
         self._alias = None
-        
+
         if hasattr(args, 'alias'):
             self._alias = args.alias
 

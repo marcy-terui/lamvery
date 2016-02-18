@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import os
-import yaml
 
 from unittest import TestCase
 from nose.tools import eq_
-from mock import patch
 import lamvery.env
 
 ENV_JSON = '''
