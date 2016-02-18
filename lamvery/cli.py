@@ -149,7 +149,7 @@ def main():
     }
     env_args = ('-e', '--env',)
     env_kwargs = {
-        'help': 'Environment variables',
+        'help': 'Environment variables that pass to the function',
         'action': 'append',
         'default': None
     }

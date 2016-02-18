@@ -177,7 +177,7 @@ Exclude files or directories using regular expression.
 - Store the secret informations to the archive
 
 ```sh
-lamvery archive
+lamvery archive [-e <env-name>=<env_value>]
 ```
 
 ### deploy
@@ -188,7 +188,7 @@ lamvery archive
 - Set alias to a version of the function
 
 ```sh
-lamvery deploy
+lamvery deploy [-e <env-name>=<env_value>] [-a <alias>]
 ```
 
 ### rollback
@@ -198,7 +198,7 @@ lamvery deploy
 - Rollback to the previous version of the function  
 
 ```
-lamvery rollback
+lamvery rollback [-a <alias>]
 ```
 
 ### set-alias
@@ -265,7 +265,7 @@ Specify the configuration file.
 default: `.lamvery.yml`
 
 ### `-d` or `--dry-run`  
-This option is needed by the `deploy` and `alias` commands.  
+This option is needed by the `deploy`,`alias`,`rollback`,`events` commands.  
 Output the difference of configuration and the alias without updating.
 
 ### `-s` or `--single-file`  
@@ -318,12 +318,18 @@ Examples: `yesterday`,`"-1 h"`, `"2016-01-01"`, `"2016-01-01 10:20:30"`
 This option is only needed by the `set-alias` command.  
 The alias of the version that is targeted for setting alias.
 
-# Using a confidential information in the lambda function
+### `-e` or `--env`
+This option is needed by the `archive` and `deploy` commands.  
+Environment variables that pass to the function.  
+**This option can be used repeatedly to pass multiple variables.**  
+Examples: `FOO=BAR`
 
-#### 1. Create key on KMS  
+# How to use the confidential informations in the lambda function
+
+### 1. Create key on KMS  
 See: https://docs.aws.amazon.com/kms/latest/developerguide/create-keys.html
 
-#### 2. Create IAM role for lambda function  
+### 2. Create IAM role for lambda function  
 Policy example:  
 ```json
 {
@@ -342,7 +348,7 @@ Policy example:
 }
 ```
 
-#### 3. Set the key-id to your configuration file.  
+### 3. Set the key-id to your configuration file  
 Configuration example:  
 
 - .lamvery.yml
@@ -369,13 +375,13 @@ key_id: xxxx-yyyy-zzzz # <-here!
 cipher_texts: {}
 ```
 
-#### 4. Encrypt and store the confidential information to your configuration file.  
+### 4. Encrypt and store the confidential information to your configuration file  
 Command example:  
 ```sh
 lamvery encrypt -s -n foo "This is a secret"
 ```
 
-#### 5. Write your function.  
+### 5. Write your function  
 Code example:  
 
 - Python
@@ -399,13 +405,13 @@ exports.lambda_handler = function(event, context) {
 }
 ```
 
-#### 6. Deploy your function  
+### 6. Deploy your function  
 Command example:  
 ```sh
 lamvery deploy
 ```
 
-#### 7. Invoke your function  
+### 7. Invoke your function  
 Command example:  
 ```sh
 lamvery invoke {}
@@ -416,6 +422,57 @@ Result example:
 START RequestId: 13829c9c-9f13-11e5-921b-6f048cff3c2d Version: $LATEST
 This is a secret
 END RequestId: 13829c9c-9f13-11e5-921b-6f048cff3c2d
+```
+
+# How to use the environment variables in the lambda function
+
+### 1. Write your function
+
+- Python
+
+```py
+import lamvery
+import os
+
+
+def lambda_handler(event, context):
+    lamvery.env.load()
+    print(os.environ['FOO'])
+    print(os.environ['BAZ'])
+```
+
+- Node.js
+
+```js
+var lamvery = require('./lamvery.js');
+
+exports.lambdaHandler = function(event, context) {
+    lamvery.env.load();
+    console.log(process.env.FOO);
+    console.log(process.env.BAZ);
+}
+
+```
+
+### 2. Deploy your code with `-e` or `--env` options
+
+```sh
+lamvery deploy -e FOO=BAR -e BAZ=QUX
+```
+
+### 3. Invoke your function
+
+Command example:  
+```sh
+lamvery invoke {}
+```
+
+Result example:  
+```
+START RequestId: 481f2f8a-d64c-11e5-9ebe-4347553b89b4 Version: 25
+BAR
+QUX
+END RequestId: 481f2f8a-d64c-11e5-9ebe-4347553b89b4
 ```
 
 Development

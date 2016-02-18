@@ -1,3 +1,8 @@
+## 0.13.0
+
+- Add `env` option [#52][]
+  - Pass some environment variables that are not encrypted [#50][]
+
 ## 0.12.4
 
 - Bugfix: `init` command failure [#51][]
@@ -189,5 +194,7 @@
 [#43]: https://github.com/marcy-terui/lamvery/issues/43
 [#44]: https://github.com/marcy-terui/lamvery/issues/44
 [#48]: https://github.com/marcy-terui/lamvery/issues/48
+[#50]: https://github.com/marcy-terui/lamvery/issues/50
 [#51]: https://github.com/marcy-terui/lamvery/issues/51
+[#52]: https://github.com/marcy-terui/lamvery/issues/52
 [@ijin]: https://github.com/ijin
