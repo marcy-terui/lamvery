@@ -195,7 +195,7 @@ lamvery deploy [-e <env-name>=<env-value>] [-a <alias>]
 
 - Rollback to the previous version of the function  
 
-*You must do one of the following to use this command.*
+**You must do one of the following to use this command.**
 
 - Deploy with `publish(-p,--publish)` and `alias(-a, --alias)` options.
 - Turn on(true) `versioning` and set a value to `default_alias` in the configuration file.
