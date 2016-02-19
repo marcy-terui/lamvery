@@ -156,7 +156,7 @@ cipher_texts:
 The ID of your encryption key on KMS.
 
 ### cipher_texts  
-The name and cipher texts for passing to lambda function.
+The name and cipher texts to pass to the lambda function.
 
 ## Excluded patterns from the archive (deafult: `.lamvery.exclude.yml`)
 
@@ -177,7 +177,7 @@ Exclude files or directories using regular expression.
 - Store the secret informations to the archive
 
 ```sh
-lamvery archive [-e <env-name>=<env_value>]
+lamvery archive [-e <env-name>=<env-value>]
 ```
 
 ### deploy
@@ -188,14 +188,17 @@ lamvery archive [-e <env-name>=<env_value>]
 - Set alias to a version of the function
 
 ```sh
-lamvery deploy [-e <env-name>=<env_value>] [-a <alias>]
+lamvery deploy [-e <env-name>=<env-value>] [-a <alias>]
 ```
 
 ### rollback
 
-*You have to turn on(true) `versioning` and set a value to `default_alias` in the configuration file.*
-
 - Rollback to the previous version of the function  
+
+*You must do one of the following to use this command.*
+
+- Deploy with `publish(-p,--publish)` and `alias(-a, --alias)` options.
+- Turn on(true) `versioning` and set a value to `default_alias` in the configuration file.
 
 ```
 lamvery rollback [-a <alias>]
@@ -227,7 +230,7 @@ lamvery decrypt -n <secret-name>
 
 ### events
 
-- Apply CloudWatch Events setting
+- Apply CloudWatch Events settings
 
 ```sh
 lamvery events [-k] [-a <alias>]
@@ -235,7 +238,7 @@ lamvery events [-k] [-a <alias>]
 
 ### invoke
 
-- Invoke the function and output logs to stdout
+- Invoke the function and output result
 
 ```sh
 lamvery invoke [-a <alias>] [-v <version>] '{"foo": "bar"}'
@@ -247,7 +250,7 @@ lamvery invoke [-a <alias>] [-v <version>] path/to/input.json
 
 ### logs
 
-- Watch the function's log events on CloudWatch Logs
+- Watch the log events of the function
 
 ```sh
 lamvery logs [-f] [-F <filter>] [-s <start-time-string>] [-i <interval-seconds>]

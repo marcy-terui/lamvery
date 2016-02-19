@@ -1,6 +1,6 @@
 ## 0.13.0
 
-- Add `env` option [#52][]
+- Add `-e`,`--env` option to `archive` and `deploy` command [#52][]
   - Pass some environment variables that are not encrypted [#50][]
 
 ## 0.12.4
