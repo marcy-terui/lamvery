@@ -2,6 +2,7 @@ profile: private
 region: us-east-1
 versioning: true
 default_alias: test
+clean_build: true
 configuration:
   name: lamvery-test
   runtime: python2.7

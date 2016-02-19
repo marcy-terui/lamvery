@@ -1,4 +1,4 @@
-from lamvery.actions.archive import ArchiveAction
+from lamvery.actions.build import BuildAction
 from lamvery.actions.configure import ConfigureAction
 from lamvery.actions.decrypt import DecryptAction
 from lamvery.actions.deploy import DeployAction

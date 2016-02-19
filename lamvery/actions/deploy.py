@@ -3,7 +3,7 @@
 from lamvery.actions.base import BaseAction
 from lamvery.actions.configure import CONF_DIFF_KEYS, VPC_DIFF_KEYS
 from lamvery.actions.set_alias import SetAliasAction
-from lamvery.archive import Archive
+from lamvery.build import Builder
 from lamvery.utils import (
     previous_alias,
     parse_env_args
@@ -25,22 +25,27 @@ class DeployAction(BaseAction):
         function_filename = self._config.get_function_filename()
         secret = self._config.generate_lambda_secret()
         exclude = self._config.get_exclude()
-        archive = Archive(filename=archive_name,
-                          function_filename=function_filename,
-                          secret=secret,
-                          single_file=self._single_file,
-                          no_libs=self._no_libs,
-                          exclude=exclude,
-                          runtime=self._config.get_runtime(),
-                          env=self._env)
+
+        builder = Builder(
+            filename=archive_name,
+            function_filename=function_filename,
+            secret=secret,
+            single_file=self._single_file,
+            no_libs=self._no_libs,
+            exclude=exclude,
+            runtime=self._config.get_runtime(),
+            env=self._env,
+            clean_build=self._config.is_clean_build(),
+            hooks=self._config.get_build_hooks())
+
         func_name = self._config.get_function_name()
         local_conf = self._config.get_configuration()
-        zipfile = archive.create_zipfile()
+        zipfile = builder.build()
         client = self.get_lambda_client()
         remote_conf = client.get_function_conf(func_name)
         alias_name = self._set_alias.get_alias_name()
         remote_size = client.calculate_capacity()
-        local_size = archive.get_size()
+        local_size = builder.get_size()
         new_version = None
         cur_version = None
         vpc_config = self._config.get_vpc_configuration()

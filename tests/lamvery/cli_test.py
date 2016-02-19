@@ -5,7 +5,7 @@ from mock import Mock, patch
 from lamvery.cli import (
     main,
     init,
-    archive,
+    build,
     configure,
     deploy,
     encrypt,
@@ -24,8 +24,8 @@ class FunctionsTestCase(TestCase):
             init(Mock())
 
     def test_archive(self):
-        with patch('lamvery.cli.ArchiveAction'):
-            archive(Mock())
+        with patch('lamvery.cli.BuildAction'):
+            build(Mock())
 
     def test_configure(self):
         with patch('lamvery.cli.ConfigureAction'):
