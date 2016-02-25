@@ -43,6 +43,7 @@ profile: private
 region: us-east-1
 versioning: true
 default_alias: test
+clean_build: false
 configuration:
   name: lamvery-test
   runtime: python2.7
@@ -70,6 +71,9 @@ Enable the function versioning.
 
 ### default_alias
 The alias when it has not been specified in the `-a` or `--alias` option.
+
+### clean_build
+Build the archive(zip) in the temporary area.
 
 ### configuration
 
@@ -169,20 +173,38 @@ The name and cipher texts to pass to the lambda function.
 
 Exclude files or directories using regular expression.
 
+## Action hooks (deafult: `.lamvery.hook.yml`)
+
+```yml
+build:
+  pre:
+  - pip install -r requirements.txt -t ./
+  post: []
+```
+
+### build
+The hooks for `build`(and `deploy`)
+
+- pre  
+The commands that run before building.
+
+- post  
+The commands that run after building.
+
 # Commands
 
-### archive
+### build
 
-- Archive your code and libraries to `<your-function-name>.zip`
+- Build and archive your code and libraries to `<your-function-name>.zip`
 - Store the secret informations to the archive
 
 ```sh
-lamvery archive [-e <env-name>=<env-value>]
+lamvery build [-e <env-name>=<env-value>]
 ```
 
 ### deploy
 
-- Archive and deploy your code and libraries
+- Build and deploy your code and libraries
 - Store the secret informations to the archive
 - Update configuration of the function
 - Set alias to a version of the function

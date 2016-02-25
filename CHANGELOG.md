@@ -1,3 +1,8 @@
+## 0.14.0
+
+- Change the command `archive` to `build` [#53][]
+- Add build hooks [#36][] [#53][]
+
 ## 0.13.0
 
 - Add `-e`,`--env` option to `archive` and `deploy` command [#52][]
