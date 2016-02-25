@@ -12,6 +12,7 @@ import lamvery.config
 
 from zipfile import PyZipFile, ZIP_DEFLATED
 from lamvery.log import get_logger
+from lamvery.utils import run_commands
 
 warnings.simplefilter("ignore", UserWarning)
 
@@ -23,7 +24,7 @@ EXCLUDE_DIR = [
 PYFILE_PATTERN = re.compile('.+\.py.?$')
 
 
-class Archive:
+class Builder:
 
     def __init__(
         self,
@@ -34,7 +35,9 @@ class Archive:
         secret={},
         exclude=[],
         runtime=lamvery.config.RUNTIME_PY_27,
-        env=None
+        env=None,
+        clean_build=False,
+        hooks={}
     ):
         self._filename = filename
         self._function_filename = function_filename
@@ -46,11 +49,18 @@ class Archive:
         self._exclude = exclude
         self._runtime = runtime
         self._env = env
+        self._clean_build = clean_build
+        self._clean_build_dir = tempfile.mkdtemp(suffix='lamvery-build')
+        self._hooks = hooks
 
     def __del__(self):
         shutil.rmtree(self._tmpdir)
 
-    def create_zipfile(self):
+    def build(self):
+        if self._clean_build:
+            self._prepare_clean_build()
+
+        self._run_hooks(self._hooks.get('pre', []))
 
         with PyZipFile(self._zippath, 'w', compression=ZIP_DEFLATED) as zipfile:
             for p in self._get_paths():
@@ -58,6 +68,7 @@ class Archive:
                     self._archive_dir(zipfile, p)
                 else:
                     self._archive_file(zipfile, p)
+
             if not self._single_file:
                 secret_path = os.path.join(self._tmpdir, lamvery.secret.SECRET_FILE_NAME)
                 env_path = os.path.join(self._tmpdir, lamvery.env.ENV_FILE_NAME)
@@ -69,17 +80,32 @@ class Archive:
                 if self._runtime == lamvery.config.RUNTIME_NODE_JS:
                     self._archive_dist(zipfile, 'lamvery.js')
 
+        self._run_hooks(self._hooks.get('post', []))
+
         return open(self._zippath, 'rb')
 
-    def _generate_json(self, path, data):
-        if isinstance(data, dict):
-            json.dump(
-                data,
-                open(path, 'w'))
+    def _prepare_clean_build(self):
+        for p in os.listdir(os.getcwd()):
+            path = os.path.join(os.getcwd(), p)
+            if not path.startswith(os.environ.get('VIRTUAL_ENV')):
+                if os.path.isdir(path):
+                    shutil.copytree(path, os.path.join(self._clean_build_dir, p))
+                else:
+                    shutil.copyfile(path, os.path.join(self._clean_build_dir, p))
+
+    def _run_hooks(self, hooks):
+        if self._clean_build:
+            return run_commands(hooks, self._clean_build_dir)
         else:
-            json.dump(
-                {},
-                open(path, 'w'))
+            return run_commands(hooks)
+
+    def _generate_json(self, path, data):
+        if not isinstance(data, dict):
+            data = {}
+
+        json.dump(
+            data,
+            open(path, 'w'))
 
     def _archive_dist(self, zipfile, dist):
         self._archive_file(
@@ -142,6 +168,17 @@ class Archive:
         return PYFILE_PATTERN.match(name) is not None
 
     def _get_paths(self):
+        paths = []
+
+        if self._single_file:
+            f = self._function_filename
+            return [os.path.join(os.getcwd(), f)]
+
+        if self._clean_build:
+            for p in os.listdir(self._clean_build_dir):
+                paths.append(os.path.join(self._clean_build_dir, p))
+            return paths
+
         logger = get_logger(__name__)
         try:
             venv = os.environ['VIRTUAL_ENV']
@@ -150,7 +187,7 @@ class Archive:
                 'VIRTUAL_ENV environment variable can not be found. ' +
                 'Python libraries are not included in the archive.')
             venv = None
-        paths = []
+
         if not self._no_libs and venv is not None:
             for p in sys.path:
                 if os.path.isdir(p) and os.path.exists(p):
@@ -162,9 +199,7 @@ class Archive:
             f_path = os.path.join(os.getcwd(), f)
             if not f_path == venv:
                 paths.append(f_path)
-        if self._single_file:
-            f = self._function_filename
-            paths = [os.path.join(os.getcwd(), f)]
+
         return paths
 
     def get_size(self):

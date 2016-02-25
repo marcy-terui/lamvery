@@ -6,6 +6,8 @@ import re
 
 from collections import OrderedDict
 from jinja2 import Environment, FileSystemLoader
+from jinja2.exceptions import TemplateNotFound
+from lamvery.log import get_logger
 
 RUNTIME_PY_27 = 'python2.7'
 RUNTIME_NODE_JS = 'nodejs'
@@ -31,9 +33,14 @@ class Config:
         self._file = conf_file
         self._template_env = Environment(loader=FileSystemLoader('./', encoding='utf8'))
 
-    def load(self, file):
-        tmpl = self._template_env.get_template(file)
-        return yaml.load(tmpl.render({'env': os.environ}))
+    def load(self, file, default={}):
+        try:
+            tmpl = self._template_env.get_template(file)
+            return yaml.load(tmpl.render({'env': os.environ}))
+        except TemplateNotFound:
+            get_logger(__name__).warn(
+                'Configuration file "{}" is not exists.'.format(file))
+            return default
 
     def load_conf(self):
         return self.load(self._file)
@@ -51,10 +58,16 @@ class Config:
         return self.load_conf().get('secret_file', '.lamvery.secret.yml')
 
     def load_exclude(self):
-        return self.load(self.get_exclude_file())
+        return self.load(self.get_exclude_file(), [])
 
     def get_exclude_file(self):
         return self.load_conf().get('exclude_file', '.lamvery.exclude.yml')
+
+    def load_hook(self):
+        return self.load(self.get_hook_file())
+
+    def get_hook_file(self):
+        return self.load_conf().get('hook_file', '.lamvery.hook.yml')
 
     def load_raw_secret(self):
         txt = open(self.get_secret_file(), 'r').read()
@@ -101,12 +114,9 @@ class Config:
         if vpc_config is None:
             vpc_config = {}
 
-        subnets = vpc_config.get('subnets', [])
-        security_groups = vpc_config.get('security_groups', [])
-
         return {
-            'subnets': subnets,
-            'security_groups': security_groups
+            'subnets': vpc_config.get('subnets', []),
+            'security_groups': vpc_config.get('security_groups', [])
         }
 
     def get_secret(self):
@@ -115,6 +125,9 @@ class Config:
     def get_events(self):
         events = self.load_events()
         if events is None:
+            return {'rules': []}
+
+        if 'rules' in events:
             return {'rules': []}
 
         if isinstance(events, list):
@@ -171,6 +184,12 @@ class Config:
             return []
         return exclude
 
+    def get_build_hooks(self):
+        return self.load_hook().get('build', {})
+
+    def is_clean_build(self):
+        return self.load_conf().get('clean_build', False)
+
     def get_default(self):
         init_vpc = OrderedDict()
         init_vpc['subnets'] = ['subnet-xxxxxxxx']
@@ -191,6 +210,7 @@ class Config:
         init_yaml['region'] = 'us-east-1'
         init_yaml['versioning'] = False
         init_yaml['default_alias'] = None
+        init_yaml['clean_build'] = False
         init_yaml['configuration'] = init_config
 
         return init_yaml
@@ -223,6 +243,14 @@ class Config:
             '^{}$'.format(re.escape(self.get_event_file())),
             '^{}$'.format(re.escape(self.get_secret_file())),
             '^{}$'.format(re.escape(self.get_exclude_file()))]
+
+    def get_default_hook(self):
+        init_hook = OrderedDict()
+        init_hook['build'] = OrderedDict()
+        init_hook['build']['pre'] = []
+        init_hook['build']['post'] = []
+
+        return init_hook
 
     def write(self, conf, path):
         txt = yaml.dump(

@@ -7,7 +7,7 @@ import logging
 from termcolor import colored
 from lamvery.actions import (
     InitAction,
-    ArchiveAction,
+    BuildAction,
     ConfigureAction,
     DeployAction,
     DecryptAction,
@@ -24,8 +24,8 @@ def init(args):
     InitAction(args).action()
 
 
-def archive(args):
-    ArchiveAction(args).action()
+def build(args):
+    BuildAction(args).action()
 
 
 def configure(args):
@@ -165,14 +165,14 @@ def main():
     init_parser.add_argument(*conf_file_args, **conf_file_kwargs)
     init_parser.set_defaults(func=init)
 
-    archive_parser = subparsers.add_parser(
-        'archive',
-        help='Archive your code and libraries to <your-function-name>.zip')
-    archive_parser.add_argument(*conf_file_args, **conf_file_kwargs)
-    archive_parser.add_argument(*single_file_args, **single_file_kwargs)
-    archive_parser.add_argument(*no_libs_args, **no_libs_kwargs)
-    archive_parser.add_argument(*env_args, **env_kwargs)
-    archive_parser.set_defaults(func=archive)
+    build_parser = subparsers.add_parser(
+        'build',
+        help='Build and archive your code and libraries to <your-function-name>.zip')
+    build_parser.add_argument(*conf_file_args, **conf_file_kwargs)
+    build_parser.add_argument(*single_file_args, **single_file_kwargs)
+    build_parser.add_argument(*no_libs_args, **no_libs_kwargs)
+    build_parser.add_argument(*env_args, **env_kwargs)
+    build_parser.set_defaults(func=build)
 
     set_alias_parser = subparsers.add_parser(
         'set-alias',

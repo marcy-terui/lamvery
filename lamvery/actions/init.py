@@ -22,6 +22,7 @@ class InitAction(BaseAction):
             self._config.get_event_file(): self._config.get_default_events(),
             self._config.get_secret_file(): self._config.get_default_secret(),
             self._config.get_exclude_file(): self._config.get_default_exclude(),
+            self._config.get_hook_file(): self._config.get_default_hook(),
         }
 
         for f, c in files.items():
