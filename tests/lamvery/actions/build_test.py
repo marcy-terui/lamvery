@@ -42,6 +42,9 @@ class BuildActionTestCase(TestCase):
         action._config.generate_lambda_secret = Mock(return_value={})
         action._config.get_exclude = Mock(return_value=[])
         action._config.is_clean_build = Mock(return_value=True)
-        action._config.get_build_hooks = Mock(return_value={'pre': ['pip install -r requirements.txt -t ./', 'test -d botocore'], 'post': ['whoami']})
+        action._config.get_build_hooks = Mock(
+            return_value={
+                'pre': ['pip install -r requirements.txt -t ./', 'test -d botocore'],
+                'post': ['whoami']})
         action.action()
         ok_(os.path.exists('test.zip'))

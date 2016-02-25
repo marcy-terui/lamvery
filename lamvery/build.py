@@ -57,8 +57,6 @@ class Builder:
         shutil.rmtree(self._tmpdir)
 
     def build(self):
-        paths = self._get_paths()
-
         if self._clean_build:
             self._prepare_clean_build()
 
