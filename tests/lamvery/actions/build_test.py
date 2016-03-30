@@ -44,7 +44,7 @@ class BuildActionTestCase(TestCase):
         action._config.is_clean_build = Mock(return_value=True)
         action._config.get_build_hooks = Mock(
             return_value={
-                'pre': ['pip install -r requirements.txt -t ./', 'test -d botocore'],
+                'pre': ['whoami'],
                 'post': ['whoami']})
         action.action()
         ok_(os.path.exists('test.zip'))

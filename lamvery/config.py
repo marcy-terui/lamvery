@@ -157,7 +157,7 @@ class Config:
             return self.get_configuration().get('name')
         else:
             dirname = os.path.basename(os.getcwd())
-            if dirname == ''
+            if dirname == '':
                 return 'sample'
             return dirname
 
