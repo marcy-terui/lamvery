@@ -3,14 +3,15 @@ import os
 
 from setuptools import setup, find_packages
 
-long_description = 'User-friendly deploy and management tool for AWS Lambda function.'
+description = 'User-friendly deploy and management tool for AWS Lambda function.'
+long_description = description
 if os.path.exists('README.txt'):
     long_description = open('README.txt').read()
 
 setup_options = dict(
     name='lamvery',
     version='0.14.1',
-    description='Function based deploy and management tool for AWS Lambda.',
+    description=description,
     long_description=long_description,
     author='Masashi Terui',
     author_email='marcy9114+pypi@gmail.com',
