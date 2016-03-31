@@ -1,3 +1,7 @@
+## 0.14.1
+
+- Bugfix: `init` command fails on root directory [#54][]
+
 ## 0.14.0
 
 - Change the command `archive` to `build` [#53][]
@@ -191,6 +195,7 @@
 [#29]: https://github.com/marcy-terui/lamvery/issues/29
 [#33]: https://github.com/marcy-terui/lamvery/issues/33
 [#35]: https://github.com/marcy-terui/lamvery/issues/35
+[#36]: https://github.com/marcy-terui/lamvery/issues/36
 [#37]: https://github.com/marcy-terui/lamvery/issues/37
 [#39]: https://github.com/marcy-terui/lamvery/issues/39
 [#40]: https://github.com/marcy-terui/lamvery/issues/40
@@ -202,4 +207,6 @@
 [#50]: https://github.com/marcy-terui/lamvery/issues/50
 [#51]: https://github.com/marcy-terui/lamvery/issues/51
 [#52]: https://github.com/marcy-terui/lamvery/issues/52
+[#53]: https://github.com/marcy-terui/lamvery/issues/53
+[#54]: https://github.com/marcy-terui/lamvery/issues/54
 [@ijin]: https://github.com/ijin
