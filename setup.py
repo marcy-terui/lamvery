@@ -3,7 +3,7 @@ import os
 
 from setuptools import setup, find_packages
 
-long_description = 'Function based deploy and management tool for AWS Lambda.'
+long_description = 'User-friendly deploy and management tool for AWS Lambda function.'
 if os.path.exists('README.txt'):
     long_description = open('README.txt').read()
 

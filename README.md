@@ -6,7 +6,33 @@ Lamvery
 [![Version](https://img.shields.io/pypi/v/lamvery.svg)](https://pypi.python.org/pypi/lamvery)
 [![Downloads](https://img.shields.io/pypi/dm/lamvery.svg)](https://pypi.python.org/pypi/lamvery/)
 
-Function based deploy and management tool for AWS Lambda.
+# Description
+
+User-friendly deploy and management tool for AWS Lambda function.
+
+## Why user-friendly?
+
+### The format of the configuration file is `YAML`(with `Jinja2`)
+
+- `YAML` is user-friendly than `JSON`
+- We can avoid some redundant contents by `Jinja2` template engine
+
+### Additional features that are not in the standard Lambda functions
+
+- Passing the environment variables
+- Passing the confidential informations use `KMS` encryption
+- And more
+
+### More useful features for deploying and invoking our functions
+
+- We can build, configure, deploy, rollback and invoke with a single command
+- We can rollback **correctly** to the previous version of the alias
+
+### More useful features for using and managing the related services
+
+- CloudWatch Events
+- CloudWatch Logs
+- And more
 
 # Requirements
 
