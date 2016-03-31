@@ -185,6 +185,11 @@ class ConfigTestCase(TestCase):
         config = Config(self.conf_file)
         eq_(config.get_default_exclude().pop(), '^\\.test\\.exclude\\.yml$')
 
+    def test_get_default_hook(self):
+        config = Config(self.conf_file)
+        eq_(config.get_default_hook().get('build').get('pre'), [])
+        eq_(config.get_default_hook().get('build').get('post'), [])
+
     def test_get_secret(self):
         config = Config(self.conf_file)
         key = config.get_secret().get('key_id')
