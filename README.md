@@ -16,12 +16,37 @@ Function based deploy and management tool for AWS Lambda.
 # Recommends
 
 ### virtualenv
-  **Automatically collect the lightweighted and compiled libraries in the virtualenv environment.**
+**Automatically collect the lightweighted and compiled libraries in the virtualenv environment.**
 
 # Installation
 
+## PyPI
+
 ```sh
 pip install lamvery
+```
+
+## Apt
+
+```sh
+echo "deb https://dl.bintray.com/willyworks/deb trusty main" | sudo tee -a /etc/apt/sources.list
+sudo apt-get update
+sudo apt-get install lamvery
+export PATH=/opt/lamvery/bin:$PATH
+```
+
+## Yum
+
+```sh
+echo "
+[bintraybintray-willyworks-rpm]
+name=bintray-willyworks-rpm
+baseurl=https://dl.bintray.com/willyworks/rpm/centos/\$releaserver/\$basearch/
+gpgcheck=0
+enabled=1
+" | sudo tee -a /etc/yum.repos.d/bintray-willyworks-rpm.repo
+sudo yum install lamvery
+export PATH=/opt/lamvery/bin:$PATH
 ```
 
 # Setup and configuration

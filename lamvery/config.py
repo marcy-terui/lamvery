@@ -156,7 +156,10 @@ class Config:
         if os.path.exists(self._file):
             return self.get_configuration().get('name')
         else:
-            return os.path.basename(os.getcwd())
+            dirname = os.path.basename(os.getcwd())
+            if dirname == '':
+                return 'sample'
+            return dirname
 
     def get_function_filename(self):
         ext = RUNTIME_AND_EXTENSION.get(self.get_runtime(), "py")
