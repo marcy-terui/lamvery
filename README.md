@@ -10,25 +10,25 @@ Lamvery
 
 User-friendly deploy and management tool for AWS Lambda function.
 
-## Why user-friendly?
+### Why user-friendly?
 
-### The format of the configuration file is `YAML`(with `Jinja2`)
+#### The format of the configuration file is `YAML`(with `Jinja2`)
 
 - `YAML` is user-friendly than `JSON`
 - We can avoid some redundant contents by `Jinja2` template engine
 
-### Additional features that are not in the standard Lambda functions
+#### Additional features that are not in the standard Lambda functions
 
 - Passing the environment variables
 - Passing the confidential informations use `KMS` encryption
 - And more
 
-### More useful features for deploying and invoking our functions
+#### More useful features for deploying and invoking our functions
 
 - We can build, configure, deploy, rollback and invoke with a single command
 - We can rollback **correctly** to the previous version of the alias
 
-### More useful features for using and managing the related services
+#### More useful features for using and managing the related services
 
 - CloudWatch Events
 - CloudWatch Logs
@@ -111,11 +111,11 @@ configuration:
 ```
 
 ### profile
-The name of a profile to use. If not given, this depends on `boto3`.
+The name of a profile to use. If not given, it depends on `boto3`.
 
 ### region
 The region name of your environment.  
-If you doesn't set this option, this depends on `boto3`.
+If you doesn't set this option, it depends on `boto3`.
 
 ### versioning
 Enable the function versioning.
