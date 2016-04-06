@@ -3,6 +3,7 @@ Lamvery
 
 [![Build Status](https://img.shields.io/travis/marcy-terui/lamvery/master.svg)](http://travis-ci.org/marcy-terui/lamvery)
 [![Coverage](https://img.shields.io/coveralls/marcy-terui/lamvery.svg)](https://coveralls.io/github/marcy-terui/lamvery)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/marcy-terui/lamvery/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/marcy-terui/lamvery/?branch=master)
 [![Version](https://img.shields.io/pypi/v/lamvery.svg)](https://pypi.python.org/pypi/lamvery)
 [![Downloads](https://img.shields.io/pypi/dm/lamvery.svg)](https://pypi.python.org/pypi/lamvery/)
 
@@ -27,6 +28,8 @@ User-friendly deploy and management tool for AWS Lambda function.
 
 - We can build, configure, deploy, rollback and invoke with a single command
 - We can rollback **correctly** to the previous version of the alias
+- Deply(build) hooks
+- And more
 
 #### More useful features for using and managing the related services
 
@@ -41,7 +44,7 @@ User-friendly deploy and management tool for AWS Lambda function.
 
 # Recommends
 
-### virtualenv
+- virtualenv  
 **Automatically collect the lightweighted and compiled libraries in the virtualenv environment.**
 
 # Installation
