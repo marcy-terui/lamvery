@@ -7,7 +7,8 @@ from lamvery.clients import (
     LambdaClient,
     KmsClient,
     EventsClient,
-    LogsClient
+    LogsClient,
+    ApiGatewayClient
 )
 
 
@@ -54,6 +55,9 @@ class BaseAction:
 
     def get_logs_client(self):
         return self._get_client(LogsClient)
+
+    def get_apigateway_client(self):
+        return self._get_client(ApiGatewayClient)
 
     def get_alias_name(self):
         if self._alias is not None:

@@ -69,12 +69,24 @@ class Config:
     def get_hook_file(self):
         return self.load_conf().get('hook_file', '.lamvery.hook.yml')
 
-    def load_raw_secret(self):
-        txt = open(self.get_secret_file(), 'r').read()
+    def load_api(self):
+        return self.load(self.get_api_file())
+
+    def get_api_file(self):
+        return self.load_conf().get('api_file', '.lamvery.api.yml')
+
+    def load_raw(self, file_name):
+        txt = open(file_name, 'r').read()
         return yaml.load(self.escape(txt))
 
+    def load_raw_secret(self):
+        return self.load_raw(self.get_secret_file())
+
+    def load_raw_api(self):
+        return self.load_raw(self.get_api_file())
+
     def escape(self, txt):
-        txt = txt.replace("'", "''")
+        txt = txt.replace("'", "\'")
         txt = txt.replace(
             self._template_env.variable_start_string,
             "'" + self._template_env.variable_start_string)
@@ -90,7 +102,7 @@ class Config:
         return txt
 
     def unescape(self, txt):
-        txt = txt.replace("''", "'")
+        txt = txt.replace("\'", "'")
         txt = txt.replace(
             "'" + self._template_env.variable_start_string,
             self._template_env.variable_start_string)
@@ -190,6 +202,18 @@ class Config:
     def get_build_hooks(self):
         return self.load_hook().get('build', {})
 
+    def get_api_id(self):
+        return self.load_api().get('api_id', None)
+
+    def get_api_configuration(self):
+        return self.load_api().get('configuration', {})
+
+    def get_api_stage(self):
+        return self.load_api().get('stage')
+
+    def get_api_cors(self):
+        return self.load_api().get('cors')
+
     def is_clean_build(self):
         return self.load_conf().get('clean_build', False)
 
@@ -255,11 +279,52 @@ class Config:
 
         return init_hook
 
+    def get_default_api(self):
+        init_api = OrderedDict()
+        init_api['api_id'] = '<your-rest-api-id>'
+        init_api['stage'] = 'dev'
+        init_api['cors'] = OrderedDict([
+            ('origin', '*',),
+            ('methods', ['GET', 'OPTION'],),
+            ('headers', ['Content-Type', 'X-Amz-Date', 'Authorization', 'X-Api-Key'],),
+        ])
+        init_api['configuration'] = OrderedDict([
+            ('swagger', '2.0',),
+            ('info', OrderedDict([
+                ('title', 'Lamvery sample API',),
+            ]),),
+            ('schemes', ['https'],),
+            ('paths', OrderedDict([
+                ('/', OrderedDict([
+                    ('get', OrderedDict([
+                        ('produces', ['application/json'],),
+                        ('parameters', [OrderedDict([
+                            ('name', 'sample',),
+                            ('in', 'query',),
+                            ('required', False),
+                            ('type', 'string',)])],),
+                        ('responses', OrderedDict([
+                            ('200', OrderedDict([
+                                ('description', '200 response',),
+                                ('schema', {'$ref': '#/definitions/Sample'},)])),
+                        ]),),
+                    ]),),
+                ]),),
+            ]),),
+            ('definitions', OrderedDict([
+                ('Sample', OrderedDict([
+                    ('type', 'object',),
+                ]),),
+            ]),),
+        ])
+
+        return init_api
+
     def write(self, conf, path):
         txt = yaml.dump(
             conf,
             default_flow_style=False,
-            allow_unicode=True)
+            allow_unicode=False)
         open(path, 'w').write(self.unescape(txt))
 
     def store_secret(self, key, value):
@@ -270,3 +335,8 @@ class Config:
 
         conf['cipher_texts'][key] = value
         self.write(conf, self.get_secret_file())
+
+    def save_api_id(self, api_id):
+        conf = self.load_raw_api()
+        conf['api_id'] = str(api_id)
+        self.write(conf, self.get_api_file())

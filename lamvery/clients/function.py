@@ -146,13 +146,13 @@ class LambdaClient(BaseClient):
         else:
             return size
 
-    def add_permission(self, function, alias, rule_name, rule_arn):
+    def add_permission(self, function, alias, name, arn, principal='events.amazonaws.com'):
         kwargs = {}
         kwargs['FunctionName'] = function
         kwargs['Action'] = 'lambda:InvokeFunction'
-        kwargs['Principal'] = 'events.amazonaws.com'
-        kwargs['SourceArn'] = rule_arn
-        kwargs['StatementId'] = self._generate_statement_id(function, rule_name, alias)
+        kwargs['Principal'] = principal
+        kwargs['SourceArn'] = arn
+        kwargs['StatementId'] = self._generate_statement_id(function, name, alias)
 
         if alias is not None:
             kwargs['Qualifier'] = alias

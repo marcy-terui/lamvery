@@ -51,7 +51,7 @@ class DeployAction(BaseAction):
         vpc_config = self._config.get_vpc_configuration()
 
         if len(remote_conf) == 0:
-            self._logger.warn(
+            self._logger.info(
                 '[Function] Create new function "{}"'.format(func_name))
 
         self._print_diff(

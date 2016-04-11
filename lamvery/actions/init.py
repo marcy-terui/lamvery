@@ -23,6 +23,7 @@ class InitAction(BaseAction):
             self._config.get_secret_file(): self._config.get_default_secret(),
             self._config.get_exclude_file(): self._config.get_default_exclude(),
             self._config.get_hook_file(): self._config.get_default_hook(),
+            self._config.get_api_file(): self._config.get_default_api(),
         }
 
         for f, c in files.items():
