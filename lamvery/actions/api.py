@@ -13,7 +13,8 @@ from pygments.formatters import TerminalFormatter
 
 DEFAULT_MAPPING_TEMPLATE = '''
 ##  See http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-mapping-template-reference.html
-##  This template will pass through all parameters including path, querystring, header, stage variables, and context through to the integration endpoint via the body/payload
+##  This template will pass through all parameters including path, querystring, header, stage variables,
+##  and context through to the integration endpoint via the body/payload
 #set($allParams = $input.params())
 {
 "body-json" : "$input.json('$')",
@@ -88,7 +89,6 @@ class ApiAction(BaseAction):
         cors = self.get_cors()
         api_conf = self._integrate_aws(
             self._config.get_api_configuration(), stage, cors)
-        lambda_client = self.get_lambda_client()
 
         self._print_conf_diff(
             api_conf, self._get_remote_configuration(client, api_id, stage))
@@ -164,7 +164,6 @@ class ApiAction(BaseAction):
                 if cors is not None:
                     integration['responses']['default'].setdefault(
                         'responseParameters', self._generate_method_cors(cors))
-
 
                     api_conf['paths'][path].setdefault(
                         'options',
@@ -254,9 +253,7 @@ class ApiAction(BaseAction):
     def _print_conf_diff(self, local, remote):
         str_diff = diff(remote, json.loads(json.dumps(local))).__str__()
         str_diff = re.compile(r'^( +)([\-\+])', re.MULTILINE).sub(r'\2\1', str_diff)
-        self._logger.warn('[API] Configuration:\n{}'.format(
-            highlight(
-                str_diff,
-                get_lexer_by_name('diff'),
-                TerminalFormatter())
-            ))
+        self._logger.warn('[API] Configuration:\n{}'.format(highlight(
+            str_diff,
+            get_lexer_by_name('diff'),
+            TerminalFormatter())))

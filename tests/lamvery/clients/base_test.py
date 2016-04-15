@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import botocore
-
 from unittest import TestCase
 from nose.tools import eq_
 from mock import Mock
 from lamvery.clients.base import BaseClient
 
+
 class TestClient(BaseClient):
     pass
+
 
 class BaseClientTestCase(TestCase):
 
