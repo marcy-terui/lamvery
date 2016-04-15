@@ -64,6 +64,7 @@ class ApiAction(BaseAction):
 
     def __init__(self, args):
         super(ApiAction, self).__init__(args)
+        self._no_integrate = args.no_integrate
         self._remove = args.remove
         self._write_id = args.write_id
         self._stage = args.stage
@@ -87,8 +88,10 @@ class ApiAction(BaseAction):
         api_id = self._config.get_api_id()
         stage = self.get_stage_name()
         cors = self.get_cors()
-        api_conf = self._integrate_aws(
-            self._config.get_api_configuration(), stage, cors)
+        api_conf = self._config.get_api_configuration()
+
+        if not self._no_integrate:
+            api_conf = self._integrate_aws(api_conf, stage, cors)
 
         self._print_conf_diff(
             api_conf, self._get_remote_configuration(client, api_id, stage))

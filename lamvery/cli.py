@@ -175,6 +175,12 @@ def main():
         'action': 'store_true',
         'default': False
     }
+    no_integrate_args = ('-n', '--no-integrate',)
+    no_integrate_kwargs = {
+        'help': 'Without automatic integration',
+        'action': 'store_true',
+        'default': False
+    }
 
     parser = argparse.ArgumentParser(
         description='Yet another deploy tool for AWS Lambda in the virtualenv environment.',
@@ -280,6 +286,7 @@ def main():
         help='Manage your APIs')
     api_parser.add_argument(*conf_file_args, **conf_file_kwargs)
     api_parser.add_argument(*dry_run_args, **dry_run_kwargs)
+    api_parser.add_argument(*no_integrate_args, **no_integrate_kwargs)
     api_parser.add_argument(*remove_args, **remove_kwargs)
     api_parser.add_argument(*stage_args, **stage_kwargs)
     api_parser.add_argument(*write_args, **write_kwargs)

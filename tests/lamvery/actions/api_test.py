@@ -14,6 +14,7 @@ def default_args():
     args = Mock()
     args.conf_file = '.lamvery.yml'
     args.dry_run = False
+    args.no_integrate = False
     args.remove = False
     args.write_id = True
     args.stage = None

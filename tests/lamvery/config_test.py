@@ -27,6 +27,7 @@ configuration:
 event_file: .test.event.yml
 secret_file: .test.secret.yml
 exclude_file: .test.exclude.yml
+api_file: .test.api.yml
 """
 
 DEFAULT_EVENTS = """
@@ -44,6 +45,45 @@ test_env: {{ env['PATH'] }}
 
 DEFAULT_EXCLUDE = """
 - ^bar
+"""
+
+DEFAULT_API = """
+api_id: myipugal74
+stage: dev
+cors:
+  origin: '*'
+  methods:
+  - GET
+  - OPTION
+  headers:
+  - Content-Type
+  - X-Amz-Date
+  - Authorization
+  - X-Api-Key
+configuration:
+  swagger: '2.0'
+  info:
+    title: Sample API
+  schemes:
+  - https
+  paths:
+    /:
+      get:
+        produces:
+        - application/json
+        parameters:
+        - name: sample
+          in: query
+          required: false
+          type: string
+        responses:
+          '200':
+            description: 200 response
+            schema:
+              $ref: '#/definitions/Sample'
+  definitions:
+    Sample:
+      type: object
 """
 
 NODE_CONF = DEFAULT_CONF.replace('python2.7', 'nodejs')
@@ -64,16 +104,19 @@ class ConfigTestCase(TestCase):
         self.event_file = '.test.event.yml'
         self.secret_file = '.test.secret.yml'
         self.exclude_file = '.test.exclude.yml'
+        self.api_file = '.test.api.yml'
         open(self.conf_file, 'w').write(DEFAULT_CONF)
         open(self.event_file, 'w').write(DEFAULT_EVENTS)
         open(self.secret_file, 'w').write(DEFAULT_SECRET)
         open(self.exclude_file, 'w').write(DEFAULT_EXCLUDE)
+        open(self.api_file, 'w').write(DEFAULT_API)
 
     def tearDown(self):
         os.remove(self.conf_file)
         os.remove(self.event_file)
         os.remove(self.secret_file)
         os.remove(self.exclude_file)
+        os.remove(self.api_file)
 
     def test_load(self):
         config = Config(self.conf_file)
