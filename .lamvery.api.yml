@@ -1,4 +1,4 @@
-api_id: foo
+api_id: myipugal74
 stage: dev
 cors:
   origin: '*'
@@ -13,7 +13,7 @@ cors:
 configuration:
   swagger: '2.0'
   info:
-    title: Lamvery sample API
+    title: Sample API
   schemes:
   - https
   paths:
@@ -27,7 +27,7 @@ configuration:
           required: false
           type: string
         responses:
-          200:
+          '200':
             description: 200 response
             schema:
               $ref: '#/definitions/Sample'

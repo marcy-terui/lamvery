@@ -1,3 +1,7 @@
+## 0.15.0
+
+- API Gateway integration (beta) [#55][] [#46][]
+
 ## 0.14.1
 
 - Bugfix: `init` command fails on root directory [#54][]

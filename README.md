@@ -245,6 +245,70 @@ The commands that run before building.
 - post  
 The commands that run after building.
 
+## API Gateway integration (beta)
+
+```yml
+api_id: myipugal74
+stage
+: dev
+cors:
+  origin: '*'
+  methods:
+  - GET
+  - OPTION
+  headers:
+  - Content-Type
+  - X-Amz-Date
+  - Authorization
+  - X-Api-Key
+configuration:
+  swagger: '2.0'
+  info:
+    title: Sample API
+  schemes:
+  - https
+  paths:
+    /:
+      get:
+        produces:
+        - application/json
+        parameters:
+        - name: sample
+          in: query
+          required: false
+          type: string
+        responses:
+          '200':
+            description: 200 response
+            schema:
+              $ref: '#/definitions/Sample'
+  definitions:
+    Sample:
+      type: object
+```
+
+### api_id
+The id of your REST API.  
+This is written on automatically when you deployed your API with the `-w` option.
+
+### stage
+The name of the stage in API Gateway.
+
+### cors
+CORS (Cross-Origin Resource Sharing) options.  
+If you did not set the `x-amazon-apigateway-integration` option, these are set automatically.
+
+- origin  
+For the response's header that named "Access-Control-Allow-Origin".
+- headers  
+For the response's header that named "Access-Control-Allow-Headers".
+- methods  
+For the response's header that named "Access-Control-Allow-Methods".
+
+### configuration
+The settings of your APIs written in the `Swagger` format.  
+If you did not set the `x-amazon-apigateway-integration` option, these are set automatically.
+
 # Commands
 
 ### build
@@ -332,10 +396,18 @@ lamvery invoke [-a <alias>] [-v <version>] path/to/input.json
 lamvery logs [-f] [-F <filter>] [-s <start-time-string>] [-i <interval-seconds>]
 ```
 
+### api
+
+- Manage your APIs
+
+```sh
+lamvery api [-r] [-s <stage-name>] [-w]
+```
+
 ## Options
 
 ### `-a` or `--alias`  
-This option is needed by the `deploy`,`set-alias`,`invoke`,`rollback`,`events` commands.  
+This option is needed by the `deploy`,`set-alias`,`invoke`,`rollback`,`events`,`api` commands.  
 Alias for a version of the function.
 
 ### `-c` or `--conf-file`  
@@ -344,7 +416,7 @@ Specify the configuration file.
 default: `.lamvery.yml`
 
 ### `-d` or `--dry-run`  
-This option is needed by the `deploy`,`alias`,`rollback`,`events` commands.  
+This option is needed by the `deploy`,`alias`,`rollback`,`events`,`api` commands.  
 Output the difference of configuration and the alias without updating.
 
 ### `-s` or `--single-file`  
@@ -402,6 +474,18 @@ This option is needed by the `archive` and `deploy` commands.
 Environment variables that pass to the function.  
 **This option can be used repeatedly to pass multiple variables.**  
 Examples: `FOO=BAR`
+
+### `-r` or `--remove`  
+This option is only needed by the `api` command.  
+Remove your APIs.
+
+### `-s` or `--stage`  
+This option is only needed by the `api` command.  
+The name of the stage in API Gateway.
+
+## `-w` or `--write-id`
+This option is only needed by the `api` command.  
+Write the id of your API to the configuration file (default: `.lamvery.api.yml`)
 
 # How to use the confidential informations in the lambda function
 
