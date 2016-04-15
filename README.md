@@ -33,6 +33,7 @@ User-friendly deploy and management tool for AWS Lambda function.
 
 #### More useful features for using and managing the related services
 
+- API Gateway (Swagger)
 - CloudWatch Events
 - CloudWatch Logs
 - And more
@@ -401,7 +402,7 @@ lamvery logs [-f] [-F <filter>] [-s <start-time-string>] [-i <interval-seconds>]
 - Manage your APIs
 
 ```sh
-lamvery api [-r] [-s <stage-name>] [-w]
+lamvery api [-n] [-r] [-s <stage-name>] [-w]
 ```
 
 ## Options
@@ -486,6 +487,10 @@ The name of the stage in API Gateway.
 ## `-w` or `--write-id`
 This option is only needed by the `api` command.  
 Write the id of your API to the configuration file (default: `.lamvery.api.yml`)
+
+### `-n` or `--no-integrate`  
+This option is only needed by the `api` command.  
+Without automatic integration.
 
 # How to use the confidential informations in the lambda function
 

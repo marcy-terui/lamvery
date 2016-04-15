@@ -1,3 +1,7 @@
+## 0.15.1
+
+- Add `no_integrate` option to api command [#56][]
+
 ## 0.15.0
 
 - API Gateway integration (beta) [#55][] [#46][]
@@ -207,10 +211,13 @@
 [#42]: https://github.com/marcy-terui/lamvery/issues/42
 [#43]: https://github.com/marcy-terui/lamvery/issues/43
 [#44]: https://github.com/marcy-terui/lamvery/issues/44
+[#46]: https://github.com/marcy-terui/lamvery/issues/46
 [#48]: https://github.com/marcy-terui/lamvery/issues/48
 [#50]: https://github.com/marcy-terui/lamvery/issues/50
 [#51]: https://github.com/marcy-terui/lamvery/issues/51
 [#52]: https://github.com/marcy-terui/lamvery/issues/52
 [#53]: https://github.com/marcy-terui/lamvery/issues/53
 [#54]: https://github.com/marcy-terui/lamvery/issues/54
+[#55]: https://github.com/marcy-terui/lamvery/issues/55
+[#56]: https://github.com/marcy-terui/lamvery/issues/56
 [@ijin]: https://github.com/ijin
