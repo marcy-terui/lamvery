@@ -1,6 +1,8 @@
-boto3>=1.2.3
-botocore>=1.3.26
+boto3>=1.3.0
+botocore>=1.4.9
 Jinja2
 PyYAML
 termcolor
 parsedatetime
+datadiff
+Pygments

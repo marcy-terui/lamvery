@@ -1,0 +1,36 @@
+api_id: foo
+stage: dev
+cors:
+  origin: '*'
+  methods:
+  - GET
+  - OPTION
+  headers:
+  - Content-Type
+  - X-Amz-Date
+  - Authorization
+  - X-Api-Key
+configuration:
+  swagger: '2.0'
+  info:
+    title: Lamvery sample API
+  schemes:
+  - https
+  paths:
+    /:
+      get:
+        produces:
+        - application/json
+        parameters:
+        - name: sample
+          in: query
+          required: false
+          type: string
+        responses:
+          200:
+            description: 200 response
+            schema:
+              $ref: '#/definitions/Sample'
+  definitions:
+    Sample:
+      type: object

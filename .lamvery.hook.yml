@@ -1,5 +1,5 @@
 build:
   pre:
-    - "pip install -r requirements.txt -t ./"
+    - "whoami"
   post:
     - "whoami"

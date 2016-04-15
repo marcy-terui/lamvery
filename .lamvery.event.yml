@@ -8,4 +8,3 @@ rules:
       this:
       - is: a
       - sample: input
-#    input_path: json.path.format

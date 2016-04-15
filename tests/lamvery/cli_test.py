@@ -13,7 +13,8 @@ from lamvery.cli import (
     decrypt,
     set_alias,
     invoke,
-    rollback
+    rollback,
+    api
 )
 
 
@@ -58,6 +59,10 @@ class FunctionsTestCase(TestCase):
     def test_rollback(args):
         with patch('lamvery.cli.RollbackAction'):
             rollback(Mock())
+
+    def test_api(args):
+        with patch('lamvery.cli.ApiAction'):
+            api(Mock())
 
     @patch('argparse.ArgumentParser')
     @patch('sys.exit')

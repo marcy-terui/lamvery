@@ -16,7 +16,8 @@ from lamvery.actions import (
     InvokeAction,
     RollbackAction,
     SetAliasAction,
-    LogsAction
+    LogsAction,
+    ApiAction
 )
 
 
@@ -62,6 +63,10 @@ def set_alias(args):
 
 def logs(args):
     LogsAction(args).action()
+
+
+def api(args):
+    ApiAction(args).action()
 
 
 def main():
@@ -112,7 +117,7 @@ def main():
     }
     store_args = ('-s', '--store',)
     store_kwargs = {
-        'help': 'Store encripted value to configuration file (default: .lamvery.yml)',
+        'help': 'Store encripted value to the configuration file (default: .lamvery.secret.yml)',
         'action': 'store_true',
         'default': False
     }
@@ -152,6 +157,23 @@ def main():
         'help': 'Environment variables that pass to the function',
         'action': 'append',
         'default': None
+    }
+    write_args = ('-w', '--write-id',)
+    write_kwargs = {
+        'help': 'Write the id of your API to the configuration file (default: .lamvery.api.yml)',
+        'action': 'store_true',
+        'default': False
+    }
+    stage_args = ('-s', '--stage',)
+    stage_kwargs = {
+        'help': 'The name of the stage in API Gateway',
+        'default': None
+    }
+    remove_args = ('-r', '--remove',)
+    remove_kwargs = {
+        'help': 'Remove your API',
+        'action': 'store_true',
+        'default': False
     }
 
     parser = argparse.ArgumentParser(
@@ -253,11 +275,20 @@ def main():
     logs_parser.add_argument(*start_args, **start_kwargs)
     logs_parser.set_defaults(func=logs)
 
+    api_parser = subparsers.add_parser(
+        'api',
+        help='Manage your APIs')
+    api_parser.add_argument(*conf_file_args, **conf_file_kwargs)
+    api_parser.add_argument(*dry_run_args, **dry_run_kwargs)
+    api_parser.add_argument(*remove_args, **remove_kwargs)
+    api_parser.add_argument(*stage_args, **stage_kwargs)
+    api_parser.add_argument(*write_args, **write_kwargs)
+    api_parser.set_defaults(func=api)
+
     try:
         args = parser.parse_args()
         args.func(args)
         sys.exit(0)
     except Exception as e:
-        msg = str(e)
-        logging.exception(msg)
-        sys.exit(colored(msg, 'red'))
+        logging.exception(e)
+        sys.exit(colored(str(e), 'red'))
