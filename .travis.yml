@@ -1,9 +1,12 @@
 sudo: false
 language: python
 python:
-  - "2.7"
+- '2.7'
 install:
-  - "pip install -r requirements.txt"
-  - "pip install coveralls"
-script: "nosetests -v --with-coverage --cover-package=lamvery"
+- pip install -r requirements.txt
+- pip install coveralls
+script: nosetests -v --with-coverage --cover-package=lamvery
 after_success: coveralls
+notifications:
+  slack:
+    secure: RPqm9QjiBK8vGOYkK+PD1l/8B5v2CxCi8f+hc5/1a9M4hppNdVjLVJZpQMq4Ack6b4pS8BgOtB3ujUyWKEX1ZWmwqFMFIJnbfWkN/QaBXq84euuEROiRY3u7aSeMFoXaiiB5MIqloNAJYUd35hxb3kAlcC/fRPNFclG9WStrspZ+dqr3EiugvthqTIxuEXEYEvrmiOFqA2OIDK34ffvhJgp63Kc0gSxPpkXEWBA6xzQbjoW6bkYyXRK/CKQR+1wyd0EFR4uhB9vug7UhnbTFNEPx8If9Fzd6OcUQaYMJX8yRG86lJTz5C4ieLUpXRarFFTyh3zPzLz4nouz5IDWHUAPWVKCjfWrG1oAAmMDtVloymJKhYqlKLFlnkrshTr0xCFEvs8I3x3BV/+5Pl9Zr37koSVZI+COIQDQ1QWCf2JjUU6h9krQ9l+OmqLhd3847ZL/1+0QN5Bd2GOFek0MH1p94/5R7awQn4Rmt5Yj7zkNlbA8bEP1NSY8k2D3MtwZw+bZH6rdGqHUhOlpWB1e0aSLXT34USut6o3ckG2a2CuTyZMBLmPgLrxJovnt76Q868kMLU9N/k2YQu7KTRCrMeD0HI18/M3GSRNhmuSlzcVAt/pd5uMme2Oo61Abt+3GU61ios1a6xp8GUoDSliXYh50Jm34xjfdDG4/YF2MwK3M=

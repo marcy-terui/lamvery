@@ -1,4 +1,4 @@
-api_id: xm3cj8c3li
+api_id: foo
 stage: dev
 cors:
   origin: '*'

@@ -86,7 +86,7 @@ class Config:
         return self.load_raw(self.get_api_file())
 
     def escape(self, txt):
-        txt = txt.replace("'", "\'")
+        txt = txt.replace("'", "$$")
         txt = txt.replace(
             self._template_env.variable_start_string,
             "'" + self._template_env.variable_start_string)
@@ -102,7 +102,7 @@ class Config:
         return txt
 
     def unescape(self, txt):
-        txt = txt.replace("\'", "'")
+        txt = txt.replace("$$", "'")
         txt = txt.replace(
             "'" + self._template_env.variable_start_string,
             self._template_env.variable_start_string)
@@ -291,7 +291,7 @@ class Config:
         init_api['configuration'] = OrderedDict([
             ('swagger', '2.0',),
             ('info', OrderedDict([
-                ('title', 'Lamvery sample API',),
+                ('title', 'Sample API',),
             ]),),
             ('schemes', ['https'],),
             ('paths', OrderedDict([

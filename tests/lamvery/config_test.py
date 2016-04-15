@@ -111,13 +111,13 @@ class ConfigTestCase(TestCase):
         config = Config(self.conf_file)
         eq_(config.get_runtime(), 'python2.7')
 
-    def test_raw_secret(self):
+    def test_load_raw_secret(self):
         config = Config(self.conf_file)
-        eq_(config.load_raw_secret().get('test_env'), "{{ env['PATH'] }}")
+        eq_(config.load_raw_secret().get('test_env'), "{{ env[$$PATH$$] }}")
 
     def test_escape(self):
         config = Config(self.conf_file)
-        eq_(config.escape('{{ foo[\'bar\'] }}'), '\'{{ foo[\'\'bar\'\'] }}\'')
+        eq_(config.escape("{{ foo['bar'] }}"), "'{{ foo[$$bar$$] }}'")
         eq_(config.escape('{% foo["bar"] %}'), '\'{% foo["bar"] %}\'')
 
     def test_get_configuration(self):
@@ -190,6 +190,13 @@ class ConfigTestCase(TestCase):
         eq_(config.get_default_hook().get('build').get('pre'), [])
         eq_(config.get_default_hook().get('build').get('post'), [])
 
+    def test_get_default_api(self):
+        config = Config(self.conf_file)
+        eq_(config.get_default_api().get('api_id'), '<your-rest-api-id>')
+        eq_(
+            config.get_default_api().get('configuration').get('info'),
+            {'title': 'Sample API'})
+
     def test_get_secret(self):
         config = Config(self.conf_file)
         key = config.get_secret().get('key_id')
@@ -210,6 +217,12 @@ class ConfigTestCase(TestCase):
         config.store_secret('foo', 'bar')
         eq_(config.get_secret().get('key_id'), '<key-id>')
         eq_(config.get_secret().get('cipher_texts').get('foo'), 'bar')
+
+    def test_save_api_id(self):
+        config = Config(self.conf_file)
+        config.save_api_id('foo')
+        eq_(config.get_api_id(), 'foo')
+        eq_(config.get_api_stage(), 'dev')
 
     def test_get_events(self):
         config = Config(self.conf_file)
