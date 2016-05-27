@@ -91,7 +91,7 @@ And then edit your `.lamvery.yml` like so.
 The configuration is written in YAML syntax with `jinja2` template.  
 Environment variables are stored in the `env` variable.
 
-## General settings (deafult: `.lamvery.yml`)
+## General settings (default: `.lamvery.yml`)
 
 ```yml
 profile: private
