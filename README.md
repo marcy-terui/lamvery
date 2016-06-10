@@ -246,12 +246,11 @@ The commands that run before building.
 - post  
 The commands that run after building.
 
-## API Gateway integration (beta)
+## API Gateway integration (deafult: `.lamvery.api.yml`)
 
 ```yml
 api_id: myipugal74
-stage
-: dev
+stage: dev
 cors:
   origin: '*'
   methods:
