@@ -267,6 +267,8 @@ class Config:
     def get_default_exclude(self):
         return [
             '^{}$'.format(re.escape(self._file)),
+            '^{}$'.format(re.escape(self.get_api_file())),
+            '^{}$'.format(re.escape(self.get_hook_file())),
             '^{}$'.format(re.escape(self.get_event_file())),
             '^{}$'.format(re.escape(self.get_secret_file())),
             '^{}$'.format(re.escape(self.get_exclude_file()))]
