@@ -1,3 +1,7 @@
+## 0.15.2
+
+- Pull request [#58][]: Adding api and hook config to default excludes([@mathom][])
+
 ## 0.15.1
 
 - Add `no_integrate` option to api command [#56][]
@@ -220,4 +224,6 @@
 [#54]: https://github.com/marcy-terui/lamvery/issues/54
 [#55]: https://github.com/marcy-terui/lamvery/issues/55
 [#56]: https://github.com/marcy-terui/lamvery/issues/56
+[#58]: https://github.com/marcy-terui/lamvery/issues/58
 [@ijin]: https://github.com/ijin
+[@mathom]: https://github.com/mathom
