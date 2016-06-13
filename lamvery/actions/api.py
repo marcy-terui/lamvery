@@ -99,7 +99,8 @@ class ApiAction(BaseAction):
 
         if not self._dry_run:
             ret = self._apply_api(client, api_id, api_conf)
-            if api_id is None: api_id = ret['id']
+            if api_id is None:
+                api_id = ret['id']
 
             if self._write_id:
                 self._config.save_api_id(ret['id'])
