@@ -93,9 +93,8 @@ class ApiAction(BaseAction):
         if not self._no_integrate:
             api_conf = self._integrate_aws(api_conf, stage, cors)
 
-        if api_id is not None:
-            self._print_conf_diff(
-                api_conf, self._get_remote_configuration(client, api_id, stage))
+        self._print_conf_diff(
+            api_conf, self._get_remote_configuration(client, api_id, stage))
 
         if not self._dry_run:
             ret = self._apply_api(client, api_id, api_conf)
@@ -129,6 +128,8 @@ class ApiAction(BaseAction):
                     'apigateway.amazonaws.com')
 
     def _get_remote_configuration(self, client, api_id, stage):
+        if api_id is None:
+            return {}
         return client.get_export(api_id, stage)
 
     def _integrate_aws(self, api_conf, stage, cors):
