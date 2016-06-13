@@ -161,7 +161,7 @@ The VPC configurations for the function to access resources in your VPC.
   - security_groups  
     The SecurityGroup ids in your VPC.  
 
-## CloudWatch Events settings (deafult: `.lamvery.event.yml`)
+## CloudWatch Events settings (default: `.lamvery.event.yml`)
 
 ```yml
 rules:
@@ -203,7 +203,7 @@ The targets of CloudWatch Event Rule.
 
 *`input` and `input_path` are mutually-exclusive and optional parameters of a target.*
 
-## Secret informations (deafult: `.lamvery.secret.yml`)
+## Secret informations (default: `.lamvery.secret.yml`)
 
 ```yml
 key_id: {{ env['AWS_KMS_KEY_ID'] }}
@@ -217,7 +217,7 @@ The ID of your encryption key on KMS.
 ### cipher_texts  
 The name and cipher texts to pass to the lambda function.
 
-## Excluded patterns from the archive (deafult: `.lamvery.exclude.yml`)
+## Excluded patterns from the archive (default: `.lamvery.exclude.yml`)
 
 ```yml
 - ^\.lamvery\.yml$
@@ -228,7 +228,7 @@ The name and cipher texts to pass to the lambda function.
 
 Exclude files or directories using regular expression.
 
-## Action hooks (deafult: `.lamvery.hook.yml`)
+## Action hooks (default: `.lamvery.hook.yml`)
 
 ```yml
 build:
@@ -246,7 +246,7 @@ The commands that run before building.
 - post  
 The commands that run after building.
 
-## API Gateway integration (deafult: `.lamvery.api.yml`)
+## API Gateway integration (default: `.lamvery.api.yml`)
 
 ```yml
 api_id: myipugal74
