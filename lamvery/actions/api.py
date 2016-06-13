@@ -93,11 +93,13 @@ class ApiAction(BaseAction):
         if not self._no_integrate:
             api_conf = self._integrate_aws(api_conf, stage, cors)
 
-        self._print_conf_diff(
-            api_conf, self._get_remote_configuration(client, api_id, stage))
+        if api_id is not None:
+            self._print_conf_diff(
+                api_conf, self._get_remote_configuration(client, api_id, stage))
 
         if not self._dry_run:
             ret = self._apply_api(client, api_id, api_conf)
+            if api_id is None: api_id = ret['id']
 
             if self._write_id:
                 self._config.save_api_id(ret['id'])
