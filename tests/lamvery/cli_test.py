@@ -14,7 +14,8 @@ from lamvery.cli import (
     set_alias,
     invoke,
     rollback,
-    api
+    api,
+    generate
 )
 
 
@@ -63,6 +64,10 @@ class FunctionsTestCase(TestCase):
     def test_api(args):
         with patch('lamvery.cli.ApiAction'):
             api(Mock())
+
+    def test_generate(args):
+        with patch('lamvery.cli.GenerateAction'):
+            generate(Mock())
 
     @patch('argparse.ArgumentParser')
     @patch('sys.exit')

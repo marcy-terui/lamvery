@@ -10,3 +10,4 @@ from lamvery.actions.invoke import InvokeAction
 from lamvery.actions.rollback import RollbackAction
 from lamvery.actions.logs import LogsAction
 from lamvery.actions.api import ApiAction
+from lamvery.actions.generate import GenerateAction

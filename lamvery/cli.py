@@ -17,7 +17,8 @@ from lamvery.actions import (
     RollbackAction,
     SetAliasAction,
     LogsAction,
-    ApiAction
+    ApiAction,
+    GenerateAction
 )
 
 
@@ -47,6 +48,10 @@ def encrypt(args):
 
 def events(args):
     EventsAction(args).action()
+
+
+def generate(args):
+    GenerateAction(args).action()
 
 
 def invoke(args):
@@ -181,6 +186,11 @@ def main():
         'action': 'store_true',
         'default': False
     }
+    kind_args = ('-k', '--kind',)
+    kind_kwargs = {
+        'help': 'The kind of the file',
+        'required': True
+    }
 
     parser = argparse.ArgumentParser(
         description='Yet another deploy tool for AWS Lambda in the virtualenv environment.',
@@ -291,6 +301,13 @@ def main():
     api_parser.add_argument(*stage_args, **stage_kwargs)
     api_parser.add_argument(*write_args, **write_kwargs)
     api_parser.set_defaults(func=api)
+
+    gen_parser = subparsers.add_parser(
+        'generate',
+        help='Ganerate skeleton files')
+    gen_parser.add_argument(*conf_file_args, **conf_file_kwargs)
+    gen_parser.add_argument(*kind_args, **kind_kwargs)
+    gen_parser.set_defaults(func=generate)
 
     try:
         args = parser.parse_args()

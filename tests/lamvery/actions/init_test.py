@@ -16,23 +16,8 @@ def default_args():
 class InitActionTestCase(TestCase):
 
     def test_action(self):
-        action = InitAction(default_args())
-        action._config = Mock()
-        action._needs_write = Mock(return_value=True)
-        action.action()
-
-    def test_needs_write_conf(self):
-        # New
-        args = default_args()
-        action = InitAction(args)
-        eq_(action._needs_write('bar'), True)
-        # Overwrite
-        action = InitAction(default_args())
-
-        with patch('sys.stdin') as r:
-            # Overwrite yes
-            r.readline = Mock(return_value='y')
-            eq_(action._needs_write('.lamvery.yml'), True)
-            # Overwrite no
-            r.readline = Mock(return_value='n')
-            eq_(action._needs_write('.lamvery.yml'), False)
+        with patch('lamvery.actions.init.confirm_overwrite') as c:
+            c.return_value = True
+            action = InitAction(default_args())
+            action._config = Mock()
+            action.action()

@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
 import re
 import shlex
 import subprocess
+from termcolor import cprint
 
 ENV_PATTERN = re.compile('^(?P<name>[^\s]+)\s*=\s*(?P<value>.+)$')
 
@@ -45,3 +47,13 @@ def run_commands(commands, working_dir=os.getcwd()):
             raise Exception(e.output)
 
     os.chdir(cwd)
+
+
+def confirm_overwrite(path):
+    ret = True
+    if os.path.exists(path):
+        cprint('Overwrite {}? [y/n]: '.format(path), 'yellow', file=sys.stderr, end="")
+        y_n = sys.stdin.readline()
+        if not y_n.startswith('y'):
+            ret = False
+    return ret
