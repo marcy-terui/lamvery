@@ -60,3 +60,4 @@ class GenerateAction(BaseAction):
 
         if confirm_overwrite(path):
             open(path, 'w').write(content)
+            self._logger.info('Output skeleton function: {}'.format(path))
