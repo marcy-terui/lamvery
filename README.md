@@ -501,7 +501,8 @@ Without automatic integration.
 
 ### `-k` or `--kind`
 This option is only needed by the `generate` command.  
-The kind of the file.
+The kind of the file.  
+Allowed values: `function`
 
 # How to use the confidential informations in the lambda function
 
