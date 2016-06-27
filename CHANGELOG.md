@@ -1,3 +1,8 @@
+## 0.16.0
+
+- Add `generate` command [#61][]
+  - Generate the skeleton function
+
 ## 0.15.3
 
 - Pull request [#60][]: Integrate API Gateway without api-id option([@koppeft][])
@@ -230,6 +235,7 @@
 [#56]: https://github.com/marcy-terui/lamvery/issues/56
 [#58]: https://github.com/marcy-terui/lamvery/issues/58
 [#60]: https://github.com/marcy-terui/lamvery/issues/60
+[#61]: https://github.com/marcy-terui/lamvery/issues/61
 [@ijin]: https://github.com/ijin
 [@koppeft]: https://github.com/koppeft
 [@mathom]: https://github.com/mathom
