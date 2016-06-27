@@ -404,6 +404,14 @@ lamvery logs [-f] [-F <filter>] [-s <start-time-string>] [-i <interval-seconds>]
 lamvery api [-n] [-r] [-s <stage-name>] [-w]
 ```
 
+### generate
+
+- Generate skeleton files
+
+```sh
+lamvery generate -k <kind-of-file>
+```
+
 ## Options
 
 ### `-a` or `--alias`  
@@ -483,13 +491,17 @@ Remove your APIs.
 This option is only needed by the `api` command.  
 The name of the stage in API Gateway.
 
-## `-w` or `--write-id`
+### `-w` or `--write-id`
 This option is only needed by the `api` command.  
 Write the id of your API to the configuration file (default: `.lamvery.api.yml`)
 
 ### `-n` or `--no-integrate`  
 This option is only needed by the `api` command.  
 Without automatic integration.
+
+### `-k` or `--kind`
+This option is only needed by the `generate` command.  
+The kind of the file.
 
 # How to use the confidential informations in the lambda function
 
