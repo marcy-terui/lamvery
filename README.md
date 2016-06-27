@@ -562,6 +562,11 @@ lamvery encrypt -s -n foo "This is a secret"
 ```
 
 ### 5. Write your function  
+Generate the skeleton function by this command.
+```sh
+lamvery generate -k function
+```
+
 Code example:  
 
 - Python
@@ -607,6 +612,10 @@ END RequestId: 13829c9c-9f13-11e5-921b-6f048cff3c2d
 # How to use the environment variables in the lambda function
 
 ### 1. Write your function
+Generate the skeleton function by this command.
+```sh
+lamvery generate -k function
+```
 
 - Python
 
