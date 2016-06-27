@@ -181,6 +181,15 @@ class Config:
     def get_runtime(self):
         return self.get_configuration().get('runtime')
 
+    def get_handler(self):
+        return self.get_configuration().get('handler')
+
+    def get_handler_namespace(self):
+        return self.get_handler().split('.')[0]
+
+    def get_handler_function(self):
+        return self.get_handler().split('.')[1]
+
     def get_archive_name(self):
         return '{}.zip'.format(self.get_function_name())
 

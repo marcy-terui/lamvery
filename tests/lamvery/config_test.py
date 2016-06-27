@@ -154,6 +154,18 @@ class ConfigTestCase(TestCase):
         config = Config(self.conf_file)
         eq_(config.get_runtime(), 'python2.7')
 
+    def test_get_handler(self):
+        config = Config(self.conf_file)
+        eq_(config.get_handler(), 'lambda_function.lambda_handler')
+
+    def test_get_namespace(self):
+        config = Config(self.conf_file)
+        eq_(config.get_handler_namespace(), 'lambda_function')
+
+    def test_get_handler_function(self):
+        config = Config(self.conf_file)
+        eq_(config.get_handler_function(), 'lambda_handler')
+
     def test_load_raw_secret(self):
         config = Config(self.conf_file)
         eq_(config.load_raw_secret().get('test_env'), "{{ env[$$PATH$$] }}")
