@@ -188,7 +188,7 @@ def main():
     }
     kind_args = ('-k', '--kind',)
     kind_kwargs = {
-        'help': 'The kind of the file',
+        'help': 'The kind of the file # accepts "function"',
         'required': True
     }
 
