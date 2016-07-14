@@ -1,3 +1,8 @@
+## 0.17.0
+
+- Add encrypt-file command & decrypt feature for Lambda function [#62][]
+- Bigfix: Fix error when import lamvery in function [#62][]
+
 ## 0.16.0
 
 - Add `generate` command [#61][]
