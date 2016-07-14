@@ -40,6 +40,8 @@ DEFAULT_SECRET = """
 key_id: <key-id>
 cipher_texts:
   foo: bar
+secret_files:
+  baz: qux
 test_env: {{ env['PATH'] }}
 """
 
@@ -264,6 +266,9 @@ class ConfigTestCase(TestCase):
             'region': 'us-east-1',
             'cipher_texts': {
                 'foo': 'bar'
+            },
+            'secret_files': {
+                'baz': 'qux'
             }
         })
 
@@ -272,6 +277,12 @@ class ConfigTestCase(TestCase):
         config.store_secret('foo', 'bar')
         eq_(config.get_secret().get('key_id'), '<key-id>')
         eq_(config.get_secret().get('cipher_texts').get('foo'), 'bar')
+
+    def test_store_secret_file(self):
+        config = Config(self.conf_file)
+        config.store_secret_file('baz', 'qux')
+        eq_(config.get_secret().get('key_id'), '<key-id>')
+        eq_(config.get_secret().get('secret_files').get('baz'), 'qux')
 
     def test_save_api_id(self):
         config = Config(self.conf_file)

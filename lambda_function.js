@@ -1,4 +1,5 @@
 var lamvery = require('./lamvery.js');
+var fs = require('fs');
 
 exports.lambdaHandler = function(event, context) {
     lamvery.env.load();
@@ -6,6 +7,11 @@ exports.lambdaHandler = function(event, context) {
     console.log(process.env);
     lamvery.secret.get('foo', function(err, data) {
         console.log(data);
-        context.succeed("done.");
+        lamvery.secret.file('bar.txt', function(err, p) {
+            fs.readFile(p, 'utf-8', function(err, txt) {
+                console.log(txt);
+                context.succeed("done.");
+            });
+        });
     });
 }

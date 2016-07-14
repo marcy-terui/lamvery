@@ -161,7 +161,8 @@ class Config:
     def generate_lambda_secret(self):
         return {
             'region': self.get_region(),
-            'cipher_texts': self.get_secret().get('cipher_texts')
+            'cipher_texts': self.get_secret().get('cipher_texts'),
+            'secret_files': self.get_secret().get('secret_files')
         }
 
     def get_function_name(self):
@@ -270,6 +271,7 @@ class Config:
         init_secret = OrderedDict()
         init_secret['key_id'] = '<key-id>'
         init_secret['cipher_texts'] = OrderedDict()
+        init_secret['secret_files'] = OrderedDict()
 
         return init_secret
 
@@ -345,6 +347,15 @@ class Config:
             conf['cipher_texts'] = {}
 
         conf['cipher_texts'][key] = value
+        self.write(conf, self.get_secret_file())
+
+    def store_secret_file(self, key, value):
+        conf = self.load_raw_secret()
+
+        if 'secret_files' not in conf:
+            conf['secret_files'] = {}
+
+        conf['secret_files'][key] = value
         self.write(conf, self.get_secret_file())
 
     def save_api_id(self, api_id):

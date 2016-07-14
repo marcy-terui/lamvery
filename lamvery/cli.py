@@ -12,6 +12,7 @@ from lamvery.actions import (
     DeployAction,
     DecryptAction,
     EncryptAction,
+    EncryptFileAction,
     EventsAction,
     InvokeAction,
     RollbackAction,
@@ -44,6 +45,10 @@ def decrypt(args):
 
 def encrypt(args):
     EncryptAction(args).action()
+
+
+def encrypt_file(args):
+    EncryptFileAction(args).action()
 
 
 def events(args):
@@ -191,6 +196,11 @@ def main():
         'help': 'The kind of the file # accepts "function"',
         'required': True
     }
+    path_args = ('-p', '--path',)
+    path_kwargs = {
+        'help': 'The path to put the decrypted file in the function',
+        'required': True
+    }
 
     parser = argparse.ArgumentParser(
         description='Yet another deploy tool for AWS Lambda in the virtualenv environment.',
@@ -243,11 +253,23 @@ def main():
     deploy_parser.set_defaults(func=deploy)
 
     encrypt_parser = subparsers.add_parser('encrypt', help='Encrypt a text value using KMS')
-    encrypt_parser.add_argument('text', help='The text to be encrypted')
+    encrypt_parser.add_argument('text', help='The text value to encrypt')
     encrypt_parser.add_argument(*conf_file_args, **conf_file_kwargs)
     encrypt_parser.add_argument(*secret_name_args, **secret_name_kwargs)
     encrypt_parser.add_argument(*store_args, **store_kwargs)
     encrypt_parser.set_defaults(func=encrypt)
+
+    decrypt_parser = subparsers.add_parser('decrypt', help='Decrypt the secret value using KMS')
+    decrypt_parser.add_argument(*conf_file_args, **conf_file_kwargs)
+    decrypt_parser.add_argument(*secret_name_args, **secret_name_kwargs)
+    decrypt_parser.set_defaults(func=decrypt)
+
+    encrypt_file_parser = subparsers.add_parser('encrypt-file', help='Encrypt a file using KMS')
+    encrypt_file_parser.add_argument('file', help='The file path to encrypt')
+    encrypt_file_parser.add_argument(*conf_file_args, **conf_file_kwargs)
+    encrypt_file_parser.add_argument(*path_args, **path_kwargs)
+    encrypt_file_parser.add_argument(*store_args, **store_kwargs)
+    encrypt_file_parser.set_defaults(func=encrypt_file)
 
     decrypt_parser = subparsers.add_parser('decrypt', help='Decrypt the secret value using KMS')
     decrypt_parser.add_argument(*conf_file_args, **conf_file_kwargs)
