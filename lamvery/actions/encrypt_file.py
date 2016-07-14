@@ -13,9 +13,9 @@ class EncryptFileAction(BaseAction):
 
     def action(self):
         cipher_text = self.get_kms_client().encrypt(
-            self._config.get_secret().get('key_id'), open(self._file, 'r').read())
+            self._config.get_secret().get('key_id'), open(self._path, 'r').read())
 
         if self._store:
-            self._config.store_secret_file(self._path, cipher_text)
+            self._config.store_secret_file(self._file, cipher_text)
         else:
             print(cipher_text)

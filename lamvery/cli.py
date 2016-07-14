@@ -196,9 +196,9 @@ def main():
         'help': 'The kind of the file # accepts "function"',
         'required': True
     }
-    path_args = ('-p', '--path',)
-    path_kwargs = {
-        'help': 'The path to put the decrypted file in the function',
+    filename_args = ('-n', '--name',)
+    filename_kwargs = {
+        'help': 'The filename to put the decrypted file in the function environment',
         'required': True
     }
 
@@ -265,9 +265,9 @@ def main():
     decrypt_parser.set_defaults(func=decrypt)
 
     encrypt_file_parser = subparsers.add_parser('encrypt-file', help='Encrypt a file using KMS')
-    encrypt_file_parser.add_argument('file', help='The file path to encrypt')
+    encrypt_file_parser.add_argument('path', help='The file path to encrypt')
     encrypt_file_parser.add_argument(*conf_file_args, **conf_file_kwargs)
-    encrypt_file_parser.add_argument(*path_args, **path_kwargs)
+    encrypt_file_parser.add_argument(*filename_args, **filename_kwargs)
     encrypt_file_parser.add_argument(*store_args, **store_kwargs)
     encrypt_file_parser.set_defaults(func=encrypt_file)
 

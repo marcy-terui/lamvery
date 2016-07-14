@@ -9,8 +9,8 @@ from lamvery.actions.encrypt_file import EncryptFileAction
 def default_args():
     args = Mock()
     args.conf_file = '.lamvery.yml'
-    args.file = 'requirements.txt'
-    args.path = 'bar.txt'
+    args.path = 'requirements.txt'
+    args.file = 'bar.txt'
     args.store = False
     return args
 
