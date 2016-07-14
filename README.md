@@ -681,7 +681,7 @@ secret_files: {}
 ### 4. Encrypt and store the confidential file to your configuration file  
 Command example:  
 ```sh
-lamvery encrypt-file -s -p foo.txt /path/to/local/confidential/file
+lamvery encrypt-file -s -n foo.txt /path/to/local/confidential/file
 ```
 
 ### 5. Write your function  
