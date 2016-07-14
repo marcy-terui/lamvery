@@ -9,6 +9,7 @@ from lamvery.cli import (
     configure,
     deploy,
     encrypt,
+    encrypt_file,
     events,
     decrypt,
     set_alias,
@@ -40,6 +41,10 @@ class FunctionsTestCase(TestCase):
     def test_encrypt(self):
         with patch('lamvery.cli.EncryptAction'):
             encrypt(Mock())
+
+    def test_encrypt_file(self):
+        with patch('lamvery.cli.EncryptFileAction'):
+            encrypt_file(Mock())
 
     def test_events(self):
         with patch('lamvery.cli.EventsAction'):

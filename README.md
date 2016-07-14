@@ -21,7 +21,8 @@ User-friendly deploy and management tool for AWS Lambda function.
 #### Additional features that are not in the standard Lambda functions
 
 - Passing the environment variables
-- Passing the confidential informations use `KMS` encryption
+- Passing the confidential information use `KMS` encryption
+- Passing the confidential files use `KMS` encryption
 - And more
 
 #### More useful features for deploying and invoking our functions
@@ -217,6 +218,9 @@ The ID of your encryption key on KMS.
 ### cipher_texts  
 The name and cipher texts to pass to the lambda function.
 
+### secret_files  
+The filename and the encrypted contents to pass to the lambda function.
+
 ## Excluded patterns from the archive (default: `.lamvery.exclude.yml`)
 
 ```yml
@@ -358,6 +362,14 @@ lamvery set-alias -a <alias> -v <alias-version>
 
 ```sh
 lamvery encrypt [-s] -n <secret-name> <secret-value>
+```
+
+### encrypt-file
+
+- Encrypt a file using KMS
+
+```sh
+lamvery encrypt [-s] -n <filename> <local-file-path>
 ```
 
 ### decrypt
@@ -504,7 +516,11 @@ This option is only needed by the `generate` command.
 The kind of the file.  
 Allowed values: `function`
 
-# How to use the confidential informations in the lambda function
+### `-n` or `--name`
+This option is only needed by the `encrypt-file` command.  
+The name of the secret file.
+
+# How to use the confidential information in the lambda function
 
 ### 1. Create key on KMS  
 See: https://docs.aws.amazon.com/kms/latest/developerguide/create-keys.html
@@ -553,6 +569,7 @@ configuration:
 ```yml
 key_id: xxxx-yyyy-zzzz # <-here!
 cipher_texts: {}
+secret_files: {}
 ```
 
 ### 4. Encrypt and store the confidential information to your configuration file  
@@ -606,6 +623,114 @@ Result example:
 ```
 START RequestId: 13829c9c-9f13-11e5-921b-6f048cff3c2d Version: $LATEST
 This is a secret
+END RequestId: 13829c9c-9f13-11e5-921b-6f048cff3c2d
+```
+
+# How to use the confidential file in the lambda function
+
+### 1. Create key on KMS  
+See: https://docs.aws.amazon.com/kms/latest/developerguide/create-keys.html
+
+### 2. Create IAM role for lambda function  
+Policy example:  
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "kms:Decrypt"
+            ],
+            "Resource": [
+                "arn:aws:kms:us-east-1:<your-account-number>:key/<your-key-id>"
+            ]
+        }
+    ]
+}
+```
+
+### 3. Set the key-id to your configuration file  
+Configuration example:  
+
+- .lamvery.yml
+
+```yml
+profile: default
+region: us-east-1
+versioning: false
+default_alias: null
+configuration:
+  name: sample_lambda_function
+  runtime: python2.7 # or nodejs
+  role: arn:aws:iam::000000000000:role/lambda_basic_execution
+  handler: lambda_function.lambda_handler
+  description: This is sample lambda function.
+  timeout: 10
+  memory_size: 128
+```
+
+- .lamvery.secret.yml
+
+```yml
+key_id: xxxx-yyyy-zzzz # <-here!
+cipher_texts: {}
+secret_files: {}
+```
+
+### 4. Encrypt and store the confidential file to your configuration file  
+Command example:  
+```sh
+lamvery encrypt-file -s -p foo.txt /path/to/local/confidential/file
+```
+
+### 5. Write your function  
+Generate the skeleton function by this command.
+```sh
+lamvery generate -k function
+```
+
+Code example:  
+
+- Python
+
+```py
+  import lamvery
+
+  def lambda_handler(event, context):
+      print(open(lamvery.secret.file('foo.txt'), 'r').read())
+```
+
+- Node.js
+
+```js
+var lamvery = require('./lamvery.js');
+
+exports.lambda_handler = function(event, context) {
+    lamvery.secret.file('foo.txt', function(err, path) {
+        fs.readFile(path, 'utf-8', function(err, txt) {
+            console.log(txt);
+        });
+    });
+}
+```
+
+### 6. Deploy your function  
+Command example:  
+```sh
+lamvery deploy
+```
+
+### 7. Invoke your function  
+Command example:  
+```sh
+lamvery invoke {}
+```
+
+Result example:  
+```
+START RequestId: 13829c9c-9f13-11e5-921b-6f048cff3c2d Version: $LATEST
+This is a secret file
 END RequestId: 13829c9c-9f13-11e5-921b-6f048cff3c2d
 ```
 
