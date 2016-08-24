@@ -139,9 +139,6 @@ class Config:
         if events is None:
             return {'rules': []}
 
-        if 'rules' in events:
-            return {'rules': []}
-
         if isinstance(events, list):
             rules = []
             for e in events:
@@ -149,6 +146,9 @@ class Config:
                 rules.append(e)
 
             return {'rules': rules}
+
+        if events.get('rules') is None:
+            return {'rules': []}
 
         return events
 
