@@ -10,7 +10,7 @@ if os.path.exists('README.txt'):
 
 setup_options = dict(
     name='lamvery',
-    version='0.17.0',
+    version='0.17.1',
     description=description,
     long_description=long_description,
     author='Masashi Terui',

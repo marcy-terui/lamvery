@@ -1,3 +1,7 @@
+## 0.17.1
+
+- Bugfix: Can't read some of the events config [#63][]
+
 ## 0.17.0
 
 - Add encrypt-file command & decrypt feature for Lambda function [#62][]
@@ -241,6 +245,8 @@
 [#58]: https://github.com/marcy-terui/lamvery/issues/58
 [#60]: https://github.com/marcy-terui/lamvery/issues/60
 [#61]: https://github.com/marcy-terui/lamvery/issues/61
+[#62]: https://github.com/marcy-terui/lamvery/issues/62
+[#63]: https://github.com/marcy-terui/lamvery/issues/63
 [@ijin]: https://github.com/ijin
 [@koppeft]: https://github.com/koppeft
 [@mathom]: https://github.com/mathom
