@@ -13,11 +13,10 @@ from pygments.formatters import TerminalFormatter
 
 DEFAULT_MAPPING_TEMPLATE = '''
 ##  See http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-mapping-template-reference.html
-##  This template will pass through all parameters including path, querystring, header, stage variables,
-##  and context through to the integration endpoint via the body/payload
+##  This template will pass through all parameters including path, querystring, header, stage variables, and context through to the integration endpoint via the body/payload
 #set($allParams = $input.params())
 {
-"body-json" : "$input.json('$')",
+"body-json" : $input.json('$'),
 "params" : {
 #foreach($type in $allParams.keySet())
     #set($params = $allParams.get($type))
