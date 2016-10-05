@@ -1,3 +1,7 @@
+## 0.17.2
+
+- Use the new official passthrough mapping template [#64][]
+
 ## 0.17.1
 
 - Bugfix: Can't read some of the events config [#63][]
