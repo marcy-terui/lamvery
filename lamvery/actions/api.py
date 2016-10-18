@@ -221,7 +221,7 @@ class ApiAction(BaseAction):
 
         if api is None:
             if self._remove:
-                self._logger.info('"{}" is not exists.'.format(api_id))
+                self._logger.info('"{}" does not exist.'.format(api_id))
             else:
                 self._logger.info('[API] Add new rest api.')
                 ret = client.import_rest_api(api_conf)

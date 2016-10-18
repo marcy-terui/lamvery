@@ -31,7 +31,7 @@ class EventsAction(BaseAction):
         conf = lambda_client.get_function_conf(func_name, alias_name)
 
         if len(conf) == 0:
-            msg = '"{}" function is not exists. Please `deploy` at first.'.format(func_name)
+            msg = '"{}" function does not exist. Please `deploy` first.'.format(func_name)
             raise Exception(msg)
 
         arn = conf['FunctionArn']

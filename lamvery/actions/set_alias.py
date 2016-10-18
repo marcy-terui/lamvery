@@ -53,7 +53,7 @@ class SetAliasAction(BaseAction):
 
             if version is None:
                 raise Exception(
-                    'Target alias "{}" is not exists in "{}" function.'.format(
+                    'Target alias "{}" does not exist in "{}" function.'.format(
                         self._target, function))
 
         return version

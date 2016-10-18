@@ -18,7 +18,7 @@ class RollbackAction(BaseAction):
 
         if len(remote_conf) == 0:
             raise Exception(
-                '"{}" function is not exists. Please `deploy` at first.'.format(func_name))
+                '"{}" function does not exist. Please `deploy` first.'.format(func_name))
 
         pre_version = client.get_previous_version(func_name, alias_name)
         if pre_version is None:
