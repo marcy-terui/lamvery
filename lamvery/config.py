@@ -39,7 +39,7 @@ class Config:
             return yaml.load(tmpl.render({'env': os.environ}))
         except TemplateNotFound:
             get_logger(__name__).warn(
-                'Configuration file "{}" is not exists.'.format(file))
+                'Configuration file "{}" does not exist.'.format(file))
             return default
 
     def load_conf(self):

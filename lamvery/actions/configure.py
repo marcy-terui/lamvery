@@ -40,5 +40,5 @@ class ConfigureAction(BaseAction):
 
             client.update_function_conf(local_conf)
         else:
-            msg = '"{}" function is not exists. Please `deploy` at first.'.format(func_name)
+            msg = '"{}" function does not exist. Please `deploy` first.'.format(func_name)
             raise Exception(msg)
