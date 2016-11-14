@@ -1,3 +1,7 @@
+## 0.17.3
+- Bugfix [#66][]
+- Fix grammer [#65][] ([@ijin][])
+
 ## 0.17.2
 
 - Use the new official passthrough mapping template [#64][]
@@ -251,6 +255,9 @@
 [#61]: https://github.com/marcy-terui/lamvery/issues/61
 [#62]: https://github.com/marcy-terui/lamvery/issues/62
 [#63]: https://github.com/marcy-terui/lamvery/issues/63
+[#64]: https://github.com/marcy-terui/lamvery/issues/64
+[#65]: https://github.com/marcy-terui/lamvery/issues/65
+[#66]: https://github.com/marcy-terui/lamvery/issues/66
 [@ijin]: https://github.com/ijin
 [@koppeft]: https://github.com/koppeft
 [@mathom]: https://github.com/mathom
