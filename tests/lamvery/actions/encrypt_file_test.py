@@ -10,7 +10,7 @@ def default_args():
     args = Mock()
     args.conf_file = '.lamvery.yml'
     args.path = 'requirements.txt'
-    args.file = 'bar.txt'
+    args.name = 'bar.txt'
     args.store = False
     return args
 

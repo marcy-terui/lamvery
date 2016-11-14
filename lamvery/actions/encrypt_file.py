@@ -7,7 +7,7 @@ class EncryptFileAction(BaseAction):
 
     def __init__(self, args):
         super(EncryptFileAction, self).__init__(args)
-        self._file = args.file
+        self._file = args.name
         self._path = args.path
         self._store = args.store
 
