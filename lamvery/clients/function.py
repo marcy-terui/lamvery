@@ -37,7 +37,7 @@ class LambdaClient(BaseClient):
 
         if conf.get('environment_variables'):
             kwargs['Environment'] = {'Variables': {}}
-            kwargs['Environment']['Variables'] = conf.get('environment_variables')
+            kwargs['Environment']['Variables'] = conf['environment_variables']
 
         description = conf.get('description')
         if description is not None:
@@ -92,7 +92,7 @@ class LambdaClient(BaseClient):
 
         if conf.get('environment_variables'):
             kwargs['Environment'] = {'Variables': {}}
-            kwargs['Environment']['Variables'] = conf.get('environment_variables')
+            kwargs['Environment']['Variables'] = conf['environment_variables']
 
         vpc_config = conf.get('vpc_config')
         if vpc_config is not None:
