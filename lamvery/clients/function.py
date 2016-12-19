@@ -51,6 +51,11 @@ class LambdaClient(BaseClient):
         if vpc_config is not None:
             kwargs['VpcConfig'] = self._build_vpc_config(vpc_config)
 
+        environment_variables = conf.get('environment_variables')
+        if environment_variables is not None:
+            kwargs['Environment'] = {'Variables': {}}
+            kwargs['Environment']['Variables'] = conf['environment_variables']
+
         if not self._dry_run:
             self._lambda.create_function(**kwargs)
 
@@ -89,6 +94,11 @@ class LambdaClient(BaseClient):
         vpc_config = conf.get('vpc_config')
         if vpc_config is not None:
             kwargs['VpcConfig'] = self._build_vpc_config(vpc_config)
+
+        environment_variables = conf.get('environment_variables')
+        if environment_variables is not None:
+            kwargs['Environment'] = {'Variables': {}}
+            kwargs['Environment']['Variables'] = conf['environment_variables']
 
         if not self._dry_run:
             self._lambda.update_function_configuration(**kwargs)
