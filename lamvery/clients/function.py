@@ -35,6 +35,10 @@ class LambdaClient(BaseClient):
         kwargs['Code'] = {'ZipFile': zipfile.read()}
         kwargs['Publish'] = publish
 
+        if conf.get('environment_variables'):
+            kwargs['Environment'] = {'Variables': {}}
+            kwargs['Environment']['Variables'] = conf.get('environment_variables')
+
         description = conf.get('description')
         if description is not None:
             kwargs['Description'] = description
@@ -85,6 +89,10 @@ class LambdaClient(BaseClient):
         memory_size = conf.get('memory_size')
         if memory_size is not None:
             kwargs['MemorySize'] = memory_size
+
+        if conf.get('environment_variables'):
+            kwargs['Environment'] = {'Variables': {}}
+            kwargs['Environment']['Variables'] = conf.get('environment_variables')
 
         vpc_config = conf.get('vpc_config')
         if vpc_config is not None:
