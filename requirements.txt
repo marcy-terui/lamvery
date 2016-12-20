@@ -1,5 +1,5 @@
-boto3>=1.3.0
-botocore>=1.4.9
+boto3>=1.4.2
+botocore>=1.4.88
 Jinja2
 PyYAML
 termcolor
