@@ -5,7 +5,6 @@ Lamvery
 [![Coverage](https://img.shields.io/coveralls/marcy-terui/lamvery.svg)](https://coveralls.io/github/marcy-terui/lamvery)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/marcy-terui/lamvery/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/marcy-terui/lamvery/?branch=master)
 [![Version](https://img.shields.io/pypi/v/lamvery.svg)](https://pypi.python.org/pypi/lamvery)
-[![Downloads](https://img.shields.io/pypi/dm/lamvery.svg)](https://pypi.python.org/pypi/lamvery/)
 
 # Description
 
@@ -108,6 +107,8 @@ configuration:
   description: This is sample lambda function.
   timeout: 10
   memory_size: 128
+  environment_variables:
+    MYENV: foobar
   vpc_config:
     subnets:
     - subnet-cadf2993
@@ -154,6 +155,9 @@ The function execution time(seconds) at which Lambda should terminate the functi
 
 - memory_size  
 The amount of memory for your function environment.
+
+- environment_variables  
+Environment variables.
 
 - vpc_config  
 The VPC configurations for the function to access resources in your VPC.  
@@ -732,61 +736,6 @@ Result example:
 START RequestId: 13829c9c-9f13-11e5-921b-6f048cff3c2d Version: $LATEST
 This is a secret file
 END RequestId: 13829c9c-9f13-11e5-921b-6f048cff3c2d
-```
-
-# How to use the environment variables in the lambda function
-
-### 1. Write your function
-Generate the skeleton function by this command.
-```sh
-lamvery generate -k function
-```
-
-- Python
-
-```py
-import lamvery
-import os
-
-
-def lambda_handler(event, context):
-    lamvery.env.load()
-    print(os.environ['FOO'])
-    print(os.environ['BAZ'])
-```
-
-- Node.js
-
-```js
-var lamvery = require('./lamvery.js');
-
-exports.lambdaHandler = function(event, context) {
-    lamvery.env.load();
-    console.log(process.env.FOO);
-    console.log(process.env.BAZ);
-}
-
-```
-
-### 2. Deploy your code with `-e` or `--env` options
-
-```sh
-lamvery deploy -e FOO=BAR -e BAZ=QUX
-```
-
-### 3. Invoke your function
-
-Command example:  
-```sh
-lamvery invoke {}
-```
-
-Result example:  
-```
-START RequestId: 481f2f8a-d64c-11e5-9ebe-4347553b89b4 Version: 25
-BAR
-QUX
-END RequestId: 481f2f8a-d64c-11e5-9ebe-4347553b89b4
 ```
 
 Development

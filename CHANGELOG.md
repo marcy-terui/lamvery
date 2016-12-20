@@ -1,3 +1,7 @@
+## 0.18.0
+- Official Environment Variables Support  
+Pass `['Environment']['Variables']` to create/update function from config [#68][] ([@sawanoboly][])
+
 ## 0.17.3
 - Bugfix [#66][]
 - Fix grammer [#65][] ([@ijin][])
@@ -258,6 +262,8 @@
 [#64]: https://github.com/marcy-terui/lamvery/issues/64
 [#65]: https://github.com/marcy-terui/lamvery/issues/65
 [#66]: https://github.com/marcy-terui/lamvery/issues/66
+[#68]: https://github.com/marcy-terui/lamvery/issues/68
 [@ijin]: https://github.com/ijin
 [@koppeft]: https://github.com/koppeft
 [@mathom]: https://github.com/mathom
+[@sawanoboly]: https://github.com/sawanoboly
