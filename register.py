@@ -5,9 +5,7 @@ import lamvery
 
 os.system("python setup.py install")
 
-f = open('README.txt', 'w+')
-f.write(pypandoc.convert('README.md', 'rst'))
-f.close()
+os.system("pandoc README.md --from=markdown --to=rst > README.txt")
 os.system("python setup.py sdist upload")
 os.remove('README.txt')
 
