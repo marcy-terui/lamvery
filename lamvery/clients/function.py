@@ -80,6 +80,7 @@ class LambdaClient(BaseClient):
     def update_function_conf(self, conf):
         kwargs = {}
         kwargs['FunctionName'] = conf['name']
+        kwargs['Runtime'] = self._get_runtime(conf)
         kwargs['Role'] = conf['role']
         kwargs['Handler'] = conf['handler']
 
