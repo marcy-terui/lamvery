@@ -2,6 +2,7 @@
 
 import botocore
 import hashlib
+import lamvery.config
 
 from lamvery.clients.base import BaseClient
 from lamvery.utils import previous_alias
@@ -26,10 +27,13 @@ class LambdaClient(BaseClient):
         except botocore.exceptions.ClientError:
             return {}
 
+    def _get_runtime(self, conf):
+        return lamvery.config.DEFAULT_RUNTIME_NODE_JS if conf['runtime'] == 'nodejs' else conf['runtime']
+
     def create_function(self, zipfile, conf, publish):
         kwargs = {}
         kwargs['FunctionName'] = conf['name']
-        kwargs['Runtime'] = conf['runtime']
+        kwargs['Runtime'] = self._get_runtime(conf)
         kwargs['Role'] = conf['role']
         kwargs['Handler'] = conf['handler']
         kwargs['Code'] = {'ZipFile': zipfile.read()}

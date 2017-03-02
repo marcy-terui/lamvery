@@ -21,6 +21,9 @@ TEST_CONF = {
     }
 }
 
+NODE_CONF = dict(TEST_CONF, runtime='nodejs')
+NODE43_CONF = dict(TEST_CONF, runtime='nodejs4.3')
+
 
 class LambdaClientTestCase(TestCase):
 
@@ -35,6 +38,11 @@ class LambdaClientTestCase(TestCase):
         self.client._lambda.get_function = Mock(
             side_effect=botocore.exceptions.ClientError({'Error': {}}, 'bar'))
         eq_(self.client.get_function_conf('test'), {})
+
+    def test_get_runtime(self):
+        eq_(self.client._get_runtime(TEST_CONF), 'python2.7')
+        eq_(self.client._get_runtime(NODE_CONF), 'nodejs4.3')
+        eq_(self.client._get_runtime(NODE43_CONF), 'nodejs4.3')
 
     def test_create_function(self):
         self.client.create_function(Mock(), TEST_CONF, True)
