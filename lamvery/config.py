@@ -121,7 +121,10 @@ class Config:
         return txt
 
     def get_configuration(self):
-        return self.load_conf().get('configuration')
+        config = self.load_conf().get('configuration')
+        if config['runtime'] == 'nodejs':
+            config['runtime'] = DEFAULT_RUNTIME_NODE_JS
+        return config
 
     def get_vpc_configuration(self):
         vpc_config = self.get_configuration().get('vpc_config')

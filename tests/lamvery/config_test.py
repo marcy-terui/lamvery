@@ -160,7 +160,7 @@ class ConfigTestCase(TestCase):
         open(self.conf_file, 'w').write(NODE_CONF)
         config = Config(self.conf_file)
         runtime = config.get_configuration().get('runtime')
-        eq_(runtime, 'nodejs')
+        eq_(runtime, 'nodejs4.3')
 
         open(self.conf_file, 'w').write(NODE43_CONF)
         config = Config(self.conf_file)
