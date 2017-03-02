@@ -11,10 +11,12 @@ from lamvery.log import get_logger
 
 RUNTIME_PY_27 = 'python2.7'
 RUNTIME_NODE_JS = 'nodejs'
+RUNTIME_NODE_JS_43 = 'nodejs4.3'
 
 RUNTIME_AND_EXTENSION = {
     RUNTIME_PY_27: 'py',
-    RUNTIME_NODE_JS: 'js'
+    RUNTIME_NODE_JS: 'js',
+    RUNTIME_NODE_JS_43: 'js'
 }
 
 
