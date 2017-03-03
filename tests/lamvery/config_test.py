@@ -89,6 +89,7 @@ configuration:
 """
 
 NODE_CONF = DEFAULT_CONF.replace('python2.7', 'nodejs')
+NODE43_CONF = DEFAULT_CONF.replace('python2.7', 'nodejs4.3')
 
 
 class FunctionsTestCase(TestCase):
@@ -156,6 +157,16 @@ class ConfigTestCase(TestCase):
         config = Config(self.conf_file)
         eq_(config.get_runtime(), 'python2.7')
 
+        open(self.conf_file, 'w').write(NODE_CONF)
+        config = Config(self.conf_file)
+        runtime = config.get_configuration().get('runtime')
+        eq_(runtime, 'nodejs4.3')
+
+        open(self.conf_file, 'w').write(NODE43_CONF)
+        config = Config(self.conf_file)
+        runtime = config.get_configuration().get('runtime')
+        eq_(runtime, 'nodejs4.3')
+
     def test_get_handler(self):
         config = Config(self.conf_file)
         eq_(config.get_handler(), 'lambda_function.lambda_handler')
@@ -199,8 +210,10 @@ class ConfigTestCase(TestCase):
 
         open(self.conf_file, 'w').write(NODE_CONF)
         config = Config(self.conf_file)
-        runtime = config.get_configuration().get('runtime')
-        eq_(runtime, 'nodejs')
+        eq_(config.get_function_filename(), 'lambda_function.js')
+
+        open(self.conf_file, 'w').write(NODE43_CONF)
+        config = Config(self.conf_file)
         eq_(config.get_function_filename(), 'lambda_function.js')
 
     def test_get_archive_name(self):

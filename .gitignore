@@ -47,3 +47,13 @@ coverage.xml
 
 .venv
 *.zip
+### https://raw.github.com/github/gitignore/be3333655bffe9507d66cc864aee95ed6052b4ed/Global/vim.gitignore
+
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+*.un~
+Session.vim
+.netrwhist
+*~
+
+

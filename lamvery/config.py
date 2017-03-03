@@ -11,10 +11,13 @@ from lamvery.log import get_logger
 
 RUNTIME_PY_27 = 'python2.7'
 RUNTIME_NODE_JS = 'nodejs'
+RUNTIME_NODE_JS_43 = 'nodejs4.3'
+DEFAULT_RUNTIME_NODE_JS = RUNTIME_NODE_JS_43
 
 RUNTIME_AND_EXTENSION = {
     RUNTIME_PY_27: 'py',
-    RUNTIME_NODE_JS: 'js'
+    RUNTIME_NODE_JS: 'js',
+    RUNTIME_NODE_JS_43: 'js'
 }
 
 
@@ -118,7 +121,10 @@ class Config:
         return txt
 
     def get_configuration(self):
-        return self.load_conf().get('configuration')
+        config = self.load_conf().get('configuration')
+        if config['runtime'] == 'nodejs':
+            config['runtime'] = DEFAULT_RUNTIME_NODE_JS
+        return config
 
     def get_vpc_configuration(self):
         vpc_config = self.get_configuration().get('vpc_config')
