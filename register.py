@@ -1,6 +1,5 @@
 import os
 import time
-import pypandoc
 import lamvery
 
 os.system("python setup.py install")

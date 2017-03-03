@@ -1,3 +1,7 @@
+## 0.18.2
+- `nodejs4.3` runtime support [#70][] ([@ijin][])
+- Overrides nodejs with nodejs4.3 on function create/update (`nodejs(0.10)` has been deprecated) [#70][] ([@ijin][])
+
 ## 0.18.1
 - Pin `Jinja2` version [#69][] ([@ijin][])
 
